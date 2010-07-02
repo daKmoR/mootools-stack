@@ -1,0 +1,23 @@
+name: "Stack"
+
+exports: "mootools-stack.js"
+
+web: "[mooforum.net](http://mooforum.net)"
+
+description: "MooTools Stack, a mooforum manifest"
+
+license: "[MIT License](http://mootools.net/license.txt)"
+
+copyright: "&copy; [mooforum](http://mooforum.net)"
+
+authors: "Thomas Allmer"
+
+sources:
+  - "Source/Galleries/FlexSlide/FlexSlide.js"
+  - "Source/Galleries/FlexSlide/FlexSlide.Advanced.js"
+  - "Source/Galleries/FlexSlide/FlexSlide.Transitions.js"
+  - "Source/Galleries/FlexSlide/FlexSlides.js"
+  - "Source/Galleries/FlexSlide/FlexSlides.Auto.js"
+  - "Source/Visual/Overlay/Overlay.js"
+  - "Source/Galleries/FlexBox/FlexBox.js"
+  - "Source/Galleries/FlexBox/FlexBoxes.js"
