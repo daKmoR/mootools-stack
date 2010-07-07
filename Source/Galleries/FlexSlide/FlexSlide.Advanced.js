@@ -46,8 +46,9 @@ FlexSlide.Advanced = new Class({
 		
 		if( this.options.wheelListener )
 			document.addEvent('mousewheel', this.wheelListener.bindWithEvent(this));
-		if( this.options.keyboardListener )
+		if( this.options.keyboardListener ) {
 			document.addEvent('keydown', this.keyboardListener.bindWithEvent(this));		
+		}
 	},
 	
 	show: function(id, fx) {
@@ -98,7 +99,7 @@ FlexSlide.Advanced = new Class({
 			switch( mode ) {
 				case 'image':
 					var image = new Asset.image(href, {
-						onload: function() {
+						onLoad: function() {
 							this.loader.fade(0);
 							image.addClass( this.options.ui.itemItem['class'] );
 							this.els.item[id] = this.fx.elements[id] = image;
@@ -108,9 +109,11 @@ FlexSlide.Advanced = new Class({
 					});
 					break;
 				case 'request':
+					console.log('request', href);
 					var request = new Request.HTML({ method: 'get', noCache: true,	autoCancel: true, url: href,
 						onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
 							this.loader.fade(0);
+							console.log('request', 'loaded');
 							var div = new Element('div', {'class': this.options.ui.itemItem['class'] + ' ' + this.options.ui.requestItem['class']} );
 							div.set('html', responseHTML);
 							this.loaded[id] = true;
@@ -136,9 +139,8 @@ FlexSlide.Advanced = new Class({
 	
 	keyboardListener: function(event){
 		if(!this.options.active) return;
-		if(event.key != 'f5') event.preventDefault();
-		switch (event.key){
-			case 'esc': case 'x': case 'q': this.close(); break;
+		//if(event.key != 'f5') event.preventDefault();
+		switch (event.key) {
 			case 'p': case 'left': this.previous(); break;	
 			case 'n': case 'right': this.next();
 		}
