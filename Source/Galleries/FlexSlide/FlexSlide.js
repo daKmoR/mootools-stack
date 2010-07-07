@@ -281,7 +281,6 @@ var FlexSlide = new Class({
 				$each( this.fxConfig[id], function(el, i) {
 					tmp[i] = el[0];
 				});
-				this.els.item[id].set('style', '');
 				this.els.item[id].setStyles(tmp);
 			}
 
