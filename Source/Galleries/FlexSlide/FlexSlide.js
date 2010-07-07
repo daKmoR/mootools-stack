@@ -312,14 +312,14 @@ var FlexSlide = new Class({
 	},
 	
 	adjustElement: function(el) {
-		if( el.complete ) {
+		if( el.complete || el.get('tag') != 'img' ) {
 			this._adjustElement(el);
 		} else {
 			el.addEvent('load', function() {
 				this._adjustElement(el);
 			}.bind(this) );
 		}
-	},	
+	},
 	
 	_adjustElement: function(el) {
 		if( !el.retrieve('FlexSlide:ElementStyle') ) {
@@ -329,6 +329,7 @@ var FlexSlide = new Class({
 		el.set('style', el.retrieve('FlexSlide:ElementStyle') );
 		
 		var parent = el.getParent(), parentSize = parent.getSize(), elSize = el.getSize();
+		
 		var width = parentSize.x - el.getStyle('padding-left').toInt() - el.getStyle('padding-right').toInt() - parent.getStyle('padding-left').toInt() - parent.getStyle('padding-right').toInt();
 		var height = parentSize.y - el.getStyle('padding-top').toInt() - el.getStyle('padding-bottom').toInt() - parent.getStyle('padding-top').toInt() - parent.getStyle('padding-bottom').toInt();
 		var diffHeight = parentSize.y - elSize.y, diffWidth = parentSize.x - elSize.x;
