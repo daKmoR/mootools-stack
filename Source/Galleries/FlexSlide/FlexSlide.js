@@ -7,7 +7,7 @@ description: allows to create almost any Sliding Stuff (Galleries, Tabs...) with
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller]
+requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position]
 
 provides: FlexSlide
 
@@ -58,7 +58,10 @@ var FlexSlide = new Class({
 		centerItemTags: ['img', 'a'],
 		autoContainerSize: { x: false, y: false },
 		centerItem: true,
-		centerContainer: false,
+		positionContainer: false,
+		positionContainerOptions: {
+			returnPos: true
+		},
 		useScroller: false,
 		scrollerMode: 'horizontal',
 		scrollerOptions: { area: 100, velocity: 0.1 },
@@ -78,8 +81,6 @@ var FlexSlide = new Class({
 		},
 		effects: {
 			fade: function(current, next, currentEl, nextEl) {
-				console.log('current', current);
-				console.log('next', next);
 				this.fxConfig[current] = { 'opacity': [1, 0] };
 				this.fxConfig[next]    = { 'opacity': [0, 1] };
 			},
@@ -243,7 +244,6 @@ var FlexSlide = new Class({
 	},
 	
 	_show: function(id, fx) {
-		console.log('_show', id);
 		if( (id != this.current || this.current === -1) && this.running === false ) {
 			var fx = fx || ( (id > this.current) ? this.options.effect.up : this.options.effect.down);
 			if(fx === 'random') fx = this.options.effect.random.getRandom();
@@ -273,16 +273,25 @@ var FlexSlide = new Class({
 			if( this.options.autoContainerSize.y )
 				$extend(this.wrapFxConfig[0], {'height': this.els.item[id].getSize().y} );
 			
-			if( this.options.centerContainer )
-				this.centerContainer(id);
-				
-			var tmp = {'display' : 'block'};
+			if( this.options.positionContainer )
+				this.positionContainer(id);
+			
+			console.log('a', this.els.item[id].get('style') );
+			var tmp = {'display': 'block'};
 			if( $defined(this.fxConfig[id]) ) {
 				$each( this.fxConfig[id], function(el, i) {
 					tmp[i] = el[0];
 				});
+				this.els.item[id].set('style', '');
 				this.els.item[id].setStyles(tmp);
 			}
+
+			console.log('b', this.els.item[id].get('style') );
+			
+			var last = this.current;
+			
+			console.log( this.els.item[this.current].get('style') );
+			console.log( this.els.item[id].get('style') );
 			
 			this.itemWrap.grab( this.els.item[id] );
 			
@@ -318,7 +327,7 @@ var FlexSlide = new Class({
 			el.store('FlexSlide:ElementStyle', el.get('style'));
 		}
 		el.set('style', el.retrieve('FlexSlide:ElementStyle') );
-	
+		
 		var parent = el.getParent(), parentSize = parent.getSize(), elSize = el.getSize();
 		var width = parentSize.x - el.getStyle('padding-left').toInt() - el.getStyle('padding-right').toInt() - parent.getStyle('padding-left').toInt() - parent.getStyle('padding-right').toInt();
 		var height = parentSize.y - el.getStyle('padding-top').toInt() - el.getStyle('padding-bottom').toInt() - parent.getStyle('padding-top').toInt() - parent.getStyle('padding-bottom').toInt();
@@ -362,13 +371,11 @@ var FlexSlide = new Class({
 		}
 	},
 	
-	centerContainer: function(id) {
-		var diff = this.wrap.getSize().x - this.itemWrap.getSize().x;
+	positionContainer: function(id) {
 		this.wrapFxConfig[1] = this.wrapFxConfig[1] || {};
-		$extend(this.wrapFxConfig[1], {
-			'left': (this.options.container.getSize().x - this.els.item[id].getSize().x - diff) / 2,
-			'top': (this.options.container.getSize().y - this.els.item[id].getSize().y - diff) / 2
-		});
+
+		var newPos = this.els.item[id].position(this.options.positionContainerOptions);
+		$extend(this.wrapFxConfig[1], newPos);
 	},
 	
 	updateCounter: function(id) {
@@ -422,15 +429,16 @@ var FlexSlide = new Class({
 		return -1;
 	},
 	
-	next: function(times) {
+	next: function(times, fx) {
 		var times = times || this.options.times;
+		var fx = fx || this.options.effect.up;
 		next = this.getNextId(times);
-		this.show(next, (next > this.current) ? this.options.effect.up : this.options.effect.down);
+		this.show(next, fx);
 	},
 	
 	previous: function(times) {
 		var times = times || this.options.times;
-		this.next( times * -1 );
+		this.next(times * -1, this.options.effect.down);
 	},
 	
 	// fixSizes: function() {

@@ -148,6 +148,7 @@ FlexSlide.Advanced = new Class({
 
 	wheelListener: function(event){
 		if(!this.options.active) return;
+		event.preventDefault();
 		if(event.wheel > 0) this.previous();
 		if(event.wheel < 0) this.next();
 	},	

@@ -25,23 +25,30 @@ var FlexBox = new Class({
 	options: {
 		opacityZoom: 0.8,
 		centerZoom: false,
-		useOverlay: false,
+		useOverlay: true,
 		margin: 40,
+		anchor: false,
 		wrap: false,
 		singleMode: true,
+		position: {},
+		active: true,
 		ui: {
 			wrap: { 'class': 'flexBoxWrap' },
 			content: { 'class': 'content' }
 		},
+		keyboardListener: true,
 		flexSlide: {
 			render: [{ 'bottom': ['next', 'previous'] }, 'item', 'close'],
-			autoContainerSize: { x: false, y: false },
+//			autoContainerSize: { x: false, y: false },
+			autoContainerSize: { x: true, y: true },
 			centerItem: false,
-			centerContainer: false,
+			
+			positionContainer: true,
+			
 			auto: false,
 			dynamicLoading: true,
-			wheelListener: false,
-			keyboardListener: false,
+			wheelListener: true,
+			keyboardListener: true,
 			active: true,
 			ui: {
 				close: { 'class': 'ui-Close' }
@@ -73,7 +80,6 @@ var FlexBox = new Class({
 			}
 		},
 		onOpen: function() {
-			this.wrap.setStyle('z-index', 200);
 			// this.flexSlide.bottomWrap.fade('hide');
 			this.flexSlide.closeWrap.fade('hide');
 		},
@@ -99,26 +105,23 @@ var FlexBox = new Class({
 			// if( $defined(this.flexSlide.els.description) ) {
 				// this.flexSlide.els.description.set('style', '');
 			// }
-			this.wrap.setStyle('z-index', -10);
 		}
 		/* onClose */
 	},
 
-	initialize: function(anchor, anchors, options){
+	initialize: function(anchors, options){
 		this.setOptions(options);
-		this.anchor = $(anchor);
 		this.anchors = $$(anchors);
 		
-		this.current = this.anchors.indexOf(this.anchor);
-		
-		if( this.options.wrap ) {
+		if( this.options.wrap || this.options.anchor ) {
 			this.options.singleMode = true;
 		}
 		
 		if ( !this.options.singleMode ) {
+			this.anchor = $(this.options.anchor);
 			this.anchor.addEvent('click', function(e) {
 				e.stop();
-				this.open();
+				this.open( this.anchors.indexOf(this.anchor) );
 				
 			}.bind(this) );
 			
@@ -149,12 +152,15 @@ var FlexBox = new Class({
 			this.openEndEvent = this.openEnd.pass(null, this);
 			this.flexSlide.addEvent('onShowEnd', this.openEndEvent );
 			
+			this.flexSlide.wrap.setStyle('display', 'block');
+			
 			this.flexSlide.current = -1;
 			this.flexSlide.show( id );
 			
 			this.fireEvent('onOpen');
 		} else {
 			this.build();
+			
 			this.open(id);
 		}
 	},
@@ -171,18 +177,21 @@ var FlexBox = new Class({
 			this.overlay.build();
 		}
 	
-		//this.wrap = this.options.wrap || new Element('div', this.options.ui.wrap).inject(document.body);
+		this.wrap = this.options.wrap || new Element('div', this.options.ui.wrap).inject(document.body);
 		//this.wrap.empty();
 		
-		var coords = this.options.wrap.getCoordinates();
-		this.wrap = new Element('div', this.options.ui.wrap).inject(document.body);
+		//var coords = this.options.wrap.getCoordinates();
+		//this.wrap = new Element('div', this.options.ui.wrap).inject(document.body);
 		
-		this.wrap.setStyles({
-			'left': coords.left,
-			'top': coords.top,
-			'width': coords.width,
-			'height': coords.height
-		});
+		//this.wrap = this.options.wrap.set(this.options.ui.wrap).inject(document.body);
+		
+		
+		// this.wrap.setStyles({
+			// 'left': coords.left,
+			// 'top': coords.top,
+			// 'width': coords.width,
+			// 'height': coords.height
+		// });
 		
 		this.animPadding = this.wrap.getStyle('padding').toInt();
 		this.wrap.setStyle('padding', 0);
@@ -191,10 +200,16 @@ var FlexBox = new Class({
 			this.wrap.grab( el.clone().addClass('item') );
 		}, this);
 		
+		//this.wrap.position();
+		
 		this.flexSlide = new FlexSlide.Advanced( this.wrap, $merge(this.options.flexSlide, {
 			show: -1
 		}) );
 		this.flexSlide.build();
+		
+		if( this.options.keyboardListener ) {
+			document.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
+		}
 		
 	},
 	
@@ -217,11 +232,20 @@ var FlexBox = new Class({
 	
 	closeEnd: function() {
 		this.fireEvent('onCloseEnd');
-		//this.flexSlide.wrap.setStyle('display', 'none');
+		this.flexSlide.wrap.setStyle('display', 'none');
 		this.flexSlide.els.item[this.flexSlide.current].set('style', '');
 		
 		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent );
-	}
+	},
+
+	keyboardListener: function(event){
+		if(!this.options.active) return;
+		//if(event.key != 'f5') event.preventDefault();
+		switch (event.key) {
+			case 'esc': case 'x': case 'q': this.close(); break;
+		}
+	},
+	
 	
 	// OPEN ZOOM
 	
@@ -237,7 +261,7 @@ var FlexBox = new Class({
 			// this.wrap.setStyle('display', 'block');
 			
 			// this.flexSlide.setOptions( $merge(this.options.flexSlide, {
-				// centerContainer: this.options.centerZoom,
+				// positionContainer: this.options.centerZoom,
 				// opacityZoom: this.options.opacityZoom,
 				// margin: this.options.margin,
 				// effect: { random: ['zoom'] },
@@ -252,7 +276,7 @@ var FlexBox = new Class({
 						// };
 						
 						// var pos = { x: 0, y: 0 };
-						// if( !this.options.centerContainer ) {
+						// if( !this.options.positionContainer ) {
 							// var box = this.options.container.getSize(), scroll = this.options.container.getScroll(), localCoords = this.wrap.getCoordinates();
 							// pos = {
 								// x: (localCoords.left + (localCoords.width / 2) - to.x / 2).toInt()
@@ -281,7 +305,7 @@ var FlexBox = new Class({
 		
 		// this.flexSlide.setOptions( $merge(this.options.flexSlide, {
 			// autoContainerSize: { x: false, y: false },
-			// centerContainer: false,
+			// positionContainer: false,
 			// opacityZoom: this.options.opacityZoom,
 			// effect: { random: ['dezoom'] },
 			// effects: {
