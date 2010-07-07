@@ -109,11 +109,9 @@ FlexSlide.Advanced = new Class({
 					});
 					break;
 				case 'request':
-					console.log('request', href);
 					var request = new Request.HTML({ method: 'get', noCache: true,	autoCancel: true, url: href,
 						onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
 							this.loader.fade(0);
-							console.log('request', 'loaded');
 							var div = new Element('div', {'class': this.options.ui.itemItem['class'] + ' ' + this.options.ui.requestItem['class']} );
 							div.set('html', responseHTML);
 							this.loaded[id] = true;

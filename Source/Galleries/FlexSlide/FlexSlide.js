@@ -276,7 +276,6 @@ var FlexSlide = new Class({
 			if( this.options.positionContainer )
 				this.positionContainer(id);
 			
-			console.log('a', this.els.item[id].get('style') );
 			var tmp = {'display': 'block'};
 			if( $defined(this.fxConfig[id]) ) {
 				$each( this.fxConfig[id], function(el, i) {
@@ -286,13 +285,6 @@ var FlexSlide = new Class({
 				this.els.item[id].setStyles(tmp);
 			}
 
-			console.log('b', this.els.item[id].get('style') );
-			
-			var last = this.current;
-			
-			console.log( this.els.item[this.current].get('style') );
-			console.log( this.els.item[id].get('style') );
-			
 			this.itemWrap.grab( this.els.item[id] );
 			
 			this.running = true;
