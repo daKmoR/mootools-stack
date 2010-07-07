@@ -71,11 +71,15 @@ var FlexBox = new Class({
 		},
 		openOptions: {
 			effect: {
+				up: 'fadeIn',
+				down: 'fadeIn',
 				random: ['fadeIn']
 			}
 		},
 		closeOptions: {
 			effect: {
+				up: 'fadeOut',
+				down: 'fadeOut',
 				random: ['fadeOut']
 			}
 		},
@@ -178,20 +182,6 @@ var FlexBox = new Class({
 		}
 	
 		this.wrap = this.options.wrap || new Element('div', this.options.ui.wrap).inject(document.body);
-		//this.wrap.empty();
-		
-		//var coords = this.options.wrap.getCoordinates();
-		//this.wrap = new Element('div', this.options.ui.wrap).inject(document.body);
-		
-		//this.wrap = this.options.wrap.set(this.options.ui.wrap).inject(document.body);
-		
-		
-		// this.wrap.setStyles({
-			// 'left': coords.left,
-			// 'top': coords.top,
-			// 'width': coords.width,
-			// 'height': coords.height
-		// });
 		
 		this.animPadding = this.wrap.getStyle('padding').toInt();
 		this.wrap.setStyle('padding', 0);
@@ -199,8 +189,6 @@ var FlexBox = new Class({
 		this.anchors.each(function(el) {
 			this.wrap.grab( el.clone().addClass('item') );
 		}, this);
-		
-		//this.wrap.position();
 		
 		this.flexSlide = new FlexSlide.Advanced( this.wrap, $merge(this.options.flexSlide, {
 			show: -1
