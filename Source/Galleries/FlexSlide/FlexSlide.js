@@ -14,11 +14,6 @@ provides: FlexSlide
 ...
 */ 
 
-/*
-$require('Galleries/FlexSlide/Resources/css/FlexSlide.css'); 
-$require('Snippets/Array/Array.getCombinedSize.js');
-*/
-
 Array.implement({
 	getCombinedSize: function(margin){
 		var margin = margin || true;
@@ -278,8 +273,8 @@ var FlexSlide = new Class({
 			
 			var tmp = {'display': 'block'};
 			if( $defined(this.fxConfig[id]) ) {
-				$each( this.fxConfig[id], function(el, i) {
-					tmp[i] = el[0];
+				$each( this.fxConfig[id], function(values, property) {
+					tmp[property] = values[0];
 				});
 				this.els.item[id].setStyles(tmp);
 			}

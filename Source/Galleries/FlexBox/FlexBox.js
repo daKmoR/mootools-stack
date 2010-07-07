@@ -14,10 +14,6 @@ provides: FlexBox
 ...
 */
 
-/*
-$require('Galleries/FlexBox/Resources/css/FlexBox.css');
-*/
-
 var FlexBox = new Class({
 
 	Implements: [Options, Events],
@@ -183,6 +179,7 @@ var FlexBox = new Class({
 	
 		this.wrap = this.options.wrap || new Element('div', this.options.ui.wrap).inject(document.body);
 		
+		
 		this.animPadding = this.wrap.getStyle('padding').toInt();
 		this.wrap.setStyle('padding', 0);
 		
@@ -195,6 +192,8 @@ var FlexBox = new Class({
 		}) );
 		this.flexSlide.build();
 		
+		this.wrap.position( $merge(this.flexSlide.options.positionContainerOptions, {returnPos: false}) );
+		
 		if( this.options.keyboardListener ) {
 			document.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
 		}
@@ -205,13 +204,13 @@ var FlexBox = new Class({
 		this.closeEndEvent = this.closeEnd.pass(null, this);
 		this.flexSlide.addEvent('onShowEnd', this.closeEndEvent );
 		
-		this.flexSlide.setOptions( this.options.closeOptions );
+		this.flexSlide.setOptions(this.options.closeOptions);
 		
 		var tmp = this.flexSlide.current;
 		this.flexSlide.current = -1;
-		this.flexSlide.show( tmp );
+		this.flexSlide.show(tmp);
 		
-		if( this.options.useOverlay ) {
+		if(this.options.useOverlay) {
 			this.overlay.hide();
 		}
 		
@@ -223,11 +222,11 @@ var FlexBox = new Class({
 		this.flexSlide.wrap.setStyle('display', 'none');
 		this.flexSlide.els.item[this.flexSlide.current].set('style', '');
 		
-		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent );
+		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent);
 	},
 
-	keyboardListener: function(event){
-		if(!this.options.active) return;
+	keyboardListener: function(event) {
+		if (!this.options.active) return;
 		//if(event.key != 'f5') event.preventDefault();
 		switch (event.key) {
 			case 'esc': case 'x': case 'q': this.close(); break;
