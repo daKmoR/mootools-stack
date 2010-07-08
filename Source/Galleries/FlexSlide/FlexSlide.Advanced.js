@@ -109,7 +109,7 @@ FlexSlide.Advanced = new Class({
 					});
 					break;
 				case 'request':
-					var request = new Request.HTML({ method: 'get', noCache: true,	autoCancel: true, url: href,
+					var request = new Request.HTML({ method: 'get', autoCancel: true, url: href,
 						onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
 							this.loader.fade(0);
 							var div = new Element('div', {'class': this.options.ui.itemItem['class'] + ' ' + this.options.ui.requestItem['class']} );

@@ -35,7 +35,6 @@ var FlexBox = new Class({
 		keyboardListener: true,
 		flexSlide: {
 			render: [{ 'bottom': ['next', 'previous'] }, 'item', 'close'],
-//			autoContainerSize: { x: false, y: false },
 			autoContainerSize: { x: true, y: true },
 			centerItem: false,
 			
