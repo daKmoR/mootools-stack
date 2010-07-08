@@ -194,6 +194,9 @@ var FlexBox = new Class({
 			show: -1
 		}) );
 		this.flexSlide.build();
+		this.flexSlide.addEvent('onImageLoaded', function(image) {
+			this.fireEvent('onImageLoaded', image);
+		}.bind(this) );
 		
 		this.wrap.position( $merge(this.flexSlide.options.positionContainerOptions, {returnPos: false}) );
 		

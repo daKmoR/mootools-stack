@@ -104,6 +104,7 @@ FlexSlide.Advanced = new Class({
 							image.addClass( this.options.ui.itemItem['class'] );
 							this.els.item[id] = this.fx.elements[id] = image;
 							this.itemWrap.grab( image );
+							this.fireEvent('imageLoaded', image);
 							if( show ) this.show(id, fx);
 						}.bind(this)
 					});
