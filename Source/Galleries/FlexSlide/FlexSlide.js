@@ -392,8 +392,9 @@ var FlexSlide = new Class({
 		this.autotimer = this.next.delay(this.options.duration, this);
 	},
 	
-	getNextId: function(times) {
+	getNextId: function(times, current) {
 		var times = times || this.options.times, next = 0;
+		var current = current || this.current;
 		step = this.options.step*times;
 		
 		if ( this.options.mode === 'reverse' ) step *= -1;
@@ -401,14 +402,14 @@ var FlexSlide = new Class({
 		if ( this.options.mode === 'random' ) {
 			do 
 				next = $random(0, this.els.item.length-1);
-			while ( next == this.current )
+			while ( next == current )
 		} else {
-			if ( this.current + step < this.els.item.length ) 
-				next = this.current + step;
+			if ( current + step < this.els.item.length ) 
+				next = current + step;
 			else
-				next = this.current + step - this.els.item.length;
-			if ( this.current + step < 0 ) 
-				next = this.els.item.length + this.current + step;
+				next = current + step - this.els.item.length;
+			if ( current + step < 0 ) 
+				next = this.els.item.length + current + step;
 		}
 		
 		if( this.els.item[next] )

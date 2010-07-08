@@ -58,31 +58,41 @@ FlexSlide.Advanced = new Class({
 			} else {
 				this._show(id, fx);
 			}
+			if( this.options.dynamicLoading === true ) {
+				this.preLoading(id);
+			}
 		} else {
 			this.build();
 			this.show(id, fx);
 		}
 	},
 	
-	preLoading: function() {
+	preLoading: function(current) {
 		if( this.options.dynamicLoading === true && (this.options.preLoading.next > 0 || this.options.preLoading.previous > 0) ) {
 			for( i = this.options.preLoading.previous*-1; i <= this.options.preLoading.next; i++ ) {
 				if( i != 0 ) {
-					this.preLoad( this.getNextId(i) );
+					this.preLoad( this.getNextId(i, current) );
 				}
 			}
 		}
 	},
 	
 	preLoad: function(id) {
-		if( this.loading[id] != true && this.loading[id] != null )
+		if( this.loading[id] != true ) {
 			this.dynamicLoading(id, null, false);
+		}
 	},
 	
 	dynamicLoading: function(id, fx, show) {
 		var show = show;
 		if( show == null ) 
 			show = true;
+			
+		if( show && this.loaded[id] ) {
+			this.show(id, fx);
+			return true;
+		}
+		
 		if( this.els.item[id] && this.els.item[id].get('tag') === 'a' && this.options.dynamicLoading === true ) {
 			var href = this.els.item[id].get('href');
 
@@ -104,6 +114,7 @@ FlexSlide.Advanced = new Class({
 							image.addClass( this.options.ui.itemItem['class'] );
 							this.els.item[id] = this.fx.elements[id] = image;
 							this.itemWrap.grab( image );
+							this.loaded[id] = true;
 							this.fireEvent('imageLoaded', image);
 							if( show ) this.show(id, fx);
 						}.bind(this)
@@ -133,7 +144,6 @@ FlexSlide.Advanced = new Class({
 			}
 			
 		}
-		this.preLoading();
 	},
 	
 	keyboardListener: function(event){

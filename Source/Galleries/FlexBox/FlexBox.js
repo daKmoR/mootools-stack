@@ -231,6 +231,8 @@ var FlexBox = new Class({
 		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent);
 		
 		this.isOpen = false;
+		this.options.active = false;
+		this.flexSlide.options.active = false;
 	},
 
 	keyboardListener: function(event) {
