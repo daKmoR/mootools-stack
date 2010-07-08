@@ -28,7 +28,6 @@ var FlexBox = new Class({
 		singleMode: true,
 		position: {},
 		active: true,
-		open: false,
 		ui: {
 			wrap: { 'class': 'flexBoxWrap' },
 			content: { 'class': 'content' }
@@ -109,6 +108,8 @@ var FlexBox = new Class({
 		}
 		/* onClose */
 	},
+	
+	isOpen: false,
 
 	initialize: function(anchors, options){
 		this.setOptions(options);
@@ -141,7 +142,7 @@ var FlexBox = new Class({
 	},
 	
 	open: function(id) {
-		if( this.options.open ) return false;
+		if( this.isOpen ) return false;
 		// var animPadding = this.animPadding;
 		// var fxOptions = this.options.flexSlide.effect.options.zoom;
 		
@@ -171,7 +172,7 @@ var FlexBox = new Class({
 		this.fireEvent('onOpenEnd');
 		this.flexSlide.setOptions( this.options.flexSlide );
 		this.flexSlide.removeEvent('onShowEnd', this.openEndEvent );
-		this.options.open = true;
+		this.isOpen = true;
 	},
 	
 	build: function() {
@@ -227,7 +228,7 @@ var FlexBox = new Class({
 		
 		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent);
 		
-		this.options.open = false;
+		this.isOpen = false;
 	},
 
 	keyboardListener: function(event) {
