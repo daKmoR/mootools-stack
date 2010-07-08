@@ -55,6 +55,7 @@ var FlexSlide = new Class({
 		centerItem: true,
 		positionContainer: false,
 		positionContainerOptions: {
+			ignoreOffsetParent: true,
 			returnPos: true
 		},
 		useScroller: false,

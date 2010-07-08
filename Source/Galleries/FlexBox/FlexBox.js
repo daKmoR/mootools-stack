@@ -239,7 +239,7 @@ var FlexBox = new Class({
 		switch (event.key) {
 			case 'esc': case 'x': case 'q': this.close(); break;
 		}
-	},
+	}
 	
 	
 	// OPEN ZOOM
