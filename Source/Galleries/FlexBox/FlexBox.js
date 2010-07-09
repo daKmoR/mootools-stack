@@ -173,7 +173,10 @@ var FlexBox = new Class({
 		this.fireEvent('onOpenEnd');
 		this.flexSlide.setOptions( this.options.flexSlide );
 		this.flexSlide.removeEvent('onShowEnd', this.openEndEvent );
+		
 		this.isOpen = true;
+		this.options.active = true;
+		this.flexSlide.options.active = true;
 	},
 	
 	build: function() {
