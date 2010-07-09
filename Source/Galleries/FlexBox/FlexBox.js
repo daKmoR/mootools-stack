@@ -49,6 +49,8 @@ var FlexBox = new Class({
 				close: { 'class': 'ui-Close' }
 			},
 			effect: {
+				up: 'random',
+				down: 'random',
 				random: ['fade'],
 				options: {
 					zoom: { duration: 600, transition: Fx.Transitions.Quart.easeOut },
