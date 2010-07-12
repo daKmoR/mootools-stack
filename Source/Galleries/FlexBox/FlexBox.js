@@ -7,7 +7,7 @@ description: let you use FlexSlide as a LighBox with zoom effect
 
 license: MIT-style license.
 
-requires: [FlexSlide.Advanced, Overlay]
+requires: [FlexSlide.Advanced, Overlay, Class.Settings]
 
 provides: FlexBox
 

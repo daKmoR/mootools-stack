@@ -1,20 +1,22 @@
-/**
- * FlexBox Style LightBox - mimics the classic LighBox Layout
- *
- * @version		0.0.1
- *
- * @license		MIT-style license
- * @author		Thomas Allmer <at@delusionworld.com>
- * @copyright Copyright belongs to the respective authors
- */
+/*
+---
 
-$require('Galleries/FlexSlide/FlexSlide.js');
+name: Setting.FlexSlide.Simple
 
-$require('Galleries/FlexSlide/Styles/Simple/Simple.css');
+description: a simple style for FlexSlide
 
-FlexSlide.implement('options', {
+license: MIT-style license.
+
+requires: [FlexSlide]
+
+provides: [Setting.FlexSlide.LightBox]
+
+...
+*/
+
+SettingsStore.FlexSlide.Simple = {
 	ui: { wrap: { 'class': 'ui-Wrap simpleSlide' } },
 	autoItemSize: { x: true, y: true },
 	getSizeFromContainer: false,
 	render: ['description', 'previous', 'item', 'next', 'advSelect']
-});
+};
