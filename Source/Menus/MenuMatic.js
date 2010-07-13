@@ -7,7 +7,7 @@ description: automatic Menu
 
 license: MIT-style license.
 
-requires: [Core/Class.Extras, Core/Element.Style, Core/Element.Dimensions, Core/Fx.Morph, Core/Fx.Transitions]
+requires: [Core/Class.Extras, Core/Element.Style, Core/Object, Core/Element.Dimensions, Core/Fx.Morph, Core/Fx.Transitions]
 
 provides: MenuMatic
 
@@ -679,6 +679,7 @@ var MenuMaticSubMenu = new Class({
 		}
 		
 		this.childMenu.setStyle('z-index',1);
+		
 		if(this.options.effect && this.options.effect.toLowerCase() === 'slide'){
 			if (this.subMenuType == 'initial' && this.options.orientation === 'horizontal' && this.options.direction.y === 'down') {
 				this.myEffect.start({ 'margin-top': -this.height }).chain(function(){	this.childMenu.style.display = "none";	}.bind(this));
@@ -709,11 +710,11 @@ var MenuMaticSubMenu = new Class({
 		this.options.onHideSubMenu_complete(this);
 	},
 	
-	hideOtherSubMenus: function() {
+	hideOtherSubMenus: function() {		
 		this.options.onHideOtherSubMenus_begin(this);
 		//set up otherSubMenus element collection
 		if(!this.btn.retrieve('otherSubMenus')){
-			this.btn.store('otherSubMenus', $$(this.root.allSubMenus.filter(function(item){ return !this.btn.retrieve('parentSubMenus').contains(item) && item != this.childMenu; }.bind(this)) ));
+			this.btn.store('otherSubMenus', $$(this.root.allSubMenus.filter(function(item){ return !Object.contains(this.btn.retrieve('parentSubMenus'), item) && item != this.childMenu; }.bind(this)) ));
 		}		
 		this.parentSubMenus.fireEvent('show');
 		this.btn.retrieve('otherSubMenus').fireEvent('hide');
