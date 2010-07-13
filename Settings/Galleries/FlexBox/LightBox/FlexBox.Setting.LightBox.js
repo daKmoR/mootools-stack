@@ -16,8 +16,29 @@ provides: [Setting.FlexBox.LightBox]
 
 SettingsStore.FlexBox.LightBox = {
 	ui: { wrap: { 'class': 'flexBoxWrap lightBox' } },
+	manualClose: true,
 	flexSlide: {
 		render: [{'item': ['previous', 'next']}, { 'bottom': [{'description': ['counter']}, 'close'] } ],
 		counterTemplate: 'Image {id} of {count}',
+	},
+	onOpen: function() {
+		this.flexSlide.bottomWrap.fade('hide');
+	},
+	onOpenEnd: function() {
+		if( $chk(this.flexSlide.bottomWrap) ) {
+			this.flexSlide.bottomWrap.fade(1);
+		}
+	},
+	onClose: function() {
+		if( !this.flexSlide.running ) {
+			this.flexSlide.bottomWrap.fade(0).get('tween').chain( function() {
+				this._close();
+			}.bind(this) );
+		}
+	},
+	onCloseEnd: function() {
+		if( $defined(this.flexSlide.els.description) ) {
+			this.flexSlide.els.description.set('style', '');
+		}
 	}
 }
