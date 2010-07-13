@@ -108,8 +108,8 @@ FlexSlide.Advanced = new Class({
 			
 			switch( mode ) {
 				case 'image':
-					var image = new Asset.image(href, {
-						onLoad: function() {
+					var imageLoader = new Asset.image(href, {
+						onLoad: function(image) {
 							this.loader.fade(0);
 							image.addClass( this.options.ui.itemItem['class'] );
 							this.els.item[id] = this.fx.elements[id] = image;
