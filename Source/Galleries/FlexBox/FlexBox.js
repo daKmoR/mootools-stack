@@ -7,7 +7,7 @@ description: let you use FlexSlide as a LighBox with zoom effect
 
 license: MIT-style license.
 
-requires: [FlexSlide.Advanced, Overlay, Class.Settings]
+requires: [FlexSlide.Advanced, Overlay]
 
 provides: FlexBox
 
@@ -16,7 +16,7 @@ provides: FlexBox
 
 var FlexBox = new Class({
 
-	Implements: [Options, Events],
+	Implements: [Settings, Events],
 
 	options: {/*
 		onOpen: nil,
@@ -70,18 +70,10 @@ var FlexBox = new Class({
 			}
 		},
 		openOptions: {
-			effect: {
-				up: 'fadeIn',
-				down: 'fadeIn',
-				random: ['fadeIn']
-			}
+			effect: {	up: 'fadeIn',	down: 'fadeIn', random: ['fadeIn'] }
 		},
 		closeOptions: {
-			effect: {
-				up: 'fadeOut',
-				down: 'fadeOut',
-				random: ['fadeOut']
-			}
+			effect: { up: 'fadeOut', down: 'fadeOut',	random: ['fadeOut']	}
 		}
 	},
 	
@@ -119,8 +111,6 @@ var FlexBox = new Class({
 	
 	open: function(id) {
 		if( this.isOpen ) return false;
-		// var animPadding = this.animPadding;
-		// var fxOptions = this.options.flexSlide.effect.options.zoom;
 		
 		if( $defined(this.flexSlide) ) {
 			if( this.options.useOverlay ) {
@@ -156,7 +146,7 @@ var FlexBox = new Class({
 	
 	build: function() {
 		if( this.options.useOverlay ) {
-			this.overlay = new Overlay({ onClick: this.fireEvent.bind(this, 'onCloseStart') });
+			this.overlay = new Overlay({ onClick: this.close.bind(this) });
 			this.overlay.build();
 		}
 	
@@ -191,6 +181,7 @@ var FlexBox = new Class({
 	
 	close: function() {
 		this.fireEvent('onClose');
+		this.flexSlide.running = true;
 		
 		if( !this.options.manualClose ) {
 			this._close();
@@ -205,7 +196,10 @@ var FlexBox = new Class({
 		
 		var tmp = this.flexSlide.current;
 		this.flexSlide.current = -1;
+
+		this.flexSlide.running = false;
 		this.flexSlide.show(tmp);
+		this.flexSlide.running = true;
 		
 		if(this.options.useOverlay) {
 			this.overlay.hide();
@@ -219,9 +213,11 @@ var FlexBox = new Class({
 		
 		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent);
 		
+		
 		this.isOpen = false;
 		this.options.active = false;
 		this.flexSlide.options.active = false;
+		this.flexSlide.running = false;
 	},
 
 	keyboardListener: function(event) {
