@@ -56,6 +56,7 @@ var FlexSlide = new Class({
 		positionContainer: false,
 		positionContainerOptions: {
 			ignoreOffsetParent: true,
+			ignoreAllScroll: true,
 			returnPos: true
 		},
 		useScroller: false,
@@ -305,9 +306,11 @@ var FlexSlide = new Class({
 		if( el.complete || el.get('tag') != 'img' ) {
 			this._adjustElement(el);
 		} else {
-			el.addEvent('load', function() {
-				this._adjustElement(el);
-			}.bind(this) );
+			this.adjustElement.delay(10, this);
+			// code below breaks Asset.image functionality
+			// el.addEvent('load', function() {
+				// this._adjustElement(el);
+			// }.bind(this) );
 		}
 	},
 	
