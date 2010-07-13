@@ -5,9 +5,10 @@ div.lightBox .ui-Next, div.lightBox .ui-Previous { height: 100%; width: 50%; pos
 	
 	div.lightBox .ui-Close { height: 22px; width: 66px; background: url(images/close.gif) no-repeat; position: absolute; right: 10px; top: 10px; }
 	
-	div.lightBox .ui-Description { margin: 5px 0 0 10px; height: 40px; color: #666; font-size: 12.8px; font-weight: bold; }
-	div.lightBox .ui-Counter { bottom: 5px; position: absolute; color: #aaa; font-family: "Trebuchet MS"; }
+	div.lightBox .ui-Description { margin: 5px 0 0 10px; height: 40px; color: #666; font-size: 13px; }
+	div.lightBox .ui-Counter { bottom: 5px; position: absolute; color: #aaa; font-family: "Trebuchet MS"; font-weight: bold; }
 	
 	div.lightBox .ui-Bottom { position: absolute; background: #fff; width: 100%; left: 0; height: 45px; }
 
 	div.lightBox { background: #fff; padding: 10px; font-family: Helvetica, Arial, sans-serif; }
+	div.lightBox .ui-Item { margin: 10px; }
