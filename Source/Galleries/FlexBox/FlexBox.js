@@ -18,7 +18,11 @@ var FlexBox = new Class({
 
 	Implements: [Options, Events],
 
-	options: {
+	options: {/*
+		onOpen: nil,
+		onOpenEnd: nil,
+		onClose: nil,
+		onCloseEnd: nil,*/
 		opacityZoom: 0.8,
 		centerZoom: false,
 		useOverlay: true,
@@ -26,6 +30,7 @@ var FlexBox = new Class({
 		anchor: false,
 		wrap: false,
 		singleMode: true,
+		manualClose: false,
 		position: {},
 		active: true,
 		ui: {
@@ -37,9 +42,7 @@ var FlexBox = new Class({
 			render: [{ 'bottom': ['next', 'previous'] }, 'item', 'close'],
 			autoContainerSize: { x: true, y: true },
 			centerItem: false,
-			
 			positionContainer: true,
-			
 			auto: false,
 			dynamicLoading: true,
 			wheelListener: true,
@@ -79,35 +82,7 @@ var FlexBox = new Class({
 				down: 'fadeOut',
 				random: ['fadeOut']
 			}
-		},
-		onOpen: function() {
-			// this.flexSlide.bottomWrap.fade('hide');
-			this.flexSlide.closeWrap.fade('hide');
-		},
-		onOpenEnd: function() {
-			// if( $chk(this.flexSlide.bottomWrap) ) {
-				// this.flexSlide.bottomWrap.fade(1);
-			// }
-			if( $chk( this.flexSlide.closeWrap ) ) {
-				this.flexSlide.closeWrap.fade(1);
-				this.flexSlide.closeWrap.addEvent('click', this.fireEvent.bind(this, 'onCloseStart') );
-			}
-		},
-		onCloseStart: function() {
-			if( !this.flexSlide.running ) {
-				this.flexSlide.closeWrap.fade(0);
-				this.close();
-				// this.flexSlide.bottomWrap.fade(0).get('tween').chain( function() {
-					// this.close();
-				// }.bind(this) );
-			}
-		},
-		onCloseEnd: function() {
-			// if( $defined(this.flexSlide.els.description) ) {
-				// this.flexSlide.els.description.set('style', '');
-			// }
 		}
-		/* onClose */
 	},
 	
 	isOpen: false,
@@ -187,7 +162,6 @@ var FlexBox = new Class({
 	
 		this.wrap = this.options.wrap || new Element('div', this.options.ui.wrap).inject(document.body);
 		
-		
 		this.animPadding = this.wrap.getStyle('padding').toInt();
 		this.wrap.setStyle('padding', 0);
 		
@@ -209,9 +183,21 @@ var FlexBox = new Class({
 			document.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
 		}
 		
+		if( this.flexSlide.closeWrap ) {
+			this.flexSlide.closeWrap.addEvent('click', this.close.bind(this) );
+		}
+		
 	},
 	
 	close: function() {
+		this.fireEvent('onClose');
+		
+		if( !this.options.manualClose ) {
+			this._close();
+		}
+	},
+	
+	_close: function() {
 		this.closeEndEvent = this.closeEnd.pass(null, this);
 		this.flexSlide.addEvent('onShowEnd', this.closeEndEvent );
 		
@@ -224,8 +210,6 @@ var FlexBox = new Class({
 		if(this.options.useOverlay) {
 			this.overlay.hide();
 		}
-		
-		this.fireEvent('onClose');
 	},
 	
 	closeEnd: function() {
