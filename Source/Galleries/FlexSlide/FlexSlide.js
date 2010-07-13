@@ -7,7 +7,7 @@ description: allows to create almost any Sliding Stuff (Galleries, Tabs...) with
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position]
+requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position, Class.Settings]
 
 provides: FlexSlide
 
@@ -145,15 +145,18 @@ var FlexSlide = new Class({
 				var description = new Element('div', this.options.ui.descriptionItem)
 					.inject(this.descriptionWrap);
 				
-				var txt = el.get('title') || el.get('alt') || '';
-				if( el.getElement('img') && txt === '' )
+				var txt = el.get('title') || el.get('alt') || false;
+				if( !txt && el.getElement('img') )
 					txt = el.getElement('img').get('alt');
-				var parts = txt.split('::');
-				if( parts.length === 2 )
-					txt = this.options.descriptionTemplate.substitute( {'title': parts[0], 'text': parts[1]} );
-				if( txt.charAt(0) === '#' ) 
-					txt = $$(txt)[0].get('html');
-				description.set('html', txt);
+				
+				if( txt && txt != null ) {
+					var parts = txt.split('::');
+					if( parts.length === 2 )
+						txt = this.options.descriptionTemplate.substitute( {'title': parts[0], 'text': parts[1]} );
+					if( txt.charAt(0) === '#' ) 
+						txt = $$(txt)[0].get('html');
+					description.set('html', txt);
+				}
 				
 				this.els.description.push(description);
 			}, this);
