@@ -9,7 +9,7 @@ license: MIT-style license.
 
 requires: Core/Class.Extras
 
-provides: [SettingsStore, Settings]
+provides: [SettingsStore, Settings, Class.Settings]
 
 ...
 */
@@ -20,8 +20,7 @@ var SettingsStore = {};
 this.Settings = new Class({
 	Extends: Options,
 
-	setOptions: function(options){
-	
+	setOptions: function(options) {
 		if( options !== null && options.setting !== null && options.setting !== undefined ) {
 			var setting = options.setting.split('.');
 			if( SettingsStore[setting[0]][setting[1]] != null )

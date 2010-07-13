@@ -14,6 +14,8 @@ provides: [Setting.FlexBox.LightBox]
 ...
 */
 
+SettingsStore.FlexBox = SettingsStore.FlexBox || {};
+
 SettingsStore.FlexBox.LightBox = {
 	ui: { wrap: { 'class': 'flexBoxWrap lightBox' } },
 	manualClose: true,
