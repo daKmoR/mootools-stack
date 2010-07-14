@@ -20,8 +20,8 @@ SettingsStore.FlexBox.LightBox = {
 	ui: { wrap: { 'class': 'flexBoxWrap lightBox' } },
 	manualClose: true,
 	flexSlide: {
-		render: [{'item': ['previous', 'next']}, { 'bottom': [{'description': ['counter']}, 'close'] } ],
-		counterTemplate: 'Image {id} of {count}',
+		render: ['item', {'controls': ['previous', 'next']}, {'bottom': [{'description': ['counter']}, 'close']}],
+		counterTemplate: 'Image {id} of {count}'
 	},
 	onOpen: function() {
 		this.flexSlide.bottomWrap.fade('hide');

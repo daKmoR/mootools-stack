@@ -1,5 +1,5 @@
-div.lightBox .ui-Next, div.lightBox .ui-Previous { height: 100%; width: 50%; position: absolute; top: 0; left: 0; z-index: 100; }
-	div.lightBox .ui-Next { right: 0; left: auto; }
+div.lightBox .ui-Next, div.lightBox .ui-Previous { height: 100%; width: 50%; position: absolute; top: 0; left: 0; background: url(images/next.gif) no-repeat right -200px; }
+	div.lightBox .ui-Next { right: 0; left: auto; background: url(images/previous.gif) no-repeat left -200px; }
 		div.lightBox .ui-Next:hover { background: url(images/next.gif) no-repeat right 20px; }
 	div.lightBox .ui-Previous:hover { background: url(images/previous.gif) no-repeat left 20px; }
 	
@@ -11,4 +11,5 @@ div.lightBox .ui-Next, div.lightBox .ui-Previous { height: 100%; width: 50%; pos
 	div.lightBox .ui-Bottom { position: absolute; background: #fff; width: 100%; left: 0; height: 45px; }
 
 	div.lightBox { background: #fff; padding: 10px; font-family: Helvetica, Arial, sans-serif; }
+	div.lightBox .ui-Controls { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
 	div.lightBox .ui-Item { margin: 10px; }
