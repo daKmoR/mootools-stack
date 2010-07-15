@@ -62,10 +62,10 @@ var FlexBox = new Class({
 			},
 			effects: {
 				fadeIn: function(current, next, currentEl, nextEl) {
-					this.fxConfig[next]    = { 'opacity': [0, 1] };
+					this.wrapFxConfig[1]    = { 'opacity': [0, 1] };
 				},
 				fadeOut: function(current, next, currentEl, nextEl) {
-					this.fxConfig[next]    = { 'opacity': [1, 0] };
+					this.wrapFxConfig[1]    = { 'opacity': [1, 0] };
 				}
 			}
 		},
