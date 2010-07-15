@@ -264,17 +264,18 @@ var FlexSlide = new Class({
 			
 			this.fxConfig = {};
 			this.wrapFxConfig = {};
-			this.options.effects[fx].call( this, this.current, id, currentEl, this.els.item[id] );
-
 			if( this.options.autoContainerSize.x || this.options.autoContainerSize.y )
 				this.wrapFxConfig[0] = {};
 			if( this.options.autoContainerSize.x )
 				$extend(this.wrapFxConfig[0], {'width': this.els.item[id].getSize().x} );
 			if( this.options.autoContainerSize.y )
 				$extend(this.wrapFxConfig[0], {'height': this.els.item[id].getSize().y} );
-			
+
 			if( this.options.positionContainer )
 				this.positionContainer(id);
+				
+			// call the used effect
+			this.options.effects[fx].call( this, this.current, id, currentEl, this.els.item[id] );
 			
 			var tmp = {'display': 'block'};
 			if( $defined(this.fxConfig[id]) ) {
