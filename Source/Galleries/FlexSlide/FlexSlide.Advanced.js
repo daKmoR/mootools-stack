@@ -193,7 +193,6 @@ FlexSlide.Advanced = new Class({
 				return 'flash';
 			case 'flv':
 				return 'flashVideo';
-				//this.contentObj.xH = 70;
 			case 'mov':
 				return 'quicktime';
 			case 'wmv':
@@ -204,8 +203,6 @@ FlexSlide.Advanced = new Class({
 				return 'real';
 			case 'mp3':
 				return 'flashMp3';
-				// this.contentObj.width = 320;
-				// this.contentObj.height = 70;
 			default:
 				if( href.charAt(0) === '#' ) {
 					return 'inline';
