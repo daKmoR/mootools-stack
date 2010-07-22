@@ -28,7 +28,7 @@ Array.implement({
 });
 
 var FlexSlide = new Class({
-	Implements: [Options, Events],
+	Implements: [Settings, Events],
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
 		render: ['item'],
@@ -162,7 +162,7 @@ var FlexSlide = new Class({
 				this.els.description.push(description);
 			}, this);
 			
-		}		
+		}
 		
 		this.fx = new Fx.Elements( this.els.item );
 		this.wrapFx = new Fx.Elements( [this.itemWrap, this.wrap] );
