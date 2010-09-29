@@ -25,3 +25,4 @@ sources:
   - "Settings/Galleries/FlexBox/LightBox/FlexBox.Setting.LightBox.js"
   - "Settings/Galleries/FlexSlide/SlideShow2/FlexSlide.Setting.SlideShow2.js"
   - "Source/Menus/MenuMatic.js"
+  - "Source/Editor/Flexo/Flexo.js"
