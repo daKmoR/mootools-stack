@@ -21,7 +21,7 @@ this.Settings = new Class({
 	Extends: Options,
 
 	setOptions: function(options) {
-		if( options !== null && options.setting !== null && options.setting !== undefined ) {
+		if( options !== null && options !== undefined && options.setting !== null && options.setting !== undefined ) {
 			var setting = options.setting.split('.');
 			if( SettingsStore[setting[0]][setting[1]] != null )
 				this.setOptions( SettingsStore[setting[0]][setting[1]] );
