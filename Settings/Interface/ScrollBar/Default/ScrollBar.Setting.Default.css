@@ -1,3 +1,10 @@
-.scrollBarVertical { overflow: hidden; height: 400px; float: left; }
-	.scrollBarBar { background: orange; width: 10px; float: left; }
-	.scrollBarHandle { background: red; width: 10px; height: 10px; }
+.scrollBarWrap { position: relative; }
+.scrollBarBoth, .scrollBarVertical, .scrollBarHorizontal { overflow: hidden; }
+
+.scrollBarBoth, .scrollBarVertical { height: 400px; float: left; }
+	.scrollBarVerticalBar { background: orange; width: 10px; float: left; }
+	.scrollBarVerticalHandle { background: red; width: 10px; height: 10px; }
+	
+.scrollBarBoth, .scrollBarHorizontal { width: 400px; }
+	.scrollBarHorizontalBar { background: orange; height: 10px; }
+	.scrollBarHorizontalHandle { background: red; width: 10px; height: 10px; }

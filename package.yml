@@ -31,4 +31,5 @@ sources:
   - "Source/Galleries/MooFlow/MooFlow.js"
   - "Source/Galleries/MooFlow/MooFlows.js"
   - "Source/Interface/ScrollBar/ScrollBar.js"
+  - "Source/Interface/ScrollBar/ScrollBars.js"
 	

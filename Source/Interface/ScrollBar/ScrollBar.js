@@ -76,17 +76,28 @@ var ScrollBar = new Class({
 	},
 	
 	build: function() {
-		this.wrap = new Element('div[class="scrollBarWrap"]');
-		this.wrap.wraps( this.el );
+		if (!this.el.getParent().hasClass('scrollBarWrap')) {
+			this.wrap = new Element('div[class="scrollBarWrap"]');
+			this.wrap.wraps( this.el );
+		} else {
+			this.wrap = this.el.getParent();
+		}
 		
-		this.Bar = new Element('div[class="scrollBarBar"]');
-		this.Handle = new Element('div[class="scrollBarHandle"]');
+		this.Bar = new Element('div', {	'class': 'scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Bar' });
+		this.Handle = new Element('div', {	'class': 'scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Handle' });
 		
 		this.wrap.grab( this.Bar.grab(this.Handle) );
-		this.wrap.grab( new Element('div[class="clear"]') );
 		
-		this.el.setStyle('width', this.el.getSize().x - this.Bar.getSize().x);
-		this.Bar.setStyle('height', this.el.getSize().y);
+		if (this.options.sliderOptions.mode === 'vertical') {
+			this.wrap.grab( new Element('div[class="clear"]') );
+
+			this.el.setStyle('width', this.el.getSize().x - this.Bar.getSize().x);
+			this.Bar.setStyle('height', this.el.getSize().y);
+		}
+		
+		if (this.options.sliderOptions.mode === 'horizontal') {
+			this.Bar.setStyle('width', this.el.getSize().x);
+		}
 	}
 
 });
