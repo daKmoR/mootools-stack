@@ -26,3 +26,8 @@ sources:
   - "Settings/Galleries/FlexSlide/SlideShow2/FlexSlide.Setting.SlideShow2.js"
   - "Source/Menus/MenuMatic.js"
   - "Source/Form/DatePicker.js"
+  - "Source/Galleries/MooFlow/Element.Reflect.js"
+  - "Source/Galleries/MooFlow/Fx.Value.js"
+  - "Source/Galleries/MooFlow/MooFlow.js"
+  - "Source/Galleries/MooFlow/MooFlows.js"
+	
