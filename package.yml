@@ -30,4 +30,5 @@ sources:
   - "Source/Galleries/MooFlow/Fx.Value.js"
   - "Source/Galleries/MooFlow/MooFlow.js"
   - "Source/Galleries/MooFlow/MooFlows.js"
+  - "Source/Interface/ScrollBar/ScrollBar.js"
 	

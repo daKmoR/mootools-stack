@@ -1,0 +1,3 @@
+.scrollBarVertical { overflow: hidden; height: 400px; float: left; }
+	.scrollBarBar { background: orange; width: 10px; float: left; }
+	.scrollBarHandle { background: red; width: 10px; height: 10px; }
