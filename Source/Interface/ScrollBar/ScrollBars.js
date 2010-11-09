@@ -24,37 +24,41 @@ var ScrollBars = new Class({
   Implements: Settings,
 	
 	options: {
-		vertical: {},
-		horizontal: {},
+		mode: 'auto',
+		auto: { sliderOptions: { mode: 'vertical' } },
+		vertical: { sliderOptions: { mode: 'vertical' } },
+		horizontal: { sliderOptions: { mode: 'horizontal' } },
 		both: {
-			vertical: {},
-			horizontal: { wheel: false }
+			vertical: { sliderOptions: { mode: 'vertical' } },
+			horizontal: { sliderOptions: { mode: 'horizontal' }, wheel: false }
 		}
 	},
 	
 	scrollBars: [],
 	
-	initialize: function(elements, options) {
-		var options = options || { sliderOptions: { mode: 'vertical' } };
-		var _mode = options.sliderOptions.mode;
+	initialize: function(elements, _options) {
+		this.setOptions(_options);
 		$$(elements).each( function(el) {
-			if (el.hasClass('scrollBarBoth')) {
-				options.sliderOptions.mode = 'both';
+			
+			if (this.options.mode === 'auto' && el.hasClass('scrollBarBoth')) {
+				this.options.mode = 'both';
 			}
-			if (el.hasClass('scrollBarVertical')) {
-				options.sliderOptions.sliderOptions.mode = 'vertical';
+			if (this.options.mode === 'auto' && el.hasClass('scrollBarVertical')) {
+				this.options.mode = 'vertical';
 			}
-			if (el.hasClass('scrollBarHorizontal')) {
-				options.sliderOptions.mode = 'horizontal';
+			if (this.options.mode === 'auto' && el.hasClass('scrollBarHorizontal')) {
+				this.options.mode = 'horizontal';
 			}
+			
+			options = Object.clone(this.options[this.options.mode]);
 		
-			if (options.sliderOptions.mode === 'both') {
-				options.sliderOptions.mode = 'vertical';
+			if (this.options.mode === 'both') {
+				options = this.options.both.horizontal;
 				this.scrollBars.include( new ScrollBar(el, options) );
-				options.sliderOptions.mode = 'horizontal';
+				options = this.options.both.vertical;
 			}
+			
 			this.scrollBars.include( new ScrollBar(el, options) );
-			options.sliderOptions.mode = _mode;
 		}, this);
 	},
 	

@@ -12,7 +12,7 @@ license: MIT-style license
 authors:
   - Thomas Allmer
 
-requires: [Core/Class, Core/Element.Event, Core/Element.Dimensions, Core/Fx.Tween, Core/Fx.Transitions, Core/Selectors, More/Fx.Scroll, More/Slider, Class.Settings]
+requires: [Core/Class, Core/Element.Event, Core/Element.Dimensions, Core/Selectors, More/Slider, Class.Settings]
 
 provides: ScrollBar
  
@@ -26,7 +26,7 @@ var ScrollBar = new Class({
 	options: {
 		stopDraggingOnLeave: true,
 		wheel: true,
-		wheelMultiplier: 30,
+		stepMultiplier: 30,
 		
 		sliderOptions: {
 			mode: 'vertical',
@@ -63,7 +63,7 @@ var ScrollBar = new Class({
 		if (this.options.wheel) {
 			this.wrap.addEvent('mousewheel', function(e) {
 				e.stop();
-				this.slider.set( this.slider.step - e.wheel * this.options.wheelMultiplier );
+				this.slider.set( this.slider.step - e.wheel * this.options.stepMultiplier );
 			}.bind(this));
 		}
 		
@@ -76,21 +76,22 @@ var ScrollBar = new Class({
 	},
 	
 	build: function() {
-		if (!this.el.getParent().hasClass('scrollBarWrap')) {
-			this.wrap = new Element('div[class="scrollBarWrap"]');
+		if (!this.el.getParent().hasClass('ui-scrollBarWrap')) {
+			this.wrap = new Element('div[class="ui-scrollBarWrap"]');
 			this.wrap.wraps( this.el );
 		} else {
 			this.wrap = this.el.getParent();
 		}
 		
-		this.Bar = new Element('div', {	'class': 'scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Bar' });
-		this.Handle = new Element('div', {	'class': 'scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Handle' });
+		this.Bar = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Bar' });
+		this.Handle = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Handle' });
+		this.Bar.grab(this.Handle)
 		
-		this.wrap.grab( this.Bar.grab(this.Handle) );
+		this.el.addClass('ui-scrollBar' + this.options.sliderOptions.mode.capitalize());
 		
 		if (this.options.sliderOptions.mode === 'vertical') {
-			this.wrap.grab( new Element('div[class="clear"]') );
-
+			new Element('div[style="clear: both;"]').inject(this.el, 'after');
+			
 			this.el.setStyle('width', this.el.getSize().x - this.Bar.getSize().x);
 			this.Bar.setStyle('height', this.el.getSize().y);
 		}
@@ -98,6 +99,8 @@ var ScrollBar = new Class({
 		if (this.options.sliderOptions.mode === 'horizontal') {
 			this.Bar.setStyle('width', this.el.getSize().x);
 		}
+		
+		this.Bar.inject(this.el, 'after');
 	}
 
 });

@@ -1,10 +1,10 @@
-.scrollBarWrap { position: relative; }
-.scrollBarBoth, .scrollBarVertical, .scrollBarHorizontal { overflow: hidden; }
+.ui-scrollBarWrap { position: relative; }
+.ui-scrollBarBoth, .ui-scrollBarVertical, .ui-scrollBarHorizontal { overflow: hidden; }
 
-.scrollBarBoth, .scrollBarVertical { height: 400px; float: left; }
-	.scrollBarVerticalBar { background: orange; width: 10px; float: left; }
-	.scrollBarVerticalHandle { background: red; width: 10px; height: 10px; }
+.ui-scrollBarBoth, .ui-scrollBarVertical { height: 400px; width: 100%; float: left; }
+	.ui-scrollBarVerticalBar { background: #D7D7D7; width: 10px; float: left; }
+	.ui-scrollBarVerticalHandle { background: #FE3B01; width: 10px; height: 10px; }
 	
-.scrollBarBoth, .scrollBarHorizontal { width: 400px; }
-	.scrollBarHorizontalBar { background: orange; height: 10px; }
-	.scrollBarHorizontalHandle { background: red; width: 10px; height: 10px; }
+.ui-scrollBarBoth, .ui-scrollBarHorizontal { width: 400px; }
+	.ui-scrollBarHorizontalBar { background: #D7D7D7; height: 10px; }
+	.ui-scrollBarHorizontalHandle { background: #FE3B01; width: 10px; height: 10px; }
