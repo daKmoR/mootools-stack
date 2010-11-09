@@ -30,7 +30,7 @@ var ScrollBars = new Class({
 		horizontal: { sliderOptions: { mode: 'horizontal' } },
 		both: {
 			vertical: { sliderOptions: { mode: 'vertical' } },
-			horizontal: { sliderOptions: { mode: 'horizontal' }, wheel: false }
+			horizontal: { sliderOptions: { mode: 'horizontal' }, wheel: false, x: -10 }
 		}
 	},
 	

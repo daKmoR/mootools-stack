@@ -27,6 +27,8 @@ var ScrollBar = new Class({
 		stopDraggingOnLeave: true,
 		wheel: true,
 		stepMultiplier: 30,
+		x: 0,
+		y: 0,
 		
 		sliderOptions: {
 			mode: 'vertical',
@@ -50,9 +52,9 @@ var ScrollBar = new Class({
 		this.build();
 		
 		if ( this.options.sliderOptions.mode === 'vertical' ) {
-			this.options.sliderOptions.steps = this.el.getScrollSize().y - this.el.getSize().y;
+			this.options.sliderOptions.steps = this.el.getScrollSize().y - this.el.getSize().y + this.options.y;
 		} else {
-			this.options.sliderOptions.steps = this.el.getScrollSize().x - this.el.getSize().x;
+			this.options.sliderOptions.steps = this.el.getScrollSize().x - this.el.getSize().x + this.options.x;
 		}
 		
 		// bind onChange (?)
@@ -85,22 +87,23 @@ var ScrollBar = new Class({
 		
 		this.Bar = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Bar' });
 		this.Handle = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Handle' });
-		this.Bar.grab(this.Handle)
+		this.Bar.grab(this.Handle);
 		
 		this.el.addClass('ui-scrollBar' + this.options.sliderOptions.mode.capitalize());
+		this.Bar.inject(this.el, 'after');
 		
 		if (this.options.sliderOptions.mode === 'vertical') {
-			new Element('div[style="clear: both;"]').inject(this.el, 'after');
+			new Element('div[style="clear: both;"]').inject(this.Bar, 'after');
 			
-			this.el.setStyle('width', this.el.getSize().x - this.Bar.getSize().x);
-			this.Bar.setStyle('height', this.el.getSize().y);
+			this.el.setStyle('width', this.el.getSize().x - this.Bar.getSize().x + this.options.x);
+			this.Bar.setStyle('height', this.el.getSize().y + this.options.y);
 		}
 		
 		if (this.options.sliderOptions.mode === 'horizontal') {
-			this.Bar.setStyle('width', this.el.getSize().x);
+			this.Bar.setStyle('width', this.el.getSize().x + this.options.x);
 		}
 		
-		this.Bar.inject(this.el, 'after');
+		
 	}
 
 });
