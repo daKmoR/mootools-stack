@@ -53,7 +53,7 @@ FlexSlide.Advanced = new Class({
 	
 	show: function(id, fx) {
 		if( this.itemWrap ) {
-			if( this.options.dynamicLoading === true && this.els.item[id].get('tag') === 'a' ) {
+			if( this.options.dynamicLoading === true && this.elements.item[id].get('tag') === 'a' ) {
 				this.dynamicLoading(id, fx);
 			} else {
 				this._show(id, fx);
@@ -93,13 +93,13 @@ FlexSlide.Advanced = new Class({
 			return true;
 		}
 		
-		if( this.els.item[id] && this.els.item[id].get('tag') === 'a' && this.options.dynamicLoading === true ) {
-			var href = this.els.item[id].get('href');
+		if( this.elements.item[id] && this.elements.item[id].get('tag') === 'a' && this.options.dynamicLoading === true ) {
+			var href = this.elements.item[id].get('href');
 
 			this.loading[id] = true;
 			var mode = this.options.dynamicMode || this.guessDynamicMode(href);
 			
-			this.els.item[id].destroy();
+			this.elements.item[id].destroy();
 			
 			if( show ) {
 				this.itemWrap.grab( this.loader );
@@ -112,7 +112,7 @@ FlexSlide.Advanced = new Class({
 						onLoad: function(image) {
 							this.loader.fade(0);
 							image.addClass( this.options.ui.itemItem['class'] );
-							this.els.item[id] = this.fx.elements[id] = image;
+							this.elements.item[id] = this.fx.elements[id] = image;
 							this.itemWrap.grab( image );
 							this.loaded[id] = true;
 							this.fireEvent('imageLoaded', image);
@@ -127,7 +127,7 @@ FlexSlide.Advanced = new Class({
 							var div = new Element('div', {'class': this.options.ui.itemItem['class'] + ' ' + this.options.ui.requestItem['class']} );
 							div.set('html', responseHTML);
 							this.loaded[id] = true;
-							this.els.item[id] = this.fx.elements[id] = div;
+							this.elements.item[id] = this.fx.elements[id] = div;
 							this.itemWrap.grab(div);
 							if( show ) this.show(id, fx);
 						}.bind(this)
@@ -137,7 +137,7 @@ FlexSlide.Advanced = new Class({
 					this.loader.fade(0);
 					var div = new Element('div', {'class': this.options.ui.itemItem['class'] + ' ' + this.options.ui.inlineItem['class']} );
 					$$(href)[0].clone().setStyle('display', 'block').inject( div );
-					this.els.item[id] = this.fx.elements[id] = div;
+					this.elements.item[id] = this.fx.elements[id] = div;
 					this.itemWrap.grab(div);
 					if( show ) this.show(id, fx);
 					break;

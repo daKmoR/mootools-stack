@@ -7,7 +7,7 @@ description: allows to create almost any Sliding Stuff (Galleries, Tabs...) with
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position, Class.Settings]
+requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position, Class.Settings, Gallery]
 
 provides: FlexSlide
 
@@ -28,7 +28,7 @@ Array.implement({
 });
 
 var FlexSlide = new Class({
-	Implements: [Settings, Events],
+	Implements: [Settings, Events, Gallery],
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
 		render: ['item'],
@@ -46,8 +46,6 @@ var FlexSlide = new Class({
 		fixedSize: false, // {x: 640, y: 640}
 		resizeFactor: 0.95,
 		resizeLimit: false, // {x: 640, y: 640}
-		auto: true,
-		duration: 5000,
 		autoItemSize: { x: true, y: true },
 		autoItemSizeSpecial: ['img', 'a'],
 		centerItemTags: ['img', 'a'],
@@ -62,9 +60,6 @@ var FlexSlide = new Class({
 		useScroller: false,
 		scrollerMode: 'horizontal',
 		scrollerOptions: { area: 100, velocity: 0.1 },
-		mode: 'continuous', /* [continuous, reverse, random] */
-		step: 1,
-		times: 1,
 		selectTemplate: '{text}',
 		counterTemplate: '{id}/{count}',
 		descriptionTemplate: '<strong>{title}</strong><span>{text}</span>',
@@ -88,9 +83,9 @@ var FlexSlide = new Class({
 			}
 		},
 		onShow: function(current, next) {
-			if( $defined(this.els.description) ) {
-				this.els.description[current].setStyle('display', 'block').fade(0);
-				this.els.description[next].fade('hide').setStyle('display', 'block').fade(1);
+			if( $defined(this.elements.description) ) {
+				this.elements.description[current].setStyle('display', 'block').fade(0);
+				this.elements.description[next].fade('hide').setStyle('display', 'block').fade(1);
 			}
 		}
 		/*onBuild, onSelectChange(currentEl, nextEl) */
@@ -99,7 +94,7 @@ var FlexSlide = new Class({
 	current: -1,
 	running: false,
 	autotimer: $empty,
-	els: {},
+	elements: {},
 	fxConfig: {},
 	wrapFxConfig: {},
 	
@@ -111,7 +106,7 @@ var FlexSlide = new Class({
 		
 		if( $type(this.options.show) === 'string' && this.options.show === 'random' ) {
 			this.build();
-			this.options.show = $random(0, this.els.item.length-1);
+			this.options.show = $random(0, this.elements.item.length-1);
 		}
 
 		if( this.options.show >= 0 )
@@ -122,14 +117,14 @@ var FlexSlide = new Class({
 		this.builder( this.options.render, this.wrap );
 		
 		//automatically build the select if no costum select items are found
-		if( $chk(this.els.select) && this.els.select.length <= 0 ) {
-			this.els.item.each( function(el, i) {
+		if( $chk(this.elements.select) && this.elements.select.length <= 0 ) {
+			this.elements.item.each( function(el, i) {
 				var select = new Element('div', this.options.ui.selectItem)
 					.addEvent('click', this.show.bind(this, i))
 					.inject(this.selectWrap);
 				
 				select.set('html', this.options.selectTemplate.substitute({id: i+1}) );
-				this.els.select.push(select);
+				this.elements.select.push(select);
 			}, this);
 		}
 		
@@ -141,8 +136,8 @@ var FlexSlide = new Class({
 			this.scroller = new Scroller( this.selectWrap.getParent(), this.options.scrollerOptions).start();
 		}
 		
-		if( $chk(this.els.description) && this.els.description.length <= 0 ) {
-			this.els.item.each( function(el, i) {
+		if( $chk(this.elements.description) && this.elements.description.length <= 0 ) {
+			this.elements.item.each( function(el, i) {
 				var description = new Element('div', this.options.ui.descriptionItem)
 					.inject(this.descriptionWrap);
 				
@@ -159,12 +154,12 @@ var FlexSlide = new Class({
 					description.set('html', txt);
 				}
 				
-				this.els.description.push(description);
+				this.elements.description.push(description);
 			}, this);
 			
 		}
 		
-		this.fx = new Fx.Elements( this.els.item );
+		this.fx = new Fx.Elements( this.elements.item );
 		this.wrapFx = new Fx.Elements( [this.itemWrap, this.wrap] );
 		
 		this.updateCounter(0);
@@ -198,11 +193,11 @@ var FlexSlide = new Class({
 			this.options.ui[item] = { 'class': 'ui-' + item.capitalize() };
 		if( !$chk(this.options.selections[item]) )
 			this.options.selections[item] = '.' + item;
-		this.els[item] = this.wrap.getElements( this.options.selections[item] );
+		this.elements[item] = this.wrap.getElements( this.options.selections[item] );
 		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject( wrapper );
 		
-		if( this.els[item].length > 0 ) {
-			this.els[item].each( function(el, i) {
+		if( this.elements[item].length > 0 ) {
+			this.elements[item].each( function(el, i) {
 				if( item == 'select' ) {
 					el.addEvent('click', this.show.bind(this, i) );
 					if( el.get('tag') !== 'img' ) {
@@ -248,10 +243,10 @@ var FlexSlide = new Class({
 			var fx = fx || ( (id > this.current) ? this.options.effect.up : this.options.effect.down);
 			if(fx === 'random') fx = this.options.effect.random.getRandom();
 			
-			var currentEl = this.els.item[this.current];
+			var currentEl = this.elements.item[this.current];
 			if( this.current === -1 ) {
 				this.current = id;
-				currentEl = fx !== 'display' ? this.itemWrap : this.els.item[this.current];
+				currentEl = fx !== 'display' ? this.itemWrap : this.elements.item[this.current];
 			}
 			
 			var newOptions = $unlink(this.options.effect.globalOptions);
@@ -259,33 +254,33 @@ var FlexSlide = new Class({
 			this.fx.setOptions( newOptions );
 			this.wrapFx.setOptions( this.options.effect.wrapFxOptions );
 			
-			this.adjustElement(this.els.item[this.current]);
-			this.adjustElement(this.els.item[id]);
+			this.adjustElement(this.elements.item[this.current]);
+			this.adjustElement(this.elements.item[id]);
 			
 			this.fxConfig = {};
 			this.wrapFxConfig = {};
 			if( this.options.autoContainerSize.x || this.options.autoContainerSize.y )
 				this.wrapFxConfig[0] = {};
 			if( this.options.autoContainerSize.x )
-				$extend(this.wrapFxConfig[0], {'width': this.els.item[id].getSize().x} );
+				$extend(this.wrapFxConfig[0], {'width': this.elements.item[id].getSize().x} );
 			if( this.options.autoContainerSize.y )
-				$extend(this.wrapFxConfig[0], {'height': this.els.item[id].getSize().y} );
+				$extend(this.wrapFxConfig[0], {'height': this.elements.item[id].getSize().y} );
 
 			if( this.options.positionContainer )
 				this.positionContainer(id);
 				
 			// call the used effect
-			this.options.effects[fx].call( this, this.current, id, currentEl, this.els.item[id] );
+			this.options.effects[fx].call( this, this.current, id, currentEl, this.elements.item[id] );
 			
 			var tmp = {'display': 'block'};
 			if( $defined(this.fxConfig[id]) ) {
 				$each( this.fxConfig[id], function(values, property) {
 					tmp[property] = values[0];
 				});
-				this.els.item[id].setStyles(tmp);
+				this.elements.item[id].setStyles(tmp);
 			}
 
-			this.itemWrap.grab( this.els.item[id] );
+			this.itemWrap.grab( this.elements.item[id] );
 			
 			this.running = true;
 			this.fireEvent('onShow', [this.current, id]);
@@ -369,72 +364,29 @@ var FlexSlide = new Class({
 	positionContainer: function(id) {
 		this.wrapFxConfig[1] = this.wrapFxConfig[1] || {};
 
-		var newPos = this.els.item[id].position(this.options.positionContainerOptions);
+		var newPos = this.elements.item[id].position(this.options.positionContainerOptions);
 		$extend(this.wrapFxConfig[1], newPos);
 	},
 	
 	updateCounter: function(id) {
 		if( this.counterWrap ) {
-			this.counterWrap.set('html', this.options.counterTemplate.substitute({id: id+1, 'count': this.els.item.length}) );
+			this.counterWrap.set('html', this.options.counterTemplate.substitute({id: id+1, 'count': this.elements.item.length}) );
 		}
 	},
 	
 	process: function(id) {
-		if( $chk(this.els.select) ) {
+		if( $chk(this.elements.select) ) {
 			if( this.current >= 0 ) {
-				this.els.select[this.current].removeClass( this.options.ui.activeClass );
+				this.elements.select[this.current].removeClass( this.options.ui.activeClass );
 			}
-			this.els.select[id].addClass( this.options.ui.activeClass );
-			this.fireEvent('onSelectChange', [this.els.select[this.current], this.els.select[id]]);
+			this.elements.select[id].addClass( this.options.ui.activeClass );
+			this.fireEvent('onSelectChange', [this.elements.select[this.current], this.elements.select[id]]);
 		}
 		
 		this.updateCounter(id);
 			
 		this.current = id;
 		if( this.options.auto ) this.auto();
-	},
-	
-	auto: function() {
-		$clear(this.autotimer);
-		this.autotimer = this.next.delay(this.options.duration, this);
-	},
-	
-	getNextId: function(times, current) {
-		var times = times || this.options.times, next = 0;
-		var current = current || this.current;
-		step = this.options.step*times;
-		
-		if ( this.options.mode === 'reverse' ) step *= -1;
-			
-		if ( this.options.mode === 'random' ) {
-			do 
-				next = $random(0, this.els.item.length-1);
-			while ( next == current )
-		} else {
-			if ( current + step < this.els.item.length ) 
-				next = current + step;
-			else
-				next = current + step - this.els.item.length;
-			if ( current + step < 0 ) 
-				next = this.els.item.length + current + step;
-		}
-		
-		if( this.els.item[next] )
-			return next;
-		
-		return -1;
-	},
-	
-	next: function(times, fx) {
-		var times = times || this.options.times;
-		var fx = fx || this.options.effect.up;
-		next = this.getNextId(times);
-		this.show(next, fx);
-	},
-	
-	previous: function(times) {
-		var times = times || this.options.times;
-		this.next(times * -1, this.options.effect.down);
 	},
 	
 	// fixSizes: function() {
