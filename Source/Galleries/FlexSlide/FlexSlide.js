@@ -39,8 +39,10 @@ var FlexSlide = new Class({
 			activeClass: 'ui-active'
 		},
 		show: 0,
+		buildOnInit: true,
 		container: null,
-		getSizeFromContainer: true,
+		getSizeFromContainer: false,
+		getSizeFromElement: 'auto', // ['auto', -1, id] 'auto' same as show, -1 to not use it
 		setSizeForContainer: false,
 		initFx: 'display',
 		fixedSize: false, // {x: 640, y: 640}
@@ -101,16 +103,24 @@ var FlexSlide = new Class({
 	initialize: function(wrap, options) {
 		if( !(this.wrap = $(wrap)) ) return;
 		this.setOptions(options);
-
+		
+		if( this.options.getSizeFromElement === 'auto' ) {
+			this.options.getSizeFromElement = this.options.show;
+		}
+		
 		if( !$defined(this.options.container) ) this.options.container = this.wrap.getParent();
 		
-		if( $type(this.options.show) === 'string' && this.options.show === 'random' ) {
+		if( this.options.buildOnInit === true ) {
 			this.build();
+		}
+		
+		if( this.options.show === 'random' ) {
 			this.options.show = $random(0, this.elements.item.length-1);
 		}
-
-		if( this.options.show >= 0 )
+		
+		if( this.options.buildOnInit === true && this.options.show >= 0 && this.options.show < this.elements.item.length ) {
 			this.show( this.options.show, this.options.initFx );
+		}
 	},
 	
 	build: function() {
@@ -128,14 +138,7 @@ var FlexSlide = new Class({
 			}, this);
 		}
 		
-		if( this.options.useScroller == true ) {
-			if( this.options.scrollerMode === 'horizontal' )
-				this.selectWrap.setStyle('width', this.selectWrap.getChildren().getCombinedSize().x);
-			if( this.options.scrollerMode === 'vertical' )
-				this.selectWrap.setStyle('height', this.selectWrap.getChildren().getCombinedSize().y);
-			this.scroller = new Scroller( this.selectWrap.getParent(), this.options.scrollerOptions).start();
-		}
-		
+		// description stuff
 		if( $chk(this.elements.description) && this.elements.description.length <= 0 ) {
 			this.elements.item.each( function(el, i) {
 				var description = new Element('div', this.options.ui.descriptionItem)
@@ -185,6 +188,14 @@ var FlexSlide = new Class({
 			this.previousWrap.addEvent('click', this.previous.bind(this, this.options.times) );
 		}
 		
+		if( this.options.useScroller == true ) {
+			if( this.options.scrollerMode === 'horizontal' )
+				this.selectWrap.setStyle('width', this.selectWrap.getChildren().getCombinedSize().x);
+			if( this.options.scrollerMode === 'vertical' )
+				this.selectWrap.setStyle('height', this.selectWrap.getChildren().getCombinedSize().y);
+			this.scroller = new Scroller( this.selectWrap.getParent(), this.options.scrollerOptions).start();
+		}
+		
 		this.fireEvent('onBuild');
 	},
 	
@@ -195,6 +206,12 @@ var FlexSlide = new Class({
 			this.options.selections[item] = '.' + item;
 		this.elements[item] = this.wrap.getElements( this.options.selections[item] );
 		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject( wrapper );
+		
+		if( this.options.getSizeFromElement >= 0 && this.options.getSizeFromElement < this.elements.item.length ) {
+			var size = this.elements.item[this.options.getSizeFromElement].getSize();
+			this.itemWrap.setStyle('width', size.x );
+			this.itemWrap.setStyle('height', size.y );
+		}
 		
 		if( this.elements[item].length > 0 ) {
 			this.elements[item].each( function(el, i) {
