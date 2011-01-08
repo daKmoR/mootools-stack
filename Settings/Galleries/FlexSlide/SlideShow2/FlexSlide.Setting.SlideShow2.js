@@ -23,6 +23,7 @@ SettingsStore.FlexSlide.SlideShow2 = {
 	auto: true,
 	selectTemplate: '',
 	getSizeFromContainer: false,
+	getSizeFromElement: false,
 	onBuild: function() {
 		// no build in functionality for first and last image, so we need to add it manually
 		this.firstWrap.addEvent('click', function() {

@@ -207,7 +207,7 @@ var FlexSlide = new Class({
 		this.elements[item] = this.wrap.getElements( this.options.selections[item] );
 		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject( wrapper );
 		
-		if( this.options.getSizeFromElement >= 0 && this.options.getSizeFromElement < this.elements.item.length ) {
+		if( this.options.getSizeFromElement !== false && this.options.getSizeFromElement >= 0 && this.options.getSizeFromElement < this.elements.item.length ) {
 			var size = this.elements.item[this.options.getSizeFromElement].getSize();
 			this.itemWrap.setStyle('width', size.x );
 			this.itemWrap.setStyle('height', size.y );
