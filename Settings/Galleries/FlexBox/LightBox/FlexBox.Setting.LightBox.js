@@ -39,8 +39,8 @@ SettingsStore.FlexBox.LightBox = {
 		}
 	},
 	onCloseEnd: function() {
-		if( $defined(this.flexSlide.els.description) ) {
-			this.flexSlide.els.description.set('style', '');
+		if( $defined(this.flexSlide.elements.description) ) {
+			this.flexSlide.elements.description.set('style', '');
 		}
 	}
 }

@@ -22,13 +22,14 @@ SettingsStore.FlexSlide.SlideShow2 = {
 	duration: 4000,
 	auto: true,
 	selectTemplate: '',
+	getSizeFromContainer: false,
 	onBuild: function() {
 		// no build in functionality for first and last image, so we need to add it manually
 		this.firstWrap.addEvent('click', function() {
 			this.show(0);
 		}.bind(this) );
 		this.lastWrap.addEvent('click', function() {
-			this.show( this.els.item.length-1 )
+			this.show( this.elements.item.length-1 )
 		}.bind(this) );
 		
 		// pause & resume functionality
@@ -53,7 +54,7 @@ SettingsStore.FlexSlide.SlideShow2 = {
 			this.controlsWrap.fade(0);
 		}.bind(this) );
 		
-		this.els.select.fade(0.3);
+		this.elements.select.fade(0.3);
 	},
 	onSelectChange: function(currentEl, nextEl) {
 		// only the active element is shown with full opacity

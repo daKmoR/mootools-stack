@@ -160,7 +160,7 @@ var FlexBox = new Class({
 		}, this);
 		
 		this.flexSlide = new FlexSlide.Advanced( this.wrap, $merge(this.options.flexSlide, {
-			show: -1
+			buildOnInit: false
 		}) );
 		this.flexSlide.build();
 		this.flexSlide.addEvent('onImageLoaded', function(image) {
@@ -209,7 +209,7 @@ var FlexBox = new Class({
 	closeEnd: function() {
 		this.fireEvent('onCloseEnd');
 		this.flexSlide.wrap.setStyle('display', 'none');
-		this.flexSlide.els.item[this.flexSlide.current].set('style', '');
+		this.flexSlide.elements.item[this.flexSlide.current].set('style', '');
 		
 		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent);
 		

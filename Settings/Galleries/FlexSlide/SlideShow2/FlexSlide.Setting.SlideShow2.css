@@ -1,12 +1,11 @@
-div.slideShow2 { height: 548px; width: 560px; background: #E5E5E5 url(imges/slideshow.gif) no-repeat; }
-div.slideShow2 { height: 400px; width: 500px; position: relative; }
+div.slideShow2 { height: 548px; width: 560px; background: #E5E5E5 url(images/slideshow.gif) no-repeat; position: relative; }
 
-div.slideShow2 .ui-Item { left: 30px; top: 39px; position: relative; }
+div.slideShow2 .ui-Item { left: 30px; top: 39px; width: 500px; height: 400px; position: relative; }
 div.slideShow2 .ui-SelectScroller { margin-top: 50px; }
 div.slideShow2 .ui-Select { margin: 0 10px;  }
 	div.slideShow2 .ui-SelectItem { float: left; width: 50px; height: 40px; padding: 5px; margin: 0 5px; border: 1px solid #ccc; background: #fff; }
 	
-div.slideShow2 .ui-Description { font-size: 12px; height: 20px; left: 30px; top: 20px; }
+div.slideShow2 .ui-Description { font-size: 12px; height: 20px; left: 30px; top: 23px; }
 div.slideShow2 .ui-DescriptionItem { width: 500px; text-align: center; background: #fff; border-top: 1px solid #eee; }
 	
 div.slideShow2 .ui-Controls { background: url(images/controller.png); height: 42px; left: 50%; margin: -44px 0 0 -119px; overflow: hidden; position: absolute;	top: 50%; width: 238px; z-index: 10000; }
