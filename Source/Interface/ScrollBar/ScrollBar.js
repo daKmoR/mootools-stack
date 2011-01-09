@@ -21,12 +21,13 @@ provides: ScrollBar
 
 var ScrollBar = new Class({
 	
-  Implements: Settings,
+	Implements: Settings,
 
 	options: {
 		stopDraggingOnLeave: true,
 		wheel: true,
 		stepMultiplier: 30,
+		showOnlyIfNeeded: true,
 		x: 0,
 		y: 0,
 		
@@ -34,12 +35,15 @@ var ScrollBar = new Class({
 			mode: 'vertical',
 			wheel: false,
 			onChange: function(step) {
-				var x = 0, y = 0;
+				var scroll = this.el.getScroll(); 
 				if (this.slider) {
-					x = (this.slider.options.mode === 'vertical') ? 0 : step;
-					y = (this.slider.options.mode === 'vertical') ? step : 0;
+					if (this.slider.options.mode === 'vertical') {
+						scroll.y = step;
+					} else {
+						scroll.x = step;
+					}
 				}
-				this.el.scrollTo(x, y);
+				this.el.scrollTo(scroll.x, scroll.y);
 			}
 		}
 		
@@ -48,6 +52,18 @@ var ScrollBar = new Class({
 	initialize: function(el, options){
 		this.el = $(el);
     this.setOptions(options);
+		
+		if (this.options.showOnlyIfNeeded) {
+			if (this.options.sliderOptions.mode === 'vertical') {
+				if (this.el.getScrollSize().y <= this.el.getSize().y) {
+					return false;
+				}
+			} else {
+				if (this.el.getScrollSize().x <= this.el.getSize().x) {
+					return false;
+				}
+			}
+		}
 		
 		this.build();
 		
@@ -102,7 +118,6 @@ var ScrollBar = new Class({
 		if (this.options.sliderOptions.mode === 'horizontal') {
 			this.Bar.setStyle('width', this.el.getSize().x + this.options.x);
 		}
-		
 		
 	}
 

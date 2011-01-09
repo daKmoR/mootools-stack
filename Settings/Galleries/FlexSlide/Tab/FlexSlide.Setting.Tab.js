@@ -23,6 +23,7 @@ SettingsStore.FlexSlide.Tab = {
 	},
 	auto: false,
 	getSizeFromContainer: false,
+	getSizeFromElement: false,
 	autoContainerSize: { x: false, y: true },
 	centerItem: false,
 	render: ['select', 'item'],
