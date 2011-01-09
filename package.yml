@@ -32,3 +32,5 @@ sources:
   - "Source/Visual/MooPath/MooPath.js"
   - "Source/Visual/MooPath/MooPath.Ellipse.js"
   - "Source/Visual/MooPath/MooPath.Wave.js"
+  - "Source/Interface/ScrollBar/ScrollBar.js"
+  - "Source/Interface/ScrollBar/ScrollBars.js"
