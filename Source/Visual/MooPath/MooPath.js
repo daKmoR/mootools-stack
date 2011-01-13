@@ -31,8 +31,8 @@ var MooPath = new Class({
 	elements: {},
 
 	initialize: function(elements, options) {
+		if( !(this.elements.item = $$(elements)) ) return;
 		this.setOptions(options);
- 		this.elements.item = $$(elements);
 		
 		if( $type(this.options.show) === 'string' && this.options.show === 'random' ) {
 			this.options.show = $random(0, this.elements.item.length-1);
@@ -44,7 +44,9 @@ var MooPath = new Class({
 		
 		var numelements = this.elements.item.length;
  		this.elements.item.each(function(el, i) {
- 			el.store(this.options.origsize,  el.getSize());
+			var img = el.getElement('img');
+			var size = img ? img.getSize() : el.getSize();
+ 			el.store(this.options.origsize,  size);
 			el.setStyle('position', 'absolute');
 
 			// Position element on path
@@ -105,7 +107,7 @@ var MooPath = new Class({
 		 	this.current = id = this.elements.item.indexOf(id);
 		}
 		this.current = id;
-
+		
 		var diff = this.movement(this.elements.item[id]);
 		if (diff != 0) {
 			var obj = {};

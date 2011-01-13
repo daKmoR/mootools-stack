@@ -24,7 +24,7 @@ var Gallery = new Class({
 		times: 1,
 		effect: {
 			up: 'random', /* any availabele effect */
-			down: 'random', /* any availabele effect */
+			down: 'random' /* any availabele effect */
 		}
 	},
 
