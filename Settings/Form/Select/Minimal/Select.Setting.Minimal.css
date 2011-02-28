@@ -1,6 +1,7 @@
-.select { border: 1px solid #ccc; }
-	.select .ui-Status { width: 100%; height: 100%; }
+.select { }
+	.select .ui-Status { width: 100%; height: 100%; border: 1px solid #ccc; padding: 0; }
 	.select .ui-Options { height: 0; overflow: hidden; }
 		.select .ui-Option { border: 1px solid #ccc; }
 			.select .ui-OptionItem { display: block; cursor: pointer; text-decoration: none; color: #000; }
-				.select .ui-OptionItem:hover, .select .ui-active { background: #387EFF; color: #fff; }
+				.select .ui-active { background: #387EFF; color: #fff; }
+				.select .ui-current { background: #387EFF; color: #fff; }

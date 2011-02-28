@@ -26,13 +26,12 @@ var Select = new Class({
 			activeClass: 'ui-active'
 		},
 		mode: 'single',
-		show: 0
+		caseSensitive: false
 	},
 	
 	current: -1,
 	elements: {},
 	isOpen: false,
-	status: '',
 	
 	initialize: function(select, options) {
 		if (!(this.select = $(select))) return;
@@ -42,7 +41,6 @@ var Select = new Class({
 		this.setOptions(options);
 
 		this.build();
-		$$('.colmask')[0].setStyle('height', 1000);
 	},
 	
 	build: function() {
@@ -52,25 +50,83 @@ var Select = new Class({
 		
 		this.builder( this.options.render, this.wrap );
 		
-		this.statusWrap.addEvent('click', this.toggle.bind(this));
+		this.statusWrap.addEvent('click', function() {
+			this.statusWrap.set('value', '');
+			this.filter(this.statusWrap.get('value'));
+			this.toggle();
+		}.bind(this));
 		
 		this.statusWrap.addEvent('keyup', function(e) {
-			console.log(e);
-			this.statusWrap.set('html', e.key);
+			if (e.key != 'enter' && e.key != 'up' && e.key != 'down') {
+				this.filter(this.statusWrap.get('value'));
+				this.open();
+			}
 		}.bind(this));
+		
+		this.statusWrap.addEvent('keydown', function(e) {
+			if (e.key === 'down') {
+				this.currentDown();
+			}
+			if (e.key === 'up') {
+				this.currentUp();
+			}
+			if (e.key === 'enter') {
+				e.stop();
+				this.selectOption(this.current);
+			}
+		}.bind(this));		
+		
+		var that = this;
 		
 		this.elements.optionCopy.each(function(el) {
 			el.addEvent('click', function(e) {
 				e.stop();
 				this.selectOption(el);
 			}.bind(this));
+			el.addEvent('mouseenter', function(e) {
+				that.setCurrent(this);
+			});
 		}, this);
-		
 		
 		this.fireEvent('onBuild');
 	},
 	
-	selectOption: function(el) {
+	currentNext: function(add) {
+		var i = this.current + add;
+		while (i != this.current) {
+			i = i > this.elements.optionCopy.length-1 ? 0 : i;
+			i = i < 0 ? this.elements.optionCopy.length-1 : i;
+			
+			if (this.elements.optionCopy[i].getStyle('display') === 'block') {
+				this.setCurrent(i);
+				return true;
+			}
+			i = i + add;
+		}
+	},
+	
+	currentUp: function() {
+		this.currentNext(-1);
+	},
+	
+	currentDown: function() {
+		this.currentNext(1);
+	},
+	
+	setCurrent: function(mixed) {
+		i = Type.isNumber(mixed) ? mixed : this.elements.optionCopy.indexOf(mixed);
+		el = Type.isObject(mixed) ? mixed : this.elements.optionCopy[i];
+	
+		this.current = i;
+		this.elements.optionCopy.invoke('removeClass', 'ui-current');
+		this.elements.optionCopy[i].addClass('ui-current');
+	},
+	
+	selectOption: function(mixed) {
+		i = Type.isNumber(mixed) ? mixed : this.elements.optionCopy.indexOf(mixed);
+		el = Type.isElement(mixed) ? mixed : this.elements.optionCopy[mixed];
+	
+		this.current = i;
 		if (this.options.mode === 'single') {
 			this.elements.optionCopy.invoke('removeClass', this.options.ui.activeClass);
 			this.close();
@@ -97,8 +153,19 @@ var Select = new Class({
 		}
 	},
 	
+	filter: function(text) {
+		this.elements.optionCopy.invoke('setStyle', 'display', 'block');
+		
+		this.elements.optionCopy.filter(function(item) {
+			if (this.options.caseSensitive) {
+				return !item.text.contains(text);
+			}
+			return !item.text.toLowerCase().contains(text.toLowerCase())
+		}.bind(this)).invoke('setStyle', 'display', 'none');
+	},
+	
 	setStatus: function(status) {
-		this.statusWrap.set('html', status);
+		this.statusWrap.set('value', status);
 	},
 	
 	open: function() {
@@ -126,7 +193,11 @@ var Select = new Class({
 			this.options.selections[item] = '.' + item;
 			
 		this.elements[item] = this.select.getElements( this.options.selections[item] );
-		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject( wrapper );
+		this[item + 'Wrap'] = new Element('div', this.options.ui[item]);
+		if (item === 'status') {
+			this[item + 'Wrap'] = new Element('input', this.options.ui[item]);
+		}
+		this[item + 'Wrap'].inject( wrapper );
 		
 		if( this.elements[item].length > 0 ) {
 			this.elements[item + 'Copy'] = [];
