@@ -35,3 +35,4 @@ sources:
   - "Source/Interface/ScrollBar/ScrollBar.js"
   - "Source/Interface/ScrollBar/ScrollBars.js"
   - "Source/Form/DatePicker.js"
+  - "Source/Form/Select.js"

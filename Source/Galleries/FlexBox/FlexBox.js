@@ -43,6 +43,7 @@ var FlexBox = new Class({
 			autoContainerSize: { x: true, y: true },
 			centerItem: false,
 			positionContainer: true,
+			getSizeFromElement: false,			
 			auto: false,
 			dynamicLoading: true,
 			wheelListener: true,

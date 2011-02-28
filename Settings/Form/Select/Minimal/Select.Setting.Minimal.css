@@ -1,0 +1,6 @@
+.select { border: 1px solid #ccc; }
+	.select .ui-Status { width: 100%; height: 100%; }
+	.select .ui-Options { height: 0; overflow: hidden; }
+		.select .ui-Option { border: 1px solid #ccc; }
+			.select .ui-OptionItem { display: block; cursor: pointer; text-decoration: none; color: #000; }
+				.select .ui-OptionItem:hover, .select .ui-active { background: #387EFF; color: #fff; }
