@@ -25,6 +25,12 @@ var Select = new Class({
 			wrap: { 'class': 'select' },
 			activeClass: 'ui-active'
 		},
+		single: {
+			statusTemplate: '{element}'
+		},
+		multiple: {
+			statusTemplate: '{count} Elemente ausgewählt'
+		},
 		mode: 'single',
 		caseSensitive: false
 	},
@@ -35,11 +41,11 @@ var Select = new Class({
 	
 	initialize: function(select, options) {
 		if (!(this.select = $(select))) return;
-		if (this.select.get('multiple') === 'multiple') {
+		if (this.select.get('multiple') === true) {
 			this.options.mode = 'multiple';
 		}
 		this.setOptions(options);
-
+		
 		this.build();
 	},
 	
@@ -57,7 +63,7 @@ var Select = new Class({
 		}.bind(this));
 		
 		this.statusWrap.addEvent('keyup', function(e) {
-			if (e.key != 'enter' && e.key != 'up' && e.key != 'down') {
+			if (e.key != 'enter' && e.key != 'up' && e.key != 'down' && e.key != 'esc') {
 				this.filter(this.statusWrap.get('value'));
 				this.open();
 			}
@@ -74,18 +80,21 @@ var Select = new Class({
 				e.stop();
 				this.selectOption(this.current);
 			}
-		}.bind(this));		
-		
-		var that = this;
+			if (e.key === 'esc') {
+				this.statusWrap.blur();
+				this.close();
+			}
+		}.bind(this));
 		
 		this.elements.optionCopy.each(function(el) {
 			el.addEvent('click', function(e) {
 				e.stop();
 				this.selectOption(el);
+				this.statusWrap.focus();
 			}.bind(this));
 			el.addEvent('mouseenter', function(e) {
-				that.setCurrent(this);
-			});
+				this.setCurrent(el);
+			}.bind(this));
 		}, this);
 		
 		this.fireEvent('onBuild');
@@ -99,7 +108,7 @@ var Select = new Class({
 			
 			if (this.elements.optionCopy[i].getStyle('display') === 'block') {
 				this.setCurrent(i);
-				return true;
+				return;
 			}
 			i = i + add;
 		}
@@ -123,20 +132,20 @@ var Select = new Class({
 	},
 	
 	selectOption: function(mixed) {
-		i = Type.isNumber(mixed) ? mixed : this.elements.optionCopy.indexOf(mixed);
+		this.current = Type.isNumber(mixed) ? mixed : this.elements.optionCopy.indexOf(mixed);
 		el = Type.isElement(mixed) ? mixed : this.elements.optionCopy[mixed];
 	
-		this.current = i;
 		if (this.options.mode === 'single') {
 			this.elements.optionCopy.invoke('removeClass', this.options.ui.activeClass);
-			this.close();
 		}
 		el.addClass(this.options.ui.activeClass);
-		this.setStatus(el.get('text'));
-		this.synch();
+		if (this.options.mode === 'single') {
+			this.close();
+		}
 	},
 	
 	synch: function(mode) {
+		this.activeEls = this.elements.optionCopy.filter(function(item) { return item.hasClass(this.options.ui.activeClass); }.bind(this));
 		var mode = mode || 'to';
 		if (mode === 'to') {
 			this.elements.optionCopy.each(function(el, i) {
@@ -174,6 +183,16 @@ var Select = new Class({
 	},
 
 	close: function() {
+		this.synch();
+		var text = '';
+		if (this.activeEls.length == 1) {
+			text = this.options.single.statusTemplate.substitute({element: this.activeEls[0].get('text'), count: this.activeEls.length});
+		}
+		if (this.activeEls.length > 1) {
+			elements = this.activeEls.invoke('get', 'text').join(', ');
+			text = this.options.multiple.statusTemplate.substitute({element: this.activeEls[0].get('text'), elements: elements, count: this.activeEls.length});
+		}
+		this.setStatus(text);
 		this.optionsWrap.tween('height', 0);
 		this.isOpen = false;
 	},
