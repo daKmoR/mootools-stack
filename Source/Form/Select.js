@@ -7,7 +7,7 @@ description: asdf
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position, Class.Settings, Gallery]
+requires: [Core/Element.Dimensions, Core/Element.Style, Class.Settings, Element.OuterClick]
 
 provides: Select
 
@@ -20,18 +20,15 @@ var Select = new Class({
 		selections: {
 			option: 'option'
 		},
-		render: ['status', {'options': ['option']}],
+		render: ['status', 'option'],
 		ui: {
 			wrap: { 'class': 'select' },
 			activeClass: 'ui-active'
 		},
-		single: {
-			statusTemplate: '{element}'
-		},
-		multiple: {
-			statusTemplate: '{count} Elemente ausgewählt'
-		},
+		single: {	statusTemplate: '{element}'	},
+		multiple: {	statusTemplate: '{count} Elemente ausgewählt'	},
 		mode: 'single',
+		defaultStatus: '',
 		caseSensitive: false
 	},
 	
@@ -44,14 +41,29 @@ var Select = new Class({
 		if (this.select.get('multiple') === true) {
 			this.options.mode = 'multiple';
 		}
+		if (this.select.get('title') !== '') {
+			this.options.defaultStatus = this.select.get('title');
+		}
+		
 		this.setOptions(options);
 		
 		this.build();
+		this.synch('fromSelect');
+		
+		if (this.options.mode === 'single' && this.options.defaultStatus === '') {
+			this.options.defaultStatus = this.elements.optionCopy[0].get('text');
+		}
+		
+		this.wrap.addEvent('outerClick', function() {
+			this.close();
+		}.bind(this));
+		
+		this.setStatus();
+		$('contentMain').setStyle('height', 1000);
 	},
 	
 	build: function() {
 		this.wrap = new Element('div', this.options.ui.wrap);
-		this.wrap.setStyles({ width: this.select.getSize().x, height: this.select.getSize().y});
 		this.wrap.inject(this.select, 'after');
 		
 		this.builder( this.options.render, this.wrap );
@@ -97,6 +109,8 @@ var Select = new Class({
 			}.bind(this));
 		}, this);
 		
+		this.select.setStyle('display', 'none');
+		
 		this.fireEvent('onBuild');
 	},
 	
@@ -132,30 +146,31 @@ var Select = new Class({
 	},
 	
 	selectOption: function(mixed) {
-		this.current = Type.isNumber(mixed) ? mixed : this.elements.optionCopy.indexOf(mixed);
 		el = Type.isElement(mixed) ? mixed : this.elements.optionCopy[mixed];
 	
 		if (this.options.mode === 'single') {
 			this.elements.optionCopy.invoke('removeClass', this.options.ui.activeClass);
-		}
-		el.addClass(this.options.ui.activeClass);
-		if (this.options.mode === 'single') {
+			el.addClass(this.options.ui.activeClass);
 			this.close();
 		}
+		if (this.options.mode === 'multiple') {
+			el.toggleClass(this.options.ui.activeClass);
+		}
+		this.fireEvent('select');
 	},
 	
 	synch: function(mode) {
-		this.activeEls = this.elements.optionCopy.filter(function(item) { return item.hasClass(this.options.ui.activeClass); }.bind(this));
-		var mode = mode || 'to';
-		if (mode === 'to') {
+		this.activeEls = this.elements.optionCopy.filter(function(el) { return el.hasClass(this.options.ui.activeClass); }.bind(this));
+		var mode = mode || 'toSelect';
+		if (mode === 'toSelect') {
 			this.elements.optionCopy.each(function(el, i) {
 				if (el.hasClass(this.options.ui.activeClass)) {
 					this.elements.option[i].set('selected', 'selected');
 				}
 			}, this);
-		} else if (mode === 'from') {
+		} else if (mode === 'fromSelect') {
 			this.elements.option.each(function(el, i) {
-				if (el.get('selected') === 'selected') {
+				if (el.get('selected') === true) {
 					this.elements.optionCopy[i].addClass(this.options.ui.activeClass);
 				}
 			}, this);
@@ -163,38 +178,40 @@ var Select = new Class({
 	},
 	
 	filter: function(text) {
+		var text = text || '';
 		this.elements.optionCopy.invoke('setStyle', 'display', 'block');
 		
-		this.elements.optionCopy.filter(function(item) {
+		this.elements.optionCopy.filter(function(el) {
 			if (this.options.caseSensitive) {
-				return !item.text.contains(text);
+				return !el.get('text').contains(text);
 			}
-			return !item.text.toLowerCase().contains(text.toLowerCase())
+			return !el.get('text').toLowerCase().contains(text.toLowerCase())
 		}.bind(this)).invoke('setStyle', 'display', 'none');
 	},
 	
-	setStatus: function(status) {
-		this.statusWrap.set('value', status);
+	setStatus: function(text) {
+		this.synch();
+		var text = text || '';
+		if (this.activeEls.length === 1 && text === '') {
+			text = this.options.single.statusTemplate.substitute({element: this.activeEls[0].get('text'), count: this.activeEls.length});
+		}
+		if (this.activeEls.length > 1 && text === '') {
+			elements = this.activeEls.invoke('get', 'text').join(', ');
+			text = this.options.multiple.statusTemplate.substitute({element: this.activeEls[0].get('text'), elements: elements, count: this.activeEls.length});
+		}
+		this.statusWrap.set('value', text !== '' ? text : this.options.defaultStatus);
 	},
 	
 	open: function() {
-		this.optionsWrap.tween('height', this.optionWrap.getSize().y);
+		this.optionWrap.setStyle('display', 'block');
 		this.isOpen = true;
 	},
 
 	close: function() {
-		this.synch();
-		var text = '';
-		if (this.activeEls.length == 1) {
-			text = this.options.single.statusTemplate.substitute({element: this.activeEls[0].get('text'), count: this.activeEls.length});
-		}
-		if (this.activeEls.length > 1) {
-			elements = this.activeEls.invoke('get', 'text').join(', ');
-			text = this.options.multiple.statusTemplate.substitute({element: this.activeEls[0].get('text'), elements: elements, count: this.activeEls.length});
-		}
-		this.setStatus(text);
-		this.optionsWrap.tween('height', 0);
+		this.setStatus();
+		this.optionWrap.setStyle('display', 'none');
 		this.isOpen = false;
+		this.fireEvent('close');
 	},
 	
 	toggle: function() {
