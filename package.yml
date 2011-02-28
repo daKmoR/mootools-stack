@@ -36,3 +36,5 @@ sources:
   - "Source/Interface/ScrollBar/ScrollBars.js"
   - "Source/Form/DatePicker.js"
   - "Source/Form/Select.js"
+  - "Source/Form/Selects.js"
+  - "Source/Element/Element.OuterClick.js"
