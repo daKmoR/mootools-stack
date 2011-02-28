@@ -7,7 +7,7 @@ description: asdf
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, Class.Settings, Element.OuterClick]
+requires: [Core/Element.Dimensions, Core/Element.Style, More/String.Extras, Class.Settings, Element.OuterClick]
 
 provides: Select
 
@@ -23,10 +23,11 @@ var Select = new Class({
 		render: ['status', 'option'],
 		ui: {
 			wrap: { 'class': 'select' },
-			activeClass: 'ui-active'
+			activeClass: 'ui-active',
+			defaultStatusClass: 'ui-defaultStatus'
 		},
 		single: {	statusTemplate: '{element}'	},
-		multiple: {	statusTemplate: '{count} Elemente ausgewählt'	},
+		multiple: {	statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
 		mode: 'single',
 		defaultStatus: '',
 		caseSensitive: false
@@ -50,10 +51,6 @@ var Select = new Class({
 		this.build();
 		this.synch('fromSelect');
 		
-		if (this.options.mode === 'single' && this.options.defaultStatus === '') {
-			this.options.defaultStatus = this.elements.optionCopy[0].get('text');
-		}
-		
 		this.wrap.addEvent('outerClick', function() {
 			this.close();
 		}.bind(this));
@@ -75,7 +72,7 @@ var Select = new Class({
 		}.bind(this));
 		
 		this.statusWrap.addEvent('keyup', function(e) {
-			if (e.key != 'enter' && e.key != 'up' && e.key != 'down' && e.key != 'esc') {
+			if (e.key != 'enter' && e.key != 'up' && e.key != 'down' && e.key != 'esc' && e.key != 'tab') {
 				this.filter(this.statusWrap.get('value'));
 				this.open();
 			}
@@ -92,7 +89,7 @@ var Select = new Class({
 				e.stop();
 				this.selectOption(this.current);
 			}
-			if (e.key === 'esc') {
+			if (e.key === 'esc' || e.key === 'tab') {
 				this.statusWrap.blur();
 				this.close();
 			}
@@ -163,9 +160,10 @@ var Select = new Class({
 		this.activeEls = this.elements.optionCopy.filter(function(el) { return el.hasClass(this.options.ui.activeClass); }.bind(this));
 		var mode = mode || 'toSelect';
 		if (mode === 'toSelect') {
+			this.elements.option.invoke('set', 'selected', false);
 			this.elements.optionCopy.each(function(el, i) {
 				if (el.hasClass(this.options.ui.activeClass)) {
-					this.elements.option[i].set('selected', 'selected');
+					this.elements.option[i].set('selected', true);
 				}
 			}, this);
 		} else if (mode === 'fromSelect') {
@@ -196,10 +194,16 @@ var Select = new Class({
 			text = this.options.single.statusTemplate.substitute({element: this.activeEls[0].get('text'), count: this.activeEls.length});
 		}
 		if (this.activeEls.length > 1 && text === '') {
-			elements = this.activeEls.invoke('get', 'text').join(', ');
+			elements = this.activeEls.invoke('get', 'text').join(', ').truncate(this.options.multiple.statusElementsTruncate.length, this.options.multiple.statusElementsTruncate.trail);
 			text = this.options.multiple.statusTemplate.substitute({element: this.activeEls[0].get('text'), elements: elements, count: this.activeEls.length});
 		}
-		this.statusWrap.set('value', text !== '' ? text : this.options.defaultStatus);
+		if (text !== '') {
+			this.statusWrap.removeClass(this.options.ui.defaultStatusClass);
+		} else {
+			this.statusWrap.addClass(this.options.ui.defaultStatusClass);
+			text = this.options.defaultStatus
+		}
+		this.statusWrap.set('value', text);
 	},
 	
 	open: function() {
