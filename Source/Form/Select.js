@@ -56,7 +56,6 @@ var Select = new Class({
 		}.bind(this));
 		
 		this.setStatus();
-		$('contentMain').setStyle('height', 1000);
 	},
 	
 	build: function() {
