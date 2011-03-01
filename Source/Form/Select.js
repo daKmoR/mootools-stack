@@ -24,6 +24,7 @@ var Select = new Class({
 		ui: {
 			wrap: { 'class': 'select' },
 			activeClass: 'ui-active',
+			searchMarkClass: 'ui-SearchMark',
 			defaultStatusClass: 'ui-defaultStatus'
 		},
 		single: {	statusTemplate: '{element}'	},
@@ -66,6 +67,7 @@ var Select = new Class({
 		
 		this.statusWrap.addEvent('click', function() {
 			this.statusWrap.set('value', '');
+			this.statusWrap.removeClass(this.options.ui.defaultStatusClass);
 			this.filter(this.statusWrap.get('value'));
 			this.toggle();
 		}.bind(this));
@@ -183,7 +185,7 @@ var Select = new Class({
 			var foundIndex = elText.indexOf(text);
 			if (foundIndex > -1) {
 				if (text != '') {
-					var marked = '<span class="ui-SearchMark">' + elText.substr(foundIndex, text.length) + '</span>';
+					var marked = '<span class="' + this.options.ui.searchMarkClass + '">' + elText.substr(foundIndex, text.length) + '</span>';
 					el.set('html', elText.substring(0, foundIndex) + marked + elText.substring(foundIndex + text.length, elText.length));
 				} else {
 					el.set('html', elText);
@@ -191,7 +193,7 @@ var Select = new Class({
 			} else {
 				el.setStyle('display', 'none');
 			}
-		});
+		}, this);
 	},
 	
 	setStatus: function(text) {
