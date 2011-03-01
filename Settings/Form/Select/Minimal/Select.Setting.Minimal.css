@@ -6,3 +6,4 @@
 			.select .ui-OptionItem:hover { color: #fff; text-decoration: none; }
 			.select .ui-active { background: #387EFF; color: #fff; }
 			.select .ui-current { background: #6198FF; color: #fff; }
+			.select .ui-SearchMark { font-weight: bold; }

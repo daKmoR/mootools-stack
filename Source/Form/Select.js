@@ -178,12 +178,20 @@ var Select = new Class({
 		var text = text || '';
 		this.elements.optionCopy.invoke('setStyle', 'display', 'block');
 		
-		this.elements.optionCopy.filter(function(el) {
-			if (this.options.caseSensitive) {
-				return !el.get('text').contains(text);
+		this.elements.optionCopy.each(function(el) {
+			var elText = el.get('text');
+			var foundIndex = elText.indexOf(text);
+			if (foundIndex > -1) {
+				if (text != '') {
+					var marked = '<span class="ui-SearchMark">' + elText.substr(foundIndex, text.length) + '</span>';
+					el.set('html', elText.substring(0, foundIndex) + marked + elText.substring(foundIndex + text.length, elText.length));
+				} else {
+					el.set('html', elText);
+				}
+			} else {
+				el.setStyle('display', 'none');
 			}
-			return !el.get('text').toLowerCase().contains(text.toLowerCase())
-		}.bind(this)).invoke('setStyle', 'display', 'none');
+		});
 	},
 	
 	setStatus: function(text) {
