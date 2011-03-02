@@ -32,7 +32,8 @@ var Select = new Class({
 		multiple: {	statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
 		mode: 'single',
 		defaultStatus: '',
-		caseSensitive: false
+		caseSensitive: false,
+		noZeroSearchInputs: true
 	},
 	
 	current: -1,
@@ -77,6 +78,12 @@ var Select = new Class({
 		this.statusWrap.addEvent('keyup', function(e) {
 			if (e.key != 'enter' && e.key != 'up' && e.key != 'down' && e.key != 'esc' && e.key != 'tab') {
 				this.filter(this.statusWrap.get('value'));
+				if (this.options.noZeroSearchInputs) {
+					while (this.shownElements.length === 0) {
+						this.statusWrap.set('value', this.statusWrap.get('value').substring(0, this.statusWrap.get('value').length - 1));
+						this.filter(this.statusWrap.get('value'));
+					}
+				}
 				if (this.shownElements.length > 0) {
 					this.setCurrent(this.shownElements[0]);
 				}
@@ -191,16 +198,17 @@ var Select = new Class({
 	
 	filter: function(text) {
 		var text = text || '';
+		text = this.options.caseSensitive ? text : text.toLowerCase();
 		this.elements.optionCopy.invoke('setStyle', 'display', 'block');
 		this.shownElements = [];
 		
 		this.elements.optionCopy.each(function(el) {
-			var elText = el.get('text');
+			var elText = this.options.caseSensitive ? el.get('text') : el.get('text').toLowerCase();
 			var foundIndex = elText.indexOf(text);
 			if (foundIndex > -1) {
 				if (text != '') {
 					var marked = '<span class="' + this.options.ui.searchMarkClass + '">' + elText.substr(foundIndex, text.length) + '</span>';
-					el.set('html', elText.substring(0, foundIndex) + marked + elText.substring(foundIndex + text.length, elText.length));
+					el.set('html', elText.substring(0, foundIndex) + marked + elText.substr(foundIndex + text.length));
 				} else {
 					el.set('html', elText);
 				}
