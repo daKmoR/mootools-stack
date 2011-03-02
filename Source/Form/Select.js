@@ -120,6 +120,16 @@ var Select = new Class({
 			
 			if (this.elements.optionCopy[i].getStyle('display') === 'block') {
 				this.setCurrent(i);
+				
+				var position = this.elements.optionCopy[i].getPosition(this.optionWrap), scroll = this.optionWrap.getScroll()
+				if (position.y < 0) {
+					this.optionWrap.scrollTo(0, scroll.y + position.y);
+				}
+				
+				var moveSize = this.optionWrap.getSize().y - this.elements.optionCopy[i].getSize().y;
+				if (position.y >= moveSize) {
+					this.optionWrap.scrollTo(0, scroll.y + (position.y - moveSize));
+				}
 				return;
 			}
 			i = i + add;
@@ -140,7 +150,7 @@ var Select = new Class({
 	
 		this.current = i;
 		this.elements.optionCopy.invoke('removeClass', 'ui-current');
-		this.elements.optionCopy[i].addClass('ui-current');
+		el.addClass('ui-current');
 	},
 	
 	selectOption: function(mixed) {
