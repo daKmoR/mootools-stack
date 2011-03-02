@@ -23,9 +23,10 @@ var Select = new Class({
 		render: ['status', 'option'],
 		ui: {
 			wrap: { 'class': 'select' },
-			activeClass: 'ui-active',
+			selectedClass: 'ui-Selected',
 			searchMarkClass: 'ui-SearchMark',
-			defaultStatusClass: 'ui-defaultStatus'
+			defaultStatusClass: 'ui-DefaultStatus',
+			currentClass: 'ui-Current'
 		},
 		single: {	forceSelectionOnTyping: true, statusTemplate: '{element}'	},
 		multiple: {	forceSelectionOnTyping: false, statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
@@ -148,20 +149,20 @@ var Select = new Class({
 		el = Type.isObject(mixed) ? mixed : this.elements.optionCopy[i];
 	
 		this.current = i;
-		this.elements.optionCopy.invoke('removeClass', 'ui-current');
-		el.addClass('ui-current');
+		this.elements.optionCopy.invoke('removeClass', this.options.ui.currentClass);
+		el.addClass(this.options.ui.currentClass);
 	},
 	
 	selectOption: function(mixed) {
 		el = Type.isElement(mixed) ? mixed : this.elements.optionCopy[mixed];
 	
 		if (this.options.mode === 'single') {
-			this.elements.optionCopy.invoke('removeClass', this.options.ui.activeClass);
-			el.addClass(this.options.ui.activeClass);
+			this.elements.optionCopy.invoke('removeClass', this.options.ui.selectedClass);
+			el.addClass(this.options.ui.selectedClass);
 			this.close();
 		}
 		if (this.options.mode === 'multiple') {
-			el.toggleClass(this.options.ui.activeClass);
+			el.toggleClass(this.options.ui.selectedClass);
 		}
 		this.fireEvent('select');
 	},
@@ -171,18 +172,18 @@ var Select = new Class({
 		if (mode === 'toSelect') {
 			this.elements.option.invoke('set', 'selected', false);
 			this.elements.optionCopy.each(function(el, i) {
-				if (el.hasClass(this.options.ui.activeClass)) {
+				if (el.hasClass(this.options.ui.selectedClass)) {
 					this.elements.option[i].set('selected', true);
 				}
 			}, this);
 		} else if (mode === 'fromSelect') {
 			this.elements.option.each(function(el, i) {
 				if (el.get('selected') === true) {
-					this.elements.optionCopy[i].addClass(this.options.ui.activeClass);
+					this.elements.optionCopy[i].addClass(this.options.ui.selectedClass);
 				}
 			}, this);
 		}
-		this.activeEls = this.elements.optionCopy.filter(function(el) { return el.hasClass(this.options.ui.activeClass); }.bind(this));
+		this.selectedEls = this.elements.optionCopy.filter(function(el) { return el.hasClass(this.options.ui.selectedClass); }.bind(this));
 	},
 	
 	filter: function(text) {
@@ -207,12 +208,12 @@ var Select = new Class({
 	
 	setStatus: function(text) {
 		var text = text || '';
-		if (this.activeEls.length === 1 && text === '') {
-			text = this.options.single.statusTemplate.substitute({element: this.activeEls[0].get('text'), count: this.activeEls.length});
+		if (this.selectedEls.length === 1 && text === '') {
+			text = this.options.single.statusTemplate.substitute({element: this.selectedEls[0].get('text'), count: this.selectedEls.length});
 		}
-		if (this.activeEls.length > 1 && text === '') {
-			elements = this.activeEls.invoke('get', 'text').join(', ').truncate(this.options.multiple.statusElementsTruncate.length, this.options.multiple.statusElementsTruncate.trail);
-			text = this.options.multiple.statusTemplate.substitute({element: this.activeEls[0].get('text'), elements: elements, count: this.activeEls.length});
+		if (this.selectedEls.length > 1 && text === '') {
+			elements = this.selectedEls.invoke('get', 'text').join(', ').truncate(this.options.multiple.statusElementsTruncate.length, this.options.multiple.statusElementsTruncate.trail);
+			text = this.options.multiple.statusTemplate.substitute({element: this.selectedEls[0].get('text'), elements: elements, count: this.selectedEls.length});
 		}
 		if (text !== '') {
 			this.statusWrap.removeClass(this.options.ui.defaultStatusClass);

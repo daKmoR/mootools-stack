@@ -1,9 +1,9 @@
 .select { width: 200px; }
 	.select .ui-Status { border: 1px solid #ccc; padding: 2px; display: block; width: 196px; }
-		.select .ui-defaultStatus { color: #ccc; }
+		.select .ui-DefaultStatus { color: #ccc; }
 	.select .ui-Option { border: 1px solid #ccc; background: #fff; position: absolute; display: none; width: 200px; height: 250px; overflow-y: auto; overflow-x: hidden; }
 		.select .ui-OptionItem { display: block; cursor: pointer; text-decoration: none; color: #000; padding: 2px; }
 			.select .ui-OptionItem:hover { text-decoration: none; }
-			.select .ui-active { background: #387EFF; color: #fff; }
-			.select .ui-current { background: #6198FF; color: #fff !important; } /*important is need for IE, as it will use a ugly color as default for hover otherwise*/
+			.select .ui-Selected { background: #387EFF; color: #fff; }
+			.select .ui-Current { background: #6198FF; color: #fff !important; } /*important is need for IE, as it will use a ugly color as default for hover otherwise*/
 			.select .ui-SearchMark { font-weight: bold; }
