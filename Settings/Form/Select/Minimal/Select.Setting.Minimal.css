@@ -1,7 +1,7 @@
 .select { width: 200px; }
 	.select .ui-Status { border: 1px solid #ccc; padding: 2px; display: block; width: 196px; }
 		.select .ui-DefaultStatus { color: #ccc; }
-	.select .ui-Option { border: 1px solid #ccc; background: #fff; position: absolute; display: none; width: 200px; height: 250px; overflow-y: auto; overflow-x: hidden; }
+	.select .ui-Option { border: 1px solid #ccc; background: #fff; position: absolute; display: none; width: 200px; max-height: 250px; overflow-y: auto; overflow-x: hidden; }
 		.select .ui-OptionItem { display: block; cursor: pointer; text-decoration: none; color: #000; padding: 2px; }
 			.select .ui-OptionItem:hover { text-decoration: none; }
 			.select .ui-Selected { background: #387EFF; color: #fff; }

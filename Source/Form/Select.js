@@ -7,7 +7,7 @@ description: asdf
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, More/String.Extras, More/Element.Forms, Class.Settings, Element.OuterClick]
+requires: [Core/Browser, Core/Element.Dimensions, Core/Element.Style, More/String.Extras, More/Element.Forms, Class.Settings, Element.OuterClick]
 
 provides: Select
 
@@ -240,6 +240,12 @@ var Select = new Class({
 	open: function() {
 		this.optionWrap.setStyle('display', 'block');
 		this.isOpen = true;
+		if (Browser.ie) {
+			this.optionWrap.setStyle('height', 'auto');
+			if (this.optionWrap.getSize().y >= this.optionWrap.getStyle('max-height').toInt()) {
+				this.optionWrap.setStyle('height', this.optionWrap.getStyle('max-height').toInt());
+			}
+		}
 	},
 
 	close: function() {
