@@ -7,7 +7,7 @@ description: asdf
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, More/String.Extras, Class.Settings, Element.OuterClick]
+requires: [Core/Element.Dimensions, Core/Element.Style, More/String.Extras, More/Element.Forms, Class.Settings, Element.OuterClick]
 
 provides: Select
 
@@ -27,8 +27,8 @@ var Select = new Class({
 			searchMarkClass: 'ui-SearchMark',
 			defaultStatusClass: 'ui-defaultStatus'
 		},
-		single: {	statusTemplate: '{element}'	},
-		multiple: {	statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
+		single: {	forceSelectionOnTyping: true, statusTemplate: '{element}'	},
+		multiple: {	forceSelectionOnTyping: false, statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
 		mode: 'single',
 		defaultStatus: '',
 		caseSensitive: false
@@ -66,9 +66,9 @@ var Select = new Class({
 		this.builder( this.options.render, this.wrap );
 		
 		this.statusWrap.addEvent('click', function() {
-			this.statusWrap.set('value', '');
+			this.statusWrap.selectRange(0, this.statusWrap.get('value').length);
 			this.statusWrap.removeClass(this.options.ui.defaultStatusClass);
-			this.filter(this.statusWrap.get('value'));
+			this.filter();
 			this.toggle();
 		}.bind(this));
 		
@@ -100,7 +100,6 @@ var Select = new Class({
 			el.addEvent('click', function(e) {
 				e.stop();
 				this.selectOption(el);
-				this.statusWrap.focus();
 			}.bind(this));
 			el.addEvent('mouseenter', function(e) {
 				this.setCurrent(el);
@@ -168,7 +167,6 @@ var Select = new Class({
 	},
 	
 	synch: function(mode) {
-		this.activeEls = this.elements.optionCopy.filter(function(el) { return el.hasClass(this.options.ui.activeClass); }.bind(this));
 		var mode = mode || 'toSelect';
 		if (mode === 'toSelect') {
 			this.elements.option.invoke('set', 'selected', false);
@@ -184,6 +182,7 @@ var Select = new Class({
 				}
 			}, this);
 		}
+		this.activeEls = this.elements.optionCopy.filter(function(el) { return el.hasClass(this.options.ui.activeClass); }.bind(this));
 	},
 	
 	filter: function(text) {
@@ -207,7 +206,6 @@ var Select = new Class({
 	},
 	
 	setStatus: function(text) {
-		this.synch();
 		var text = text || '';
 		if (this.activeEls.length === 1 && text === '') {
 			text = this.options.single.statusTemplate.substitute({element: this.activeEls[0].get('text'), count: this.activeEls.length});
@@ -231,6 +229,7 @@ var Select = new Class({
 	},
 
 	close: function() {
+		this.synch();
 		this.setStatus();
 		this.optionWrap.setStyle('display', 'none');
 		this.isOpen = false;
