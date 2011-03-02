@@ -28,8 +28,8 @@ var Select = new Class({
 			defaultStatusClass: 'ui-DefaultStatus',
 			currentClass: 'ui-Current'
 		},
-		single: {	forceSelectionOnTyping: true, statusTemplate: '{element}'	},
-		multiple: {	forceSelectionOnTyping: false, statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
+		single: {	statusTemplate: '{element}'	},
+		multiple: {	statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
 		mode: 'single',
 		defaultStatus: '',
 		caseSensitive: false
@@ -38,6 +38,7 @@ var Select = new Class({
 	current: -1,
 	elements: {},
 	isOpen: false,
+	shownElements: [],
 	
 	initialize: function(select, options) {
 		if (!(this.select = $(select))) return;
@@ -66,7 +67,7 @@ var Select = new Class({
 		
 		this.builder( this.options.render, this.wrap );
 		
-		this.statusWrap.addEvent('click', function() {
+		this.statusWrap.addEvent('focus', function() {
 			this.statusWrap.selectRange(0, this.statusWrap.get('value').length);
 			this.statusWrap.removeClass(this.options.ui.defaultStatusClass);
 			this.filter();
@@ -76,6 +77,9 @@ var Select = new Class({
 		this.statusWrap.addEvent('keyup', function(e) {
 			if (e.key != 'enter' && e.key != 'up' && e.key != 'down' && e.key != 'esc' && e.key != 'tab') {
 				this.filter(this.statusWrap.get('value'));
+				if (this.shownElements.length > 0) {
+					this.setCurrent(this.shownElements[0]);
+				}
 				this.open();
 			}
 		}.bind(this));
@@ -92,7 +96,6 @@ var Select = new Class({
 				this.selectOption(this.current);
 			}
 			if (e.key === 'esc' || e.key === 'tab') {
-				this.statusWrap.blur();
 				this.close();
 			}
 		}.bind(this));
@@ -189,6 +192,7 @@ var Select = new Class({
 	filter: function(text) {
 		var text = text || '';
 		this.elements.optionCopy.invoke('setStyle', 'display', 'block');
+		this.shownElements = [];
 		
 		this.elements.optionCopy.each(function(el) {
 			var elText = el.get('text');
@@ -200,6 +204,7 @@ var Select = new Class({
 				} else {
 					el.set('html', elText);
 				}
+				this.shownElements.push(el);
 			} else {
 				el.setStyle('display', 'none');
 			}
@@ -232,6 +237,7 @@ var Select = new Class({
 	close: function() {
 		this.synch();
 		this.setStatus();
+		this.statusWrap.blur();
 		this.optionWrap.setStyle('display', 'none');
 		this.isOpen = false;
 		this.fireEvent('close');
