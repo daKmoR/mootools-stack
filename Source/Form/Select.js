@@ -203,8 +203,9 @@ var Select = new Class({
 		this.shownElements = [];
 		
 		this.elements.optionCopy.each(function(el) {
-			var elText = this.options.caseSensitive ? el.get('text') : el.get('text').toLowerCase();
-			var foundIndex = elText.indexOf(text);
+			var elSearchText = this.options.caseSensitive ? el.get('text') : el.get('text').toLowerCase();
+			var elText = el.get('text');
+			var foundIndex = elSearchText.indexOf(text);
 			if (foundIndex > -1) {
 				if (text != '') {
 					var marked = '<span class="' + this.options.ui.searchMarkClass + '">' + elText.substr(foundIndex, text.length) + '</span>';
