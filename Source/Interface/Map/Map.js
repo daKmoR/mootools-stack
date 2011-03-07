@@ -9,7 +9,7 @@ license: MIT-style license
 
 authors:
   - Ciul
-	- Thomas Allmer
+  - Thomas Allmer
 
 requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Dimensions, Core/Selectors, SubObjectMapping]
 
@@ -24,7 +24,7 @@ var Map = new Class({
 	options: {
 		mapOptions: {
 			backgroundColor : '#ccc',
-			center: { lat: 7.6, lng: -74 }, 
+			center: [7.6, -74],
 			disableDefaultUI: false,
 			disableDoubleClickZoom: true,
 			draggable: true,
@@ -83,6 +83,8 @@ var Map = new Class({
 		maptypeid_changed:  This event is fired when the visible tiles have finished loading.
 		zoom_changed:       This event is fired when the map zoom property changes.
 		*/
+		
+		this.createMarker([7.6, -74]);
 		
 		//this.createInfoMarker({position: new google.maps.LatLng(7.6,-74)});
 	},
@@ -177,10 +179,10 @@ var Map = new Class({
 
 /*------------------------- CUSTOM METHODS -------------------------*/
 
-	createMarker: function(markerOptions) {
-		markerOptions = (markerOptions != undefined)? markerOptions : {};
+	createMarker: function(position, markerOptions) {
+		markerOptions = markerOptions || {};
 		markerOptions.map = this.mapObj;
-		return new Marker(markerOptions);
+		return new Map.Marker(position, markerOptions);
 	},
 
 	// Possible to define a different Marker Event (action) than 'click'
