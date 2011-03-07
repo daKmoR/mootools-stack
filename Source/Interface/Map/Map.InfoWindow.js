@@ -30,7 +30,7 @@ Map.InfoWindow = new Class({
 			pixelOffset: new google.maps.Size(10,10)
 		},		
 		mapToSubObject: {
-			'this.markerObj': {
+			'this.infoWindowObj': {
 				functions: ['content', 'zIndex', 'position'],
 				eventInstance: 'google.maps.event',
 				eventAddFunction: 'addListener',
@@ -39,13 +39,13 @@ Map.InfoWindow = new Class({
 		}
 	},
 
-	markerObj: null,
+	infoWindowObj: null,
 
 	initialize: function (position, options) {
 		this.options.infoWindowOptions.position = new google.maps.LatLng(position[0], position[1]);
 		this.setOptions(options);
 		
-		this.infoWindowObj = new google.maps.InfoWindow(position, this.options.infoWindowOptions);
+		this.infoWindowObj = new google.maps.InfoWindow(this.options.infoWindowOptions);
 		
 		this.mapToSubObject();
 	},
