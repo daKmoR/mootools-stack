@@ -14,6 +14,7 @@ authors: "Thomas Allmer"
 
 sources:
   - "Source/Class/Class.Settings.js"
+  - "Source/Class/Class.SubObjectMapping.js"
   - "Source/Visual/Overlay/Overlay.js"
   - "Source/Galleries/Gallery/Gallery.js"
   - "Source/Galleries/FlexSlide/FlexSlide.js"
@@ -34,6 +35,8 @@ sources:
   - "Source/Visual/MooPath/MooPath.Wave.js"
   - "Source/Interface/ScrollBar/ScrollBar.js"
   - "Source/Interface/ScrollBar/ScrollBars.js"
+  - "Source/Interface/Map/Map.js"
+  - "Source/Interface/Map/Map.Marker.js"
   - "Source/Form/DatePicker.js"
   - "Source/Form/Select.js"
   - "Source/Form/Selects.js"
