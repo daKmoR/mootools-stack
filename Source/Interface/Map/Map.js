@@ -68,6 +68,7 @@ var Map = new Class({
 		this.createInfoMarker([7.6, -74], 'test');
 		this.createPolygon([[7.6, -74], [7.0, -74], [7.0, -74.5], [7.6, -74.5]]);
 		this.createCircle([7.8, -74], 100000);
+		this.createRectangle([[11.04,-75.75], [7.9,-73.8]]);
 	},
 	
 	/**************************************************************
@@ -175,11 +176,8 @@ var Map = new Class({
 		return new Map.Circle(center, radius, this.mapObj, options);
 	},
 
-	createRectangle: function(rectangleOptions) {
-		rectangleOptions = (rectangleOptions != undefined)? rectangleOptions : {};
-		rectangleOptions.map = this.mapObj;
-		var rectangle = new Rectangle(rectangleOptions);
-		return rectangle;
+	createRectangle: function(bounds, options) {
+		return new Map.Rectangle(bounds, this.mapObj, options);
 	},
 
 	/*  
