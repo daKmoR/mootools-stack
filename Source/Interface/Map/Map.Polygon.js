@@ -22,18 +22,14 @@ Map.Polygon = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		polygonOptions: {
-			/*clickable: true,
-			fillColor: '#777777',
-			fillOpacity: 0.8,
-			geodesic: false,
-			map: null,
-			paths: [], // For simple use, pass a Mx2 array [[lat,lng],[...[lat,lng]]]
-			strokeColor: '#000000',
-			strokeOpacity: 0.8,
-			strokeWeight: 1,
-			zIndex: number*/
-		},		
+		/*clickable: true,
+		fillColor: '#777777',
+		fillOpacity: 0.8,
+		geodesic: false,
+		strokeColor: '#000000',
+		strokeOpacity: 0.8,
+		strokeWeight: 1,
+		zIndex: number*/
 		mapToSubObject: {
 			'this.polygonObj': {
 				functions: ['map', 'path', 'paths'],
@@ -46,11 +42,13 @@ Map.Polygon = new Class({
 
 	polygonObj: null,
 
-	initialize: function (paths, options) {
-		this.options.polygonOptions.paths = this.pathsArrayToMVCArray(paths);
+	initialize: function (paths, map, options) {
+		//paths: [], // For simple use, pass a Mx2 array [[lat,lng],[...[lat,lng]]]
 		this.setOptions(options);
+		this.options.paths = this.pathsArrayToMVCArray(paths);
+		this.options.map = map;
 		
-		this.polygonObj = new google.maps.Polygon(this.options.polygonOptions);
+		this.polygonObj = new google.maps.Polygon(this.options);
 		this.mapToSubObject();
 	},
 	
@@ -66,7 +64,6 @@ Map.Polygon = new Class({
 					mvcPathsArray.push(latLng);
 				}
 			}, this);
-			this.options.polygonOptions.paths = mvcPathsArray;
 		}
 		return mvcPathsArray || paths;
 	},

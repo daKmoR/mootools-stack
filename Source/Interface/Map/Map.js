@@ -67,6 +67,7 @@ var Map = new Class({
 		//this.createMarker([7.6, -74]);
 		
 		this.createInfoMarker([7.6, -74], 'test');
+		this.createPolygon([[7.6, -74], [7.0, -74], [7.0, -74.5], [7.6, -74.5]]);
 	},
 	
 	/**************************************************************
@@ -166,10 +167,8 @@ var Map = new Class({
 		return {marker: marker, infoWindow: infoWindow};
 	},
 
-	createPolygon: function(polygonOptions) {
-		polygonOptions = (polygonOptions != undefined)? polygonOptions : {};
-		polygonOptions.map = this.mapObj;
-		return new Polygon(polygonOptions);
+	createPolygon: function(paths, options) {
+		return new Map.Polygon(paths, this.mapObj, options);
 	},
 
 	createCircle: function(circleOptions) {
