@@ -39,6 +39,7 @@ sources:
   - "Source/Interface/Map/Map.Marker.js"
   - "Source/Interface/Map/Map.InfoWindow.js"
   - "Source/Interface/Map/Map.Polygon.js"
+  - "Source/Interface/Map/Map.Circle.js"
   - "Source/Form/DatePicker.js"
   - "Source/Form/Select.js"
   - "Source/Form/Selects.js"

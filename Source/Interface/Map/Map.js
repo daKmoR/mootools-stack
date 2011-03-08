@@ -64,10 +64,10 @@ var Map = new Class({
 		
 		this.mapToSubObject();
 			
-		//this.createMarker([7.6, -74]);
-		
+		this.createMarker([7.8, -74]);
 		this.createInfoMarker([7.6, -74], 'test');
 		this.createPolygon([[7.6, -74], [7.0, -74], [7.0, -74.5], [7.6, -74.5]]);
+		this.createCircle([7.8, -74], 100000);
 	},
 	
 	/**************************************************************
@@ -171,11 +171,8 @@ var Map = new Class({
 		return new Map.Polygon(paths, this.mapObj, options);
 	},
 
-	createCircle: function(circleOptions) {
-		circleOptions = (circleOptions != undefined)? circleOptions : {};
-		circleOptions.map = this.mapObj;
-		var circle = new Circle(circleOptions);
-		return circle;
+	createCircle: function(center, radius, options) {
+		return new Map.Circle(center, radius, this.mapObj, options);
 	},
 
 	createRectangle: function(rectangleOptions) {
