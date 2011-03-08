@@ -22,20 +22,16 @@ Map.Marker = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		markerOptions: {
-			/*clickable: true,
-			cursor: '',
-			draggable: false,
-			flat: false,
-			icon: '',
-			map: null, 
-			position: new google.maps.LatLng(7.6, -74)
-			raiseOnDrag: true,
-			shadow: '',
-			title: 'Marker Title',
-			visible: true,
-			zIndex: number*/
-		},		
+		/*clickable: true,
+		cursor: '',
+		draggable: false,
+		flat: false,
+		icon: '',
+		raiseOnDrag: true,
+		shadow: '',
+		title: 'Marker Title',
+		visible: true,
+		zIndex: number*/
 		mapToSubObject: {
 			'this.markerObj': {
 				functions: ['clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'position', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
@@ -47,13 +43,15 @@ Map.Marker = new Class({
 	},
 
 	markerObj: null,
-
-	initialize: function (position, options) {
-		this.options.markerOptions.position = new google.maps.LatLng(position[0], position[1]);
+	
+	initialize: function (position, map, options) {
 		this.setOptions(options);
 		
-		this.markerObj = new google.maps.Marker(this.options.markerOptions);
+		// we can't use position or map with options, as it is needed as a reference and not as a copy like setOptions would create it
+		this.options.position = typeOf(position) === 'array' ? new google.maps.LatLng(position[0], position[1]) : position;
+		this.options.map = map;
 		
+		this.markerObj = new google.maps.Marker(this.options);
 		this.mapToSubObject();
 	},
 	

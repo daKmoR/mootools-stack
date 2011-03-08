@@ -22,13 +22,11 @@ Map.InfoWindow = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		infoWindowOptions: {
-			/*content: 'Content',
-			disableAutoPan: false,
-			maxWidth: number,
-			zIndex: number,*/
-			pixelOffset: new google.maps.Size(10,10)
-		},		
+		/*disableAutoPan: false,
+		maxWidth: number,
+		zIndex: number,*/
+		pixelOffset: null,
+		content: 'Content',
 		mapToSubObject: {
 			'this.infoWindowObj': {
 				functions: ['content', 'zIndex', 'position'],
@@ -42,10 +40,12 @@ Map.InfoWindow = new Class({
 	infoWindowObj: null,
 
 	initialize: function (position, options) {
-		this.options.infoWindowOptions.position = new google.maps.LatLng(position[0], position[1]);
 		this.setOptions(options);
 		
-		this.infoWindowObj = new google.maps.InfoWindow(this.options.infoWindowOptions);
+		this.options.position = typeOf(position) === 'array' ? new google.maps.LatLng(position[0], position[1]) : position;
+		//this.options.pixelOffset = new google.maps.Size(10,10);
+		
+		this.infoWindowObj = new google.maps.InfoWindow(this.options);
 		
 		this.mapToSubObject();
 	},

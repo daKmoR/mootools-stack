@@ -22,23 +22,20 @@ var Map = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		mapOptions: {
-			backgroundColor : '#ccc',
-			center: [7.6, -74],
-			disableDefaultUI: false,
-			disableDoubleClickZoom: true,
-			draggable: true,
-			draggableCursor: 'cursor',
-			draggingCursor: 'cursor',
-			keyboardShortcuts: true,
-			mapTypeId: 'roadmap',
-			navigationControl: true,
-			scaleControl: true,
-			scrollwheel: true,
-			streetViewControl: true,
-			zoom: 6
-		},
-		size: {	width:  '100%', height: '100%' },
+		/*backgroundColor : '#ccc',
+		disableDefaultUI: false,
+		disableDoubleClickZoom: true,
+		draggable: true,
+		draggableCursor: 'cursor',
+		draggingCursor: 'cursor',
+		keyboardShortcuts: true,
+		navigationControl: true,
+		scaleControl: true,
+		scrollwheel: true,
+		streetViewControl: true,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,*/
+		zoom: 6,
+		center: [7.6, -74],
 		mapToSubObject: {
 			'this.mapObj': {
 				functions: ['center', 'zoom', 'mapTypeId', 'streetView'],
@@ -57,51 +54,19 @@ var Map = new Class({
 	mapObj: null,
 
 	initialize: function (mapContainer, options) {
-		//new Element('script', { type: "text/javascript", src: 'http://maps.google.com/maps/api/js?sensor=false'}).inject($$('head')[0], 'top');
 		this.mapContainer = $(mapContainer);
 		this.setOptions(options);
 		
-		this.createMap();
+		this.options.center = typeOf(this.options.center) === 'array' ? new google.maps.LatLng(this.options.center[0], this.options.center[1]) : this.options.center;
+		this.options.mapTypeId = google.maps.MapTypeId.ROADMAP;
+		
+		this.mapObj = new google.maps.Map(this.mapContainer, this.options);
 		
 		this.mapToSubObject();
-		/*
-		bounds_changed:     This event is fired when the viewport bounds have changed.
-		center_changed:     This event is fired when the map center property changes.
-		click:              This event is fired when the user clicks on the map (but not when they click on a marker or infowindow).
-		dblclick:           This event is fired when the user double-clicks on the map. Note that the click event will also fire, right before this one.
-		drag:               This event is repeatedly fired while the user drags the map.
-		dragend:            This event is fired when the user stops dragging the map.
-		dragstart:          This event is fired when the user starts dragging the map.
-		idle:               This event is fired when the map becomes idle after panning or zooming.
-		maptypeid_changed:	This event is fired when the mapTypeId property changes.
-		mousemove:          This event is fired whenever the user's mouse moves over the map container.
-		mouseout:           This event is fired when the user's mouse exits the map container.
-		mouseover:          This event is fired when the user's mouse enters the map container.
-		projection_changed: This event is fired when the projection has changed.
-		resize:             Developers should trigger this event on the map when the div changes size: google.maps.event.trigger(map, 'resize').
-		rightclick:         This event is fired when the DOM contextmenu event is fired on the map container.
-		maptypeid_changed:  This event is fired when the visible tiles have finished loading.
-		zoom_changed:       This event is fired when the map zoom property changes.
-		*/
+			
+		//this.createMarker([7.6, -74]);
 		
-		this.createMarker([7.6, -74]);
-		
-		//this.createInfoMarker({position: new google.maps.LatLng(7.6,-74)});
-	},
-
-	createMap: function() {
-		// this.mapContainer.setStyles({
-			// width:  this.options.size.width,
-			// height: this.options.size.height
-		// });
-		
-    var latlng = new google.maps.LatLng(7.6, -74);
-		//this.createLatLng(this.options.center.lat, this.options.center.lng)
-		
-		this.options.mapOptions.center = latlng;
-		this.options.mapOptions.mapTypeId = google.maps.MapTypeId.ROADMAP;
-	
-		this.mapObj = new google.maps.Map(this.mapContainer, this.options.mapOptions);
+		this.createInfoMarker([7.6, -74], 'test');
 	},
 	
 	/**************************************************************
@@ -179,32 +144,24 @@ var Map = new Class({
 
 /*------------------------- CUSTOM METHODS -------------------------*/
 
-	createMarker: function(position, markerOptions) {
-		markerOptions = markerOptions || {};
-		markerOptions.map = this.mapObj;
-		return new Map.Marker(position, markerOptions);
+	createMarker: function(position, options) {
+		return new Map.Marker(position, this.mapObj, options);
 	},
 
-	// Possible to define a different Marker Event (action) than 'click'
-	// to trigger the opening of the infoWindow. See Marker Class>>EVENTS (ln 724).
-	createInfoMarker: function(markerOptions, infoWindowOptions, action, opened, delay) {
-		action = [action, 'click'].pick();
-		// Checks for opened option to be passed or not.
-		if(!typeOf(opened) == 'boolean') {
-			// Closed by default.
-			opened = false;
-		}
-		var marker = new Marker(markerOptions);
-		var infoWindow = new InfoWindow(infoWindowOptions);
-		marker.addEvent(action, function() {
+	createInfoMarker: function(position, content, options) {
+		options = options || {};
+		options.isOpen = options.isOpen != undefined ? options.isOpen : false;
+		options.content = content;
+		
+		var marker = this.createMarker(position, options);
+		var infoWindow = new Map.InfoWindow(position, options);
+		
+		marker.addEvent('click', function() {
 			infoWindow.open(this.mapObj, marker.markerObj);
 		}.bind(this));
-		marker.setMap(this.mapObj);
-		if(opened) {
-			if(!typeOf(delay) == 'number') {
-				delay = 250;
-			}
-			marker.fireEvent(action, null, delay);
+		
+		if (options.isOpen === true) {
+			infoWindow.open(this.mapObj, marker.markerObj);
 		}
 		return {marker: marker, infoWindow: infoWindow};
 	},

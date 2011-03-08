@@ -37,6 +37,7 @@ sources:
   - "Source/Interface/ScrollBar/ScrollBars.js"
   - "Source/Interface/Map/Map.js"
   - "Source/Interface/Map/Map.Marker.js"
+  - "Source/Interface/Map/Map.InfoWindow.js"
   - "Source/Form/DatePicker.js"
   - "Source/Form/Select.js"
   - "Source/Form/Selects.js"
