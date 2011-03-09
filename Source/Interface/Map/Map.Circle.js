@@ -22,21 +22,16 @@ Map.Circle = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		/*clickable: true,
-		fillColor: '#000000',
-		fillOpacity: 0.3,
-		strokeColor: '#000000',
-		strokeOpacity: 0.8,
-		strokeWeight: 2,
-		zIndex: number,*/
+		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#CircleOptions
 	},
 	
 	subObjectMapping: {
 		'this.circleObj': {
-			properties: ['center', 'map', 'radius', 'flat', 'icon', 'map', 'position', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
+			functions: ['getBounds', 'getCenter', 'setOptions'],
+			properties: ['map', 'radius'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
-			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
+			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'rightclick']
 		}
 	},
 
@@ -54,12 +49,8 @@ Map.Circle = new Class({
 		this.mapToSubObject();
 	},
 	
-	getBounds: function() {
-		return this.circleObj.getBounds();
-	},
-	
 	hide: function() {
-		this.circleObj.setMap(null);
+		this.setMap(null);
 	},
 
 	show: function() {
@@ -75,8 +66,15 @@ Map.Circle = new Class({
 	},
 
 	destroy: function() {
-		this.circleObj.setMap(null);
+		this.setMap(null);
 		this.circleObj = null;
-	}	
+	},
+	
+	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
+	
+	setCenter: function(center) {
+		var center = typeOf(center) === 'array' ? center.toLatLng() : center;
+		this.circleObj.setCenter(center);
+	}
 
 });
