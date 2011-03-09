@@ -33,7 +33,7 @@ Map.Circle = new Class({
 	
 	subObjectMapping: {
 		'this.circleObj': {
-			functions: ['center', 'map', 'radius', 'flat', 'icon', 'map', 'position', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
+			properties: ['center', 'map', 'radius', 'flat', 'icon', 'map', 'position', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']

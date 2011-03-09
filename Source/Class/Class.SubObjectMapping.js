@@ -22,6 +22,10 @@ this.SubObjectMapping = new Class({
 	mapToSubObject: function() {
 		Object.each(this.subObjectMapping, function(subObjectOptions, subObject) {
 			subObject = eval(subObject);
+			if (subObjectOptions.properties !== undefined && subObjectOptions.properties.length > 0) {
+				this.mapProperties(subObjectOptions.properties, subObject);
+			}
+			
 			if (subObjectOptions.functions !== undefined && subObjectOptions.functions.length > 0) {
 				this.mapFunctions(subObjectOptions.functions, subObject);
 			}
@@ -34,18 +38,26 @@ this.SubObjectMapping = new Class({
 		}, this);
 	},
 	
-	mapFunctions: function(functions, subObject) {
-		functions.each(function(curFunction) {
-			var getFunction = 'get' + curFunction.capitalize();
+	mapProperties: function(properties, subObject) {
+		properties.each(function(property) {
+			var getFunction = 'get' + property.capitalize();
 			this[getFunction] = function() {
 				return subObject[getFunction]();
 			}
 			
-			var setFunction = 'set' + curFunction.capitalize();
+			var setFunction = 'set' + property.capitalize();
 			this[setFunction] = function() {
 				var argument = arguments[0] || subObject[getFunction]();
 				subObject[setFunction](argument);
 			}.bind(this);
+		}, this);
+	},
+	
+	mapFunctions: function(functions, subObject) {
+		functions.each(function(curFunction) {
+			this[curFunction] = function() {
+				subObject[curFunction].apply(subObject, Array.from(arguments));
+			}
 		}, this);
 	},
 	

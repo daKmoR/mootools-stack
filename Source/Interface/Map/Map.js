@@ -64,7 +64,7 @@ var Map = new Class({
 
 	subObjectMapping: {
 		'this.mapObj': {
-			functions: ['center', 'zoom', 'mapTypeId', 'streetView'],
+			properties: ['center', 'zoom', 'mapTypeId', 'streetView'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed'],

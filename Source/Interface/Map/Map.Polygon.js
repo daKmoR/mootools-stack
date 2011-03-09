@@ -34,7 +34,7 @@ Map.Polygon = new Class({
 	
 	subObjectMapping: {
 		'this.polygonObj': {
-			functions: ['map', 'path', 'paths'],
+			properties: ['map', 'path', 'paths'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']

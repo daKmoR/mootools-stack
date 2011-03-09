@@ -33,7 +33,7 @@ Map.PolyLine = new Class({
 	
 	subObjectMapping: {
 		'this.polyLineObj': {
-			functions: ['path', 'map'],
+			properties: ['path', 'map'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']

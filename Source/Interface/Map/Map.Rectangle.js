@@ -34,7 +34,7 @@ Map.Rectangle = new Class({
 	
 	subObjectMapping: {
 		'this.rectangleObj': {
-			functions: ['bounds', 'map'],
+			properties: ['bounds', 'map'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']

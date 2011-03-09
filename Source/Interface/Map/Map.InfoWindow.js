@@ -31,7 +31,7 @@ Map.InfoWindow = new Class({
 	
 	subObjectMapping: {
 		'this.infoWindowObj': {
-			functions: ['content', 'zIndex', 'position'],
+			properties: ['content', 'zIndex', 'position'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['closeclick', 'content_changed', 'domready', 'position_changed', 'zindex_changed']
