@@ -99,10 +99,6 @@ var Map = new Class({
 	
 	/*------------------------- CREATORS (will move to SubClasses) -------------------------*/
 
-	createMarker: function(position, options) {
-		return new Map.Marker(position, this.mapObj, options);
-	},
-
 	createInfoMarker: function(position, content, options) {
 		options = options || {};
 		options.isOpen = options.isOpen != undefined ? options.isOpen : false;
@@ -121,32 +117,12 @@ var Map = new Class({
 		return {marker: marker, infoWindow: infoWindow};
 	},
 
-	createPolygon: function(paths, options) {
-		return new Map.Polygon(paths, this.mapObj, options);
+	createOverlay: function(options) {
+		return new Map.Overlay(this.mapObj, options);
 	},
 
-	createCircle: function(center, radius, options) {
-		return new Map.Circle(center, radius, this.mapObj, options);
-	},
-
-	createRectangle: function(bounds, options) {
-		return new Map.Rectangle(bounds, this.mapObj, options);
-	},
-
-	createPolyLine: function(path, options) {
-		return new Map.PolyLine(path, this.mapObj, options);
-	},
-
-	createOverlay: function(overlayOptions) {
-		overlayOptions = (overlayOptions != undefined)? overlayOptions : {};
-		var overlay = new Overlay(this.mapObj, overlayOptions);
-	},
-
-	createControl: function(tag, customControlOptions) {
-		customControlOptions = (customControlOptions != undefined)? customControlOptions : {};
-		customControlOptions.map = this.mapObj;
-		var customControl = new CustomControl(tag, customControlOptions);
-		return customControl;
+	createControl: function(tag, options) {
+		return new Map.CustomControl(tag, this.mapObj, options);
 	}
 
 });

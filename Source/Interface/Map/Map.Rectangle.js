@@ -77,3 +77,11 @@ Map.Rectangle = new Class({
 	}
 
 });
+
+Map.implement({
+	
+	createRectangle: function(bounds, options) {
+		return new Map.Rectangle(bounds, this.mapObj, options);
+	}
+
+});

@@ -80,3 +80,11 @@ Map.Polygon = new Class({
 	}
 
 });
+
+Map.implement({
+	
+	createPolygon: function(paths, options) {
+		return new Map.Polygon(paths, this.mapObj, options);
+	}
+
+});

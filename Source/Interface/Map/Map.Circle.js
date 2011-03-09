@@ -78,3 +78,11 @@ Map.Circle = new Class({
 	}
 
 });
+
+Map.implement({
+	
+	createCircle: function(center, radius, options) {
+		return new Map.Circle(center, radius, this.mapObj, options);
+	}
+
+});

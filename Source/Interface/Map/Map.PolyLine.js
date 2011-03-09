@@ -119,3 +119,11 @@ Map.PolyLine = new Class({
 	}
 
 });
+
+Map.implement({
+	
+	createPolyLine: function(path, options) {
+		return new Map.PolyLine(path, this.mapObj, options);
+	}
+
+});

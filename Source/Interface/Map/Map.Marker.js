@@ -78,3 +78,11 @@ Map.Marker = new Class({
 	}
 
 });
+
+Map.implement({
+	
+	createMarker: function(position, options) {
+		return new Map.Marker(position, this.mapObj, options);
+	}
+
+});
