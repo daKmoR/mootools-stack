@@ -22,19 +22,13 @@ Map.Polygon = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		/*clickable: true,
-		fillColor: '#777777',
-		fillOpacity: 0.8,
-		geodesic: false,
-		strokeColor: '#000000',
-		strokeOpacity: 0.8,
-		strokeWeight: 1,
-		zIndex: number*/
+		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#PolygonOptions
 	},
 	
 	subObjectMapping: {
 		'this.polygonObj': {
-			properties: ['map', 'path', 'paths'],
+			functions: ['getPath', 'getPaths', 'setOptions'],
+			properties: ['map'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
@@ -53,7 +47,7 @@ Map.Polygon = new Class({
 	},
 	
 	hide: function() {
-		this.polygonObj.setMap(null);
+		this.setMap(null);
 	},
 
 	show: function() {
@@ -69,8 +63,20 @@ Map.Polygon = new Class({
 	},
 
 	destroy: function() {
-		this.polygonObj.setMap(null);
+		this.setMap(null);
 		this.polygonObj = null;
+	},
+	
+	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
+	
+	setPath: function(path) {
+		var path = typeOf(path) === 'array' ? path.toLatLng() : path;
+		this.polygonObj.setPath(path);
+	},
+	
+	setPaths: function(paths) {
+		var paths = typeOf(paths) === 'array' ? paths.toLatLng() : paths;
+		this.polygonObj.setPaths(paths);
 	}
 
 });
