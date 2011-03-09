@@ -28,16 +28,18 @@ Map.PolyLine = new Class({
 		strokeOpacity: 1,
 		strokeWeight: 2,
 		zIndex: number*/
-		mapToSubObject: {
-			'this.polyLineObj': {
-				functions: ['path', 'map'],
-				eventInstance: 'google.maps.event',
-				eventAddFunction: 'addListener',
-				events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
-			}
+
+	},
+	
+	subObjectMapping: {
+		'this.polyLineObj': {
+			functions: ['path', 'map'],
+			eventInstance: 'google.maps.event',
+			eventAddFunction: 'addListener',
+			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
 		}
 	},
-
+		
 	polyLineObj: null,
 	
 	initialize: function (path, map, options) {

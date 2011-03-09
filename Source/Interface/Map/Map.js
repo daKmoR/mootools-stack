@@ -58,20 +58,20 @@ var Map = new Class({
 		mapTypeId: google.maps.MapTypeId.ROADMAP,*/
 		zoom: 6,
 		center: [7.6, -74],
-		mapToSubObject: {
-			'this.mapObj': {
-				functions: ['center', 'zoom', 'mapTypeId', 'streetView'],
-				functions: ['center'],
-				eventInstance: 'google.maps.event',
-				eventAddFunction: 'addListener',
-				events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed'],
-				events: ['click']
-			}
-		},
 		onClick: function(e) {
 			console.log('boom', e);
 		}
 	},
+
+	subObjectMapping: {
+		'this.mapObj': {
+			functions: ['center', 'zoom', 'mapTypeId', 'streetView'],
+			eventInstance: 'google.maps.event',
+			eventAddFunction: 'addListener',
+			events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed'],
+		}
+	},
+	
 
 	mapObj: null,
 

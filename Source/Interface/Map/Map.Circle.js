@@ -29,13 +29,14 @@ Map.Circle = new Class({
 		strokeOpacity: 0.8,
 		strokeWeight: 2,
 		zIndex: number,*/
-		mapToSubObject: {
-			'this.circleObj': {
-				functions: ['center', 'map', 'radius', 'flat', 'icon', 'map', 'position', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
-				eventInstance: 'google.maps.event',
-				eventAddFunction: 'addListener',
-				events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
-			}
+	},
+	
+	subObjectMapping: {
+		'this.circleObj': {
+			functions: ['center', 'map', 'radius', 'flat', 'icon', 'map', 'position', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
+			eventInstance: 'google.maps.event',
+			eventAddFunction: 'addListener',
+			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
 		}
 	},
 

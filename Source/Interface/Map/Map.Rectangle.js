@@ -29,16 +29,18 @@ Map.Rectangle = new Class({
 		strokeOpacity: 0.8,
 		strokeWeight: 2
 		zindex: number,*/
-		mapToSubObject: {
-			'this.rectangleObj': {
-				functions: ['bounds', 'map'],
-				eventInstance: 'google.maps.event',
-				eventAddFunction: 'addListener',
-				events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
-			}
+
+	},
+	
+	subObjectMapping: {
+		'this.rectangleObj': {
+			functions: ['bounds', 'map'],
+			eventInstance: 'google.maps.event',
+			eventAddFunction: 'addListener',
+			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
 		}
 	},
-
+		
 	rectangleObj: null,
 	
 	initialize: function (bounds, map, options) {

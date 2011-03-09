@@ -20,7 +20,7 @@ provides: [SubObjectMapping]
 this.SubObjectMapping = new Class({
 	
 	mapToSubObject: function() {
-		Object.each(this.options.mapToSubObject, function(subObjectOptions, subObject) {
+		Object.each(this.subObjectMapping, function(subObjectOptions, subObject) {
 			subObject = eval(subObject);
 			if (subObjectOptions.functions !== undefined && subObjectOptions.functions.length > 0) {
 				this.mapFunctions(subObjectOptions.functions, subObject);

@@ -27,13 +27,14 @@ Map.InfoWindow = new Class({
 		zIndex: number,*/
 		pixelOffset: null,
 		content: 'Content',
-		mapToSubObject: {
-			'this.infoWindowObj': {
-				functions: ['content', 'zIndex', 'position'],
-				eventInstance: 'google.maps.event',
-				eventAddFunction: 'addListener',
-				events: ['closeclick', 'content_changed', 'domready', 'position_changed', 'zindex_changed']
-			}
+	},
+	
+	subObjectMapping: {
+		'this.infoWindowObj': {
+			functions: ['content', 'zIndex', 'position'],
+			eventInstance: 'google.maps.event',
+			eventAddFunction: 'addListener',
+			events: ['closeclick', 'content_changed', 'domready', 'position_changed', 'zindex_changed']
 		}
 	},
 

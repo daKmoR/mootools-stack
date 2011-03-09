@@ -30,13 +30,14 @@ Map.Polygon = new Class({
 		strokeOpacity: 0.8,
 		strokeWeight: 1,
 		zIndex: number*/
-		mapToSubObject: {
-			'this.polygonObj': {
-				functions: ['map', 'path', 'paths'],
-				eventInstance: 'google.maps.event',
-				eventAddFunction: 'addListener',
-				events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
-			}
+	},
+	
+	subObjectMapping: {
+		'this.polygonObj': {
+			functions: ['map', 'path', 'paths'],
+			eventInstance: 'google.maps.event',
+			eventAddFunction: 'addListener',
+			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
 		}
 	},
 
