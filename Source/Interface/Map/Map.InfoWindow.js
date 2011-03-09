@@ -22,16 +22,14 @@ Map.InfoWindow = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		/*disableAutoPan: false,
-		maxWidth: number,
-		zIndex: number,*/
-		pixelOffset: null,
-		content: 'Content',
+		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#InfoWindowOptions
+		content: 'pls provide your content with the options',
 	},
 	
 	subObjectMapping: {
 		'this.infoWindowObj': {
-			properties: ['content', 'zIndex', 'position'],
+			functions: ['close', 'getPosition', 'open', 'setOptions'],
+			properties: ['content', 'zIndex'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['closeclick', 'content_changed', 'domready', 'position_changed', 'zindex_changed']
@@ -51,13 +49,11 @@ Map.InfoWindow = new Class({
 		this.mapToSubObject();
 	},
 	
-	close: function() {
-		this.infoWindowObj.close();
-	},
+	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
 	
-	//MVC object is usually a marker.
-	open: function(map, MVCObject) {
-		this.infoWindowObj.open(map, MVCObject);
+	setPosition: function(point) {
+		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
+		this.markerObj.setPosition(point);
 	}
 
 });
