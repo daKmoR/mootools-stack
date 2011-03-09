@@ -22,22 +22,16 @@ Map.Rectangle = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		/*clickable: true,
-		fillColor: '#000000',
-		fillOpacity: 0.3,
-		strokeColor: '#000000',
-		strokeOpacity: 0.8,
-		strokeWeight: 2
-		zindex: number,*/
-
+		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#RectangleOptions
 	},
 	
 	subObjectMapping: {
 		'this.rectangleObj': {
-			properties: ['bounds', 'map'],
+			functions: ['getBounds', 'setOptions'],
+			properties: ['map'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
-			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
+			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'rightclick']
 		}
 	},
 		
@@ -55,7 +49,7 @@ Map.Rectangle = new Class({
 	},
 	
 	hide: function() {
-		this.rectangleObj.setMap(null);
+		this.setMap(null);
 	},
 
 	show: function() {
@@ -71,8 +65,15 @@ Map.Rectangle = new Class({
 	},
 
 	destroy: function() {
-		this.rectangleObj.setMap(null);
+		this.setMap(null);
 		this.rectangleObj = null;
+	},
+	
+	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
+	
+	setBounds: function(bounds) {
+		var bounds = (typeOf(bounds) === 'array' && bounds.length === 2) ? bounds.toLatLngBounds() : bounds;
+		this.rectangleObj.setBounds(bounds);
 	}
 
 });
