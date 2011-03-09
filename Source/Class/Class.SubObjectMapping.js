@@ -10,7 +10,7 @@ license: MIT-style license
 authors:
 	- Thomas Allmer
 
-requires: [Core/Class, Core/Object, Core/Functions]
+requires: [Core/Class, Core/Object]
 
 provides: [SubObjectMapping]
 

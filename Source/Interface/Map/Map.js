@@ -11,7 +11,7 @@ authors:
   - Ciul
   - Thomas Allmer
 
-requires: [Core/Class.Extras, Core/Element.Event, Core/Element.Dimensions, Core/Selectors, SubObjectMapping]
+requires: [Core/Class.Extras, SubObjectMapping]
 
 provides: [Map]
 
