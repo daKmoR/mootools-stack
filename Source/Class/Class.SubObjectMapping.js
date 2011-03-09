@@ -55,7 +55,7 @@ this.SubObjectMapping = new Class({
 	mapFunctions: function(functions, subObject) {
 		functions.each(function(curFunction) {
 			this[curFunction] = function() {
-				subObject[curFunction].apply(subObject, Array.from(arguments));
+				return subObject[curFunction].apply(subObject, Array.from(arguments));
 			}
 		}, this);
 	},
