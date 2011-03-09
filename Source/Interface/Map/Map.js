@@ -54,10 +54,9 @@ var Map = new Class({
 		navigationControl: true,
 		scaleControl: true,
 		scrollwheel: true,
-		streetViewControl: true,
-		mapTypeId: google.maps.MapTypeId.ROADMAP,*/
+		streetViewControl: true,*/
+		mapTypeId: 'roadmap',
 		zoom: 6,
-		center: [7.6, -74],
 		onClick: function(e) {
 			console.log('boom', e);
 		}
@@ -71,17 +70,14 @@ var Map = new Class({
 			events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed'],
 		}
 	},
-	
 
 	mapObj: null,
 
-	initialize: function (mapContainer, options) {
+	initialize: function (mapContainer, center, options) {
 		this.mapContainer = $(mapContainer);
 		this.setOptions(options);
 		
-		this.options.center = typeOf(this.options.center) === 'array' ? new google.maps.LatLng(this.options.center[0], this.options.center[1]) : this.options.center;
-		this.options.mapTypeId = google.maps.MapTypeId.ROADMAP;
-		
+		this.options.center = typeOf(center) === 'array' ? center.toLatLng() : center;
 		this.mapObj = new google.maps.Map(this.mapContainer, this.options);
 		
 		this.mapToSubObject();
