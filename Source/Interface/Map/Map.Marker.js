@@ -22,24 +22,17 @@ Map.Marker = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		/*clickable: true,
-		cursor: '',
-		draggable: false,
-		flat: false,
-		icon: '',
-		raiseOnDrag: true,
-		shadow: '',
-		title: 'Marker Title',
+		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
 		visible: true,
-		zIndex: number*/
 	},
 	
 	subObjectMapping: {
 		'this.markerObj': {
-			properties: ['clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'position', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
+			functions: ['getPosition', 'setOptions'],
+			properties: ['animation', 'clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
-			events: ['click', 'clickable_changed', 'cursor_changed', 'dblclick', 'drag', 'dragend', 'draggable_changed', 'dragstart', 'flat_changed', 'icon_changed', 'mousedown', 'mouseout', 'mouseover', 'mouseup', 'position_changed', 'rightclick', 'shadow_changed', 'shape_changed', 'title_changed', 'visible_changed', 'zindex_changed']
+			events: ['animation_changed', 'click', 'clickable_changed', 'cursor_changed', 'dblclick', 'drag', 'dragend', 'draggable_changed', 'dragstart', 'flat_changed', 'icon_changed', 'mousedown', 'mouseout', 'mouseover', 'mouseup', 'position_changed', 'rightclick', 'shadow_changed', 'shape_changed', 'title_changed', 'visible_changed', 'zindex_changed']
 		}
 	},
 
@@ -73,8 +66,15 @@ Map.Marker = new Class({
 	},
 
 	destroy: function() {
-		this.markerObj.setMap(null);
+		this.setMap(null);
 		this.markerObj = null;
+	},
+	
+	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
+	
+	setPosition: function(point) {
+		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
+		this.markerObj.setPosition(point);
 	}
 
 });
