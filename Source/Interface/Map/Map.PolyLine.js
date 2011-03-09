@@ -22,21 +22,16 @@ Map.PolyLine = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		/*clickable: true,
-		geodesic: true,
-		strokeColor: '#ff0000',
-		strokeOpacity: 1,
-		strokeWeight: 2,
-		zIndex: number*/
-
+		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#PolylineOptions
 	},
 	
 	subObjectMapping: {
 		'this.polyLineObj': {
-			properties: ['path', 'map'],
+			functions: ['getPath', 'setOptions'],
+			properties: ['map'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
-			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
+			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'rightclick']
 		}
 	},
 		
@@ -96,7 +91,7 @@ Map.PolyLine = new Class({
 	},
 	
 	hide: function() {
-		this.polyLineObj.setMap(null);
+		this.setMap(null);
 	},
 
 	show: function() {
@@ -112,8 +107,15 @@ Map.PolyLine = new Class({
 	},
 
 	destroy: function() {
-		this.polyLineObj.setMap(null);
+		this.setMap(null);
 		this.polyLineObj = null;
+	},
+	
+	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
+	
+	setPath: function(path) {
+		var path = typeOf(path) === 'array' ? path.toLatLng() : path;
+		this.polyLineObj.setPath(path);
 	}
 
 });

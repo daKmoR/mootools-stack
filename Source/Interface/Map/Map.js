@@ -46,10 +46,7 @@ var Map = new Class({
 	options: {
 		// use all Options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 		mapTypeId: 'roadmap',
-		zoom: 6,
-		onClick: function(e) {
-			console.log('boom', e);
-		}
+		zoom: 6
 	},
 
 	subObjectMapping: {
@@ -72,14 +69,6 @@ var Map = new Class({
 		this.mapObj = new google.maps.Map(this.mapContainer, this.options);
 		
 		this.mapToSubObject();
-		
-		this.createMarker([7.8, -74]);
-		this.createInfoMarker([7.6, -74], 'test');
-		this.createPolygon([[7.6, -74], [7.0, -74], [7.3, -74.5], [7.6, -74.5]]);
-		this.createCircle([7.8, -74], 100000);
-		this.createRectangle([[11.04,-75.75], [7.9,-73.8]]);
-		var tmp = this.createPolyLine([[7.8, -74], [7.2, -74], [7.2, -74.5], [7.8, -74.5]]);
-		tmp.addLine([7.9,-73.8]);
 	},
 
 	getMap: function() {

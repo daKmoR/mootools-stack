@@ -53,7 +53,7 @@ Map.InfoWindow = new Class({
 	
 	setPosition: function(point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
-		this.markerObj.setPosition(point);
+		this.infoWindowObj.setPosition(point);
 	}
 
 });
