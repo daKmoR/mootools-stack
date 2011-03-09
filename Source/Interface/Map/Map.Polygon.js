@@ -43,29 +43,12 @@ Map.Polygon = new Class({
 	polygonObj: null,
 
 	initialize: function (paths, map, options) {
-		//paths: [], // For simple use, pass a Mx2 array [[lat,lng],[...[lat,lng]]]
 		this.setOptions(options);
-		this.options.paths = this.pathsArrayToMVCArray(paths);
+		this.options.paths = typeOf(paths) === 'array' ? paths.toLatLng() : paths;
 		this.options.map = map;
 		
 		this.polygonObj = new google.maps.Polygon(this.options);
 		this.mapToSubObject();
-	},
-	
-	pathsArrayToMVCArray: function(paths) {
-		// If you don't pass a Mx2 array make sure you pass a correct paths arguments
-		// according to Google Maps Api documentation.
-		if (paths.flatten().length == 2*paths.length) {
-			var mvcPathsArray = new google.maps.MVCArray();
-			paths.each(function(item, index) {
-				if(typeOf(item) == 'array' && typeOf(item[0]) == 'number' && typeOf(item[1]) == 'number' && item.length == 2) {
-					// This will convert each [lat,lng] you pass to a google.maps.LatLng object.
-					var latLng = new google.maps.LatLng(item[0], item[1]);
-					mvcPathsArray.push(latLng);
-				}
-			}, this);
-		}
-		return mvcPathsArray || paths;
 	},
 	
 	hide: function() {
