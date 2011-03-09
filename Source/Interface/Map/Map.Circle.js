@@ -44,7 +44,7 @@ Map.Circle = new Class({
 	initialize: function (center, radius, map, options) {
 		this.setOptions(options);
 
-		this.options.center = typeOf(center) === 'array' ? new google.maps.LatLng(center[0], center[1]) : center;
+		this.options.center = typeOf(center) === 'array' ? center.toLatLng() : center;
 		this.options.map = map;
 		this.options.radius = radius;
 		

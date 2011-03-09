@@ -48,7 +48,7 @@ Map.Marker = new Class({
 		this.setOptions(options);
 		
 		// we can't use position or map with options, as it is needed as a reference and not as a copy like setOptions would create it
-		this.options.position = typeOf(position) === 'array' ? new google.maps.LatLng(position[0], position[1]) : position;
+		this.options.position = typeOf(position) === 'array' ? position.toLatLng() : position;
 		this.options.map = map;
 		
 		this.markerObj = new google.maps.Marker(this.options);

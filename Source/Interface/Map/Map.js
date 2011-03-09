@@ -32,6 +32,10 @@ Array.implement({
 		}
 		
 		return this;
+	},
+	
+	toLatLngBounds: function() {
+		return (this.length === 2) ? new google.maps.LatLngBounds(this[0].toLatLng(), this[1].toLatLng()) : this;
 	}
 	
 });

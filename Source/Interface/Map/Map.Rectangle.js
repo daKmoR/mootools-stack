@@ -45,14 +45,7 @@ Map.Rectangle = new Class({
 		this.setOptions(options);
 		
 		// we can't use bounds or map with options, as it is needed as a reference and not as a copy like setOptions would create it
-		if (typeOf(bounds) === 'array' && bounds.length === 2 && typeOf(bounds[0]) === 'array' && bounds[0].length === 2 && bounds[1].length === 2) {
-			this.options.bounds = new google.maps.LatLngBounds(
-				new google.maps.LatLng(bounds[0][0], bounds[0][1]), 
-				new google.maps.LatLng(bounds[1][0], bounds[1][1])
-			);
-		} else {
-			this.options.bounds = bounds;
-		}
+		this.options.bounds = (typeOf(bounds) === 'array' && bounds.length === 2) ? bounds.toLatLngBounds() : bounds;
 		this.options.map = map;
 		
 		this.rectangleObj = new google.maps.Rectangle(this.options);

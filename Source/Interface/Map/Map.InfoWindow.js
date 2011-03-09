@@ -42,7 +42,7 @@ Map.InfoWindow = new Class({
 	initialize: function (position, options) {
 		this.setOptions(options);
 		
-		this.options.position = typeOf(position) === 'array' ? new google.maps.LatLng(position[0], position[1]) : position;
+		this.options.position = typeOf(position) === 'array' ? position.toLatLng() : position;
 		//this.options.pixelOffset = new google.maps.Size(10,10);
 		
 		this.infoWindowObj = new google.maps.InfoWindow(this.options);
