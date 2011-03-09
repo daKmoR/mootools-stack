@@ -18,6 +18,24 @@ provides: [Map]
 ...
 */
 
+Array.implement({
+
+	toLatLng: function() {
+		if (this.length == 2 && typeOf(this[0]) === 'number' && typeOf(this[1]) === 'number' ) {
+			return new google.maps.LatLng(this[0], this[1]);
+		}
+		
+		for (var i = 0, l = this.length; i < l; i++) {
+			if (typeOf(this[i]) === 'array') {
+				this[i] = this[i].toLatLng();
+			}
+		}
+		
+		return this;
+	}
+	
+});
+
 var Map = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
@@ -66,9 +84,12 @@ var Map = new Class({
 			
 		this.createMarker([7.8, -74]);
 		this.createInfoMarker([7.6, -74], 'test');
-		this.createPolygon([[7.6, -74], [7.0, -74], [7.0, -74.5], [7.6, -74.5]]);
+		this.createPolygon([[7.6, -74], [7.0, -74], [7.3, -74.5], [7.6, -74.5]]);
 		this.createCircle([7.8, -74], 100000);
 		this.createRectangle([[11.04,-75.75], [7.9,-73.8]]);
+		var tmp = this.createPolyLine([[7.8, -74], [7.2, -74], [7.2, -74.5], [7.8, -74.5]]);
+		tmp.addLine([7.9,-73.8]);
+		
 	},
 	
 	/**************************************************************
@@ -180,24 +201,8 @@ var Map = new Class({
 		return new Map.Rectangle(bounds, this.mapObj, options);
 	},
 
-	/*  
-	Creates a PolyLine on the map.
-	Coordinates is an array of [lat,lng]
-	e.g, coordinates: [[lat,lng], [lat2, lng2], [lat3,lng3],...so on]
-	*/
-	createPolyLine: function(coordinates, polyLineOptions) {
-		polyLineOptions = (polyLineOptions != undefined)? polyLineOptions : {};
-		polyLineOptions.map = this.mapObj;
-		var polyLine = new PolyLine(polyLineOptions);
-		if(coordinates && (typeOf(coordinates) == 'array') ) {
-			coordinates.each(function(latLng) {
-				var lat = latLng[0];
-				var lng = latLng[1];
-				latLng = new google.maps.LatLng(lat, lng);
-				polyLine.addLine(latLng);
-			}, this);
-		};
-		return polyLine;
+	createPolyLine: function(path, options) {
+		return new Map.PolyLine(path, this.mapObj, options);
 	},
 
 	createOverlay: function(overlayOptions) {

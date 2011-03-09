@@ -41,6 +41,7 @@ sources:
   - "Source/Interface/Map/Map.Polygon.js"
   - "Source/Interface/Map/Map.Circle.js"
   - "Source/Interface/Map/Map.Rectangle.js"
+  - "Source/Interface/Map/Map.PolyLine.js"
   - "Source/Form/DatePicker.js"
   - "Source/Form/Select.js"
   - "Source/Form/Selects.js"

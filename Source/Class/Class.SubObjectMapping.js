@@ -37,7 +37,9 @@ this.SubObjectMapping = new Class({
 	mapFunctions: function(functions, subObject) {
 		functions.each(function(curFunction) {
 			var getFunction = 'get' + curFunction.capitalize();
-			this[getFunction] = subObject[getFunction];
+			this[getFunction] = function() {
+				return subObject[getFunction]();
+			}
 			
 			var setFunction = 'set' + curFunction.capitalize();
 			this[setFunction] = function() {
