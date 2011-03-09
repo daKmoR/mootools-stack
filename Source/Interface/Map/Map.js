@@ -44,17 +44,7 @@ var Map = new Class({
 	Implements: [Options, Events, SubObjectMapping],
 
 	options: {
-		/*backgroundColor : '#ccc',
-		disableDefaultUI: false,
-		disableDoubleClickZoom: true,
-		draggable: true,
-		draggableCursor: 'cursor',
-		draggingCursor: 'cursor',
-		keyboardShortcuts: true,
-		navigationControl: true,
-		scaleControl: true,
-		scrollwheel: true,
-		streetViewControl: true,*/
+		// use all Options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 		mapTypeId: 'roadmap',
 		zoom: 6,
 		onClick: function(e) {
@@ -64,7 +54,8 @@ var Map = new Class({
 
 	subObjectMapping: {
 		'this.mapObj': {
-			properties: ['center', 'zoom', 'mapTypeId', 'streetView'],
+			functions: ['getBounds', 'getCenter', 'getDiv', 'getProjection', 'panBy', 'setOptions'],
+			properties: ['mapTypeId', 'streetView', 'zoom'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed'],
@@ -81,7 +72,7 @@ var Map = new Class({
 		this.mapObj = new google.maps.Map(this.mapContainer, this.options);
 		
 		this.mapToSubObject();
-			
+		
 		this.createMarker([7.8, -74]);
 		this.createInfoMarker([7.6, -74], 'test');
 		this.createPolygon([[7.6, -74], [7.0, -74], [7.3, -74.5], [7.6, -74.5]]);
@@ -89,83 +80,35 @@ var Map = new Class({
 		this.createRectangle([[11.04,-75.75], [7.9,-73.8]]);
 		var tmp = this.createPolyLine([[7.8, -74], [7.2, -74], [7.2, -74.5], [7.8, -74.5]]);
 		tmp.addLine([7.9,-73.8]);
-		
-	},
-	
-	/**************************************************************
-	API BASE CLASSES
-	**************************************************************/
-
-	//LatLng API Class
-	createLatLng: function(latitude, longitude) {
-		return new google.maps.LatLng(latitude, longitude);
-	},
-
-	//LatLng API Class Method
-	getLatitude: function(latLng) {
-		var latLng = latLng || this.getCenter();
-		return latLng.lat();
-	},
-
-	//LatLng API Class Method
-	getLongitude: function(latLng) {
-		var latLng = latLng || this.getCenter();
-		return latLng.lng();
-	},
-
-	//LatLngBounds API Class
-	createLatLngBounds: function(SWLatLng, NELatLng) {
-		return new google.maps.LatLngBounds(SWLatLng, NELatLng);
-	},
-
-	//LatLngBounds API Class Method
-	getBoundsCenter: function(bounds) {
-		return bounds.getCenter();
-	},
-
-	/**************************************************************
-	MAP CLASS (Google Maps API Class)
-	**************************************************************/
-
-	fitBounds: function(LatLngBounds) {
-		var LatLngBounds = LatLngBounds || this.getBounds;
-		this.mapObj.fitBounds(LatLngBounds);
-	},
-
-	getBounds: function() {
-		return this.mapObj.getBounds();
-	},
-
-	panBy: function(x, y) {
-		var x = x || 0;
-		var y = y || 0;
-		this.mapObj.panBy(x,y);
-	},
-
-	panTo: function(latLng) {
-		var latLng = latLng || this.getCenter();
-		this.mapObj.panTo(latLng);
-	},
-
-	panToBounds: function(latLngBounds) {
-		var latLngBounds = latLngBounds || this.getBounds();
-		this.mapObj.panToBounds(latLngBounds);
-	},
-
-	getDiv: function() {
-		return this.mapObj.getdiv();
-	},
-
-	setMapOptions: function(mapOptions) {
-		var mapOptions = mapOptions || this.mapOptions;
-		this.mapObj.setOptions(mapOptions);
 	},
 
 	getMap: function() {
 		return this.mapObj;
 	},
+	
+	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
 
-/*------------------------- CUSTOM METHODS -------------------------*/
+	fitBounds: function(bounds) {
+		var bounds = (typeOf(bounds) === 'array' && bounds.length === 2) ? bounds.toLatLngBounds() : bounds;
+		this.mapObj.fitBounds(bounds);
+	},
+	
+	panTo: function(point) {
+		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
+		this.mapObj.panTo(point);
+	},
+	
+	panToBounds: function(bounds) {
+		var bounds = (typeOf(bounds) === 'array' && bounds.length === 2) ? bounds.toLatLngBounds() : bounds;
+		this.mapObj.panToBounds(bounds);
+	},
+	
+	setCenter: function(center) {
+		var center = typeOf(center) === 'array' ? center.toLatLng() : center;
+		this.mapObj.setCenter(center);
+	},
+	
+	/*------------------------- CREATORS (will move to SubClasses) -------------------------*/
 
 	createMarker: function(position, options) {
 		return new Map.Marker(position, this.mapObj, options);

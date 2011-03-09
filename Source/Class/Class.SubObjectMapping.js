@@ -47,9 +47,8 @@ this.SubObjectMapping = new Class({
 			
 			var setFunction = 'set' + property.capitalize();
 			this[setFunction] = function() {
-				var argument = arguments[0] || subObject[getFunction]();
-				subObject[setFunction](argument);
-			}.bind(this);
+				subObject[setFunction].apply(subObject, Array.from(arguments));
+			};
 		}, this);
 	},
 	
