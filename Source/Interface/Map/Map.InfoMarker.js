@@ -28,12 +28,12 @@ Map.InfoMarker = new Class({
 	
 	subObjectMapping: {
 		'this.infoWindowObj': {
-			functions: ['close', 'open', 'setOptions'],
+			functions: ['close', 'setOptions'],
 			properties: ['content'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
 			events: ['closeclick', 'content_changed', 'domready']
-		}
+		},
 		'this.markerObj': {
 			functions: ['setOptions'],
 			properties: ['animation', 'clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'shadow', 'shape', 'title', 'visible'],
@@ -52,8 +52,8 @@ Map.InfoMarker = new Class({
 		this.options.position = typeOf(position) === 'array' ? position.toLatLng() : position;
 		this.map = map;
 		
-		this.infoWindowObj = new Maps.InfoWindow(position, this.options);
-		this.markerObj = new Maps.Marker(position, map, this.options);
+		this.infoWindowObj = new Map.InfoWindow(position, this.options);
+		this.markerObj = new Map.Marker(position, map, this.options);
 		
 		this.mapToSubObject();
 		this.mapManualEvents();
@@ -71,7 +71,7 @@ Map.InfoMarker = new Class({
 	
 	// MVC object is usually a marker.
 	open: function(MVCObject) {
-		var MVCObject = MVCObject || this.markerObj;
+		var MVCObject = MVCObject || this.markerObj.markerObj;
 		this.infoWindowObj.open(this.map, MVCObject);
 	},
 	

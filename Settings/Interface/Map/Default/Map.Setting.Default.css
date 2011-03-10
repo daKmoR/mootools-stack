@@ -1,0 +1,2 @@
+div.loading { width: 200px; height: 200px; background: url(images/loading.gif) center center no-repeat; }
+	div.loading span { display: none; }

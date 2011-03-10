@@ -11,7 +11,7 @@ authors:
   - Ciul
   - Thomas Allmer
 
-requires: [Map]
+requires: [Map, Core/Request.HTML]
 
 provides: [Map.InfoWindow]
 
@@ -23,11 +23,9 @@ Map.InfoWindow = new Class({
 
 	options: {
 		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#InfoWindowOptions
-		content: 'pls provide your content with the options',
+		content: '<div class="loading"><span>loading...</span></div>',
 		url: '',
-		onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
-			this.setContent(responseHTML);
-		}.bind(this)
+		forceRequest: true
 	},
 	
 	subObjectMapping: {
@@ -51,6 +49,11 @@ Map.InfoWindow = new Class({
 		this.infoWindowObj = new google.maps.InfoWindow(this.options);
 		
 		this.mapToSubObject();
+		
+		this.options.onSuccess = function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			this.setContent(responseHTML);
+		}.bind(this);
+		
 	},
 	
 	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
@@ -63,7 +66,8 @@ Map.InfoWindow = new Class({
 	// MVC object is usually a marker.
 	open: function(map, MVCObject) {
 		this.infoWindowObj.open(map, MVCObject);
-		if (this.options.url !== '') {
+		if (this.options.url !== '' && (this.getContent() === this.options.content || this.options.forceRequest)) {
+			this.setContent(this.options.content);
 			this.getRequest({url: this.options.url}).send();
 		}
 	},
