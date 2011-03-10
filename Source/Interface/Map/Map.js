@@ -99,24 +99,6 @@ var Map = new Class({
 	
 	/*------------------------- CREATORS (will move to SubClasses) -------------------------*/
 
-	createInfoMarker: function(position, content, options) {
-		options = options || {};
-		options.isOpen = options.isOpen != undefined ? options.isOpen : false;
-		options.content = content;
-		
-		var marker = this.createMarker(position, options);
-		var infoWindow = new Map.InfoWindow(position, options);
-		
-		marker.addEvent('click', function() {
-			infoWindow.open(this.mapObj, marker.markerObj);
-		}.bind(this));
-		
-		if (options.isOpen === true) {
-			infoWindow.open(this.mapObj, marker.markerObj);
-		}
-		return {marker: marker, infoWindow: infoWindow};
-	},
-
 	createOverlay: function(options) {
 		return new Map.Overlay(this.mapObj, options);
 	},
