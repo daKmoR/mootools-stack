@@ -29,9 +29,7 @@ Map.PolyLine = new Class({
 		'this.polyLineObj': {
 			functions: ['getPath', 'setOptions'],
 			properties: ['map'],
-			eventInstance: 'google.maps.event',
-			eventAddFunction: 'addListener',
-			eventAddObjectAsParam: true,
+			eventOptions: { instance: 'google.maps.event', addFunction: 'addListener', addObjectAsParam: true },
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'rightclick']
 		}
 	},

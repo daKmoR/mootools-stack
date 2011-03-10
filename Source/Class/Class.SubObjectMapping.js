@@ -31,11 +31,12 @@ this.SubObjectMapping = new Class({
 			}
 			
 			if (subObjectOptions.events !== undefined && subObjectOptions.events.length > 0) {
-				var eventInstance = (subObjectOptions.eventInstance && subObjectOptions.eventInstance != '') ? eval(subObjectOptions.eventInstance) : subObject;
-				var eventAddFunction = (subObjectOptions.eventAddFunction && subObjectOptions.eventAddFunction != '') ? subObjectOptions.eventAddFunction : 'addEvent';
-				var eventAddObjectAsParam = typeOf(subObjectOptions.eventAddObjectAsParam) === 'boolean' ? subObjectOptions.eventAddObjectAsParam : false;
+				var options = subObjectOptions.eventOptions || {};
+				options.instance = (options.instance && options.instance !== '') ? eval(options.instance) : subObject;
+				options.addFunction = (options.addFunction && options.addFunction !== '') ? options.addFunction : 'addEvent';
+				options.addObjectAsParam = typeOf(options.addObjectAsParam) === 'boolean' ? options.addObjectAsParam : false;
 				
-				this.mapEvents(subObjectOptions.events, subObject, eventInstance, eventAddFunction, eventAddObjectAsParam);
+				this.mapEvents(subObjectOptions.events, subObject, options);
 			}
 		}, this);
 	},
@@ -62,14 +63,14 @@ this.SubObjectMapping = new Class({
 		}, this);
 	},
 	
-	mapEvents: function(events, subObject, eventInstance, eventAdd, eventAddObjectAsParam) {
+	mapEvents: function(events, subObject, options) {
 		events.each(function(eventName) {
-			if (eventAddObjectAsParam === true) {
-				eventInstance[eventAdd](subObject, eventName, function() {
+			if (options.addObjectAsParam === true) {
+				options.instance[options.addFunction](subObject, eventName, function() {
 					this.fireEvent.apply(this, [eventName, Array.from(arguments)]);
 				}.bind(this));
 			} else {
-				eventInstance[eventAdd](eventName, function() {
+				options.instance[options.addFunction](eventName, function() {
 					this.fireEvent.apply(this, [eventName, Array.from(arguments)]);
 				}.bind(this));
 			}

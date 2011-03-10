@@ -29,9 +29,7 @@ Map.Polygon = new Class({
 		'this.polygonObj': {
 			functions: ['getPath', 'getPaths', 'setOptions'],
 			properties: ['map'],
-			eventInstance: 'google.maps.event',
-			eventAddFunction: 'addListener',
-			eventAddObjectAsParam: true,
+			eventOptions: { instance: 'google.maps.event', addFunction: 'addListener', addObjectAsParam: true },
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseUp', 'rightclick']
 		}
 	},

@@ -35,9 +35,7 @@ Map.InfoWindow = new Class({
 		'this.infoWindowObj': {
 			functions: ['close', 'getPosition', 'setOptions'],
 			properties: ['content', 'zIndex'],
-			eventInstance: 'google.maps.event',
-			eventAddFunction: 'addListener',
-			eventAddObjectAsParam: true,
+			eventOptions: { instance: 'google.maps.event', addFunction: 'addListener', addObjectAsParam: true },
 			events: ['closeclick', 'content_changed', 'domready', 'position_changed', 'zindex_changed']
 		},
 		'this.getRequest()': {
