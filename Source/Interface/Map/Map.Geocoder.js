@@ -107,8 +107,7 @@ Map.implement({
 		
 		var defaultCallback = function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-				this.setZoom(15);
-				this.setCenter(results[0].geometry.location);
+				this.fitBounds(results[0].geometry.viewport);
 				if (this.searchMarker != null) {
 					this.searchMarker.destroy();
 				}
