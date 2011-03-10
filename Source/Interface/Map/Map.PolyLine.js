@@ -31,6 +31,7 @@ Map.PolyLine = new Class({
 			properties: ['map'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
+			eventAddObjectAsParam: true,
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'rightclick']
 		}
 	},

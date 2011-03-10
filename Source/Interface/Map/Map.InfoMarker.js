@@ -32,6 +32,7 @@ Map.InfoMarker = new Class({
 			properties: ['content'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
+			eventAddObjectAsParam: true,
 			events: ['closeclick', 'content_changed', 'domready']
 		},
 		'this.markerObj': {
@@ -39,6 +40,7 @@ Map.InfoMarker = new Class({
 			properties: ['animation', 'clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'shadow', 'shape', 'title', 'visible'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
+			eventAddObjectAsParam: true,
 			events: ['animation_changed', 'click', 'clickable_changed', 'cursor_changed', 'dblclick', 'drag', 'dragend', 'draggable_changed', 'dragstart', 'flat_changed', 'icon_changed', 'mousedown', 'mouseout', 'mouseover', 'mouseup', 'rightclick', 'shadow_changed', 'shape_changed', 'title_changed', 'visible_changed']
 		}
 	},

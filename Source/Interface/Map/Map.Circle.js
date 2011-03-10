@@ -31,6 +31,7 @@ Map.Circle = new Class({
 			properties: ['map', 'radius'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
+			eventAddObjectAsParam: true,
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'rightclick']
 		}
 	},

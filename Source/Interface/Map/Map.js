@@ -55,6 +55,7 @@ var Map = new Class({
 			properties: ['mapTypeId', 'streetView', 'zoom'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
+			eventAddObjectAsParam: true,
 			events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed'],
 		}
 	},

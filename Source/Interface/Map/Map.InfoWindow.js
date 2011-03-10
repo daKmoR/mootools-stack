@@ -25,7 +25,10 @@ Map.InfoWindow = new Class({
 		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#InfoWindowOptions
 		content: '<div class="loading"><span>loading...</span></div>',
 		url: '',
-		forceRequest: true
+		forceRequest: false,
+		onSuccess: function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			this.setContent(responseHTML);
+		}
 	},
 	
 	subObjectMapping: {
@@ -34,7 +37,11 @@ Map.InfoWindow = new Class({
 			properties: ['content', 'zIndex'],
 			eventInstance: 'google.maps.event',
 			eventAddFunction: 'addListener',
+			eventAddObjectAsParam: true,
 			events: ['closeclick', 'content_changed', 'domready', 'position_changed', 'zindex_changed']
+		},
+		'this.getRequest()': {
+			events: ['success']
 		}
 	},
 
@@ -49,11 +56,6 @@ Map.InfoWindow = new Class({
 		this.infoWindowObj = new google.maps.InfoWindow(this.options);
 		
 		this.mapToSubObject();
-		
-		this.options.onSuccess = function(responseTree, responseElements, responseHTML, responseJavaScript) {
-			this.setContent(responseHTML);
-		}.bind(this);
-		
 	},
 	
 	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
