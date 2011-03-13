@@ -81,9 +81,6 @@ Map.implement({
 					el.removeClass('goolgeButtonActive');
 					this.plugins.bounds.active = false;
 				}
-			},
-			build: function() {
-				
 			}
 		}
 	}
