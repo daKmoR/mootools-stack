@@ -68,6 +68,7 @@ var Map = new Class({
 	},
 
 	mapObj: null,
+	plugins: {},
 
 	initialize: function (mapContainer, center, options) {
 		this.mapContainer = $(mapContainer);
@@ -77,6 +78,16 @@ var Map = new Class({
 		this.mapObj = new google.maps.Map(this.mapContainer, this.options);
 		
 		this.mapToSubObject();
+		
+		// load registered Plugins
+		Object.each(this.plugins, function(plugin) {
+			if (plugin.html && plugin.onClick) {
+				this.addControl(plugin.html, plugin.onClick, plugin.options);
+			}
+			if (plugin.el) {
+				this.addControlElement(plugin.el, plugin.options);
+			}
+		}, this);
 	},
 
 	getMap: function() {

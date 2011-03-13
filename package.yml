@@ -44,6 +44,7 @@ sources:
   - "Source/Interface/Map/Map.PolyLine.js"
   - "Source/Interface/Map/Map.Geocoder.js"
   - "Source/Interface/Map/Map.InfoMarker.js"
+  - "Source/Interface/Map/Map.Plugin.Bounds.js"
   - "Source/Form/DatePicker.js"
   - "Source/Form/Select.js"
   - "Source/Form/Selects.js"
