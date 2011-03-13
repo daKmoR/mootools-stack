@@ -23,7 +23,7 @@ Map.Marker = new Class({
 
 	options: {
 		// use all options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MarkerOptions
-		visible: true,
+		visible: true
 	},
 	
 	subObjectMapping: {
@@ -79,9 +79,25 @@ Map.Marker = new Class({
 });
 
 Map.implement({
+
+	markers: [],
 	
 	createMarker: function(position, options) {
-		return new Map.Marker(position, this.mapObj, options);
+		var marker = new Map.Marker(position, this.mapObj, options);
+		this.markers.push(marker);
+		return marker;
+	},
+	
+	zoomToMarkers: function(markers, useOnlyVisible) {
+		var markers = markers || this.markers, useOnlyVisible = useOnlyVisible || true;
+		markers = useOnlyVisible ? markers.filter(function(marker) { return marker.getVisible(); }) : markers;
+		if (markers.length > 0) {
+			var bounds = [markers[0].getPosition(), markers[0].getPosition()].toLatLngBounds();
+			markers.each(function(marker) {
+				bounds.extend(marker.getPosition());
+			});
+			this.fitBounds(bounds);
+		}
 	}
 
 });
