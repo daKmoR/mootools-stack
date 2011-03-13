@@ -55,7 +55,8 @@ var Map = new Class({
 	options: {
 		// use all Options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 		mapTypeId: 'roadmap',
-		zoom: 6
+		zoom: 6,
+		plugins: {}
 	},
 
 	subObjectMapping: {
@@ -80,6 +81,7 @@ var Map = new Class({
 		this.mapToSubObject();
 		
 		// load registered Plugins
+		this.plugins = Object.merge(this.plugins, this.options.plugins);
 		Object.each(this.plugins, function(plugin) {
 			if (plugin.html && plugin.onClick) {
 				this.addControl(plugin.html, plugin.onClick, plugin.options);
