@@ -89,7 +89,24 @@ var Map = new Class({
 			}
 		}, this);
 	},
-
+	
+	addControl: function(html, userFunction, options) {
+		var wrapper = new Element('div');
+		var el = new Element('div', {
+			html: html, 
+			'class': 'googleButton'
+		});
+		el.addEvent('click', userFunction.bind(this, el));
+		wrapper.grab(el);
+		this.addControlElement(wrapper, options);
+	},
+	
+	addControlElement: function(el, options) {
+		var pos = (options && options.position) ? options.position : 'TOP_RIGHT';
+		var position = google.maps.ControlPosition[pos] || google.maps.ControlPosition.TOP_RIGHT;
+		this.mapObj.controls[position].push(el);
+	},
+	
 	getMap: function() {
 		return this.mapObj;
 	},
@@ -114,29 +131,6 @@ var Map = new Class({
 	setCenter: function(center) {
 		var center = typeOf(center) === 'array' ? center.toLatLng() : center;
 		this.mapObj.setCenter(center);
-	},
-	
-	/*------------------------- CREATORS (will move to SubClasses) -------------------------*/
-
-	createOverlay: function(options) {
-		return new Map.Overlay(this.mapObj, options);
-	},
-
-	addControl: function(html, userFunction, options) {
-		var wrapper = new Element('div');
-		var el = new Element('div', {
-			html: html, 
-			'class': 'googleButton'
-		});
-		el.addEvent('click', userFunction.bind(this, el));
-		wrapper.grab(el);
-		this.addControlElement(wrapper, options);
-	},
-	
-	addControlElement: function(el, options) {
-		var pos = (options && options.position) ? options.position : 'TOP_RIGHT';
-		var position = google.maps.ControlPosition[pos] || google.maps.ControlPosition.TOP_RIGHT;
-		this.mapObj.controls[position].push(el);
 	}
 
 });
