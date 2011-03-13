@@ -26,8 +26,7 @@ Map.implement({
 			html: 'bounds',
 			active: false,
 			onClick: function(el) {
-				var active = this.plugins.bounds.active;
-				if (!active) {
+				if (!this.plugins.bounds.active) {
 					var x = this.getBounds().toSpan().lat();
 					var y = this.getBounds().toSpan().lng();
 					var point1 = [this.getCenter().lat() - x/8, this.getCenter().lng() - y/8];
@@ -45,12 +44,12 @@ Map.implement({
 							}.bind(this)
 						};
 						
-						this.plugins.bounds.marker1 = this.createMarker( point1, options );
-						this.plugins.bounds.marker2 = this.createMarker( point2, options );
+						this.plugins.bounds.marker1 = this.createMarker(point1, options);
+						this.plugins.bounds.marker2 = this.createMarker(point2, options);
 						
-						this.plugins.bounds.infoWindow = new Map.InfoWindow([0,0]);			
+						this.plugins.bounds.infoWindow = new Map.InfoWindow([0,0]);
 
-						this.plugins.bounds.rectangle = this.createRectangle( [point1, point2], {
+						this.plugins.bounds.rectangle = this.createRectangle([point1, point2], {
 							onClick: function() {
 								var point1 = '[' + this.plugins.bounds.marker1.getPosition().lat().round(4) + ', ' + this.plugins.bounds.marker1.getPosition().lng().round(4) + ']';
 								var point2 = '[' + this.plugins.bounds.marker2.getPosition().lat().round(4) + ', ' + this.plugins.bounds.marker2.getPosition().lng().round(4) + ']';
@@ -73,10 +72,12 @@ Map.implement({
 					el.addClass('goolgeButtonActive');
 					this.plugins.bounds.active = true;
 				} else {
-					this.plugins.bounds.marker1.hide();
-					this.plugins.bounds.marker2.hide();
-					this.plugins.bounds.rectangle.hide();
-					this.plugins.bounds.infoWindow.close();
+					if (this.plugins.bounds.marker1 && this.plugins.bounds.marker2 && this.plugins.bounds.rectangle && this.plugins.bounds.infoWindow) {
+						this.plugins.bounds.marker1.hide();
+						this.plugins.bounds.marker2.hide();
+						this.plugins.bounds.rectangle.hide();
+						this.plugins.bounds.infoWindow.close();
+					}
 				
 					el.removeClass('goolgeButtonActive');
 					this.plugins.bounds.active = false;
