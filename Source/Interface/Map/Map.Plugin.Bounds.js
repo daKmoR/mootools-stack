@@ -44,8 +44,8 @@ Map.implement({
 							}.bind(this)
 						};
 						
-						this.plugins.bounds.marker1 = this.createMarker(point1, options);
-						this.plugins.bounds.marker2 = this.createMarker(point2, options);
+						this.plugins.bounds.marker1 = new Map.Marker(point1, this.mapObj, options);
+						this.plugins.bounds.marker2 = new Map.Marker(point2, this.mapObj, options);
 						
 						this.plugins.bounds.infoWindow = new Map.InfoWindow([0,0]);
 
