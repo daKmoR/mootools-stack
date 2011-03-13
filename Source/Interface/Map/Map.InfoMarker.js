@@ -27,20 +27,20 @@ Map.InfoMarker = new Class({
 	},
 	
 	subObjectMapping: {
-		'this.infoWindowObj': {
+		'this.infoWindow': {
 			functions: ['close', 'setOptions'],
 			properties: ['content'],
 			events: ['closeclick', 'content_changed', 'domready']
 		},
-		'this.markerObj': {
-			functions: ['setOptions'],
-			properties: ['animation', 'clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'shadow', 'shape', 'title', 'visible'],
+		'this.marker': {
+			functions: ['getPosition', 'setOptions'],
+			properties: ['animation', 'clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
 			events: ['animation_changed', 'click', 'clickable_changed', 'cursor_changed', 'dblclick', 'drag', 'dragend', 'draggable_changed', 'dragstart', 'flat_changed', 'icon_changed', 'mousedown', 'mouseout', 'mouseover', 'mouseup', 'rightclick', 'shadow_changed', 'shape_changed', 'title_changed', 'visible_changed']
 		}
 	},
 
-	infoWindowObj: null,
-	markerObj: null,
+	infoWindow: null,
+	marker: null,
 
 	initialize: function (position, map, options) {
 		this.setOptions(options);
@@ -48,8 +48,8 @@ Map.InfoMarker = new Class({
 		this.options.position = typeOf(position) === 'array' ? position.toLatLng() : position;
 		this.map = map;
 		
-		this.infoWindowObj = new Map.InfoWindow(position, this.options);
-		this.markerObj = new Map.Marker(position, map, this.options);
+		this.infoWindow = new Map.InfoWindow(position, this.options);
+		this.marker = new Map.Marker(position, map, this.options);
 		
 		this.mapToSubObject();
 		this.mapManualEvents();
@@ -58,7 +58,7 @@ Map.InfoMarker = new Class({
 			this.open();
 		}
 		
-		this.markerObj.addEvent('click', function() {
+		this.marker.addEvent('click', function() {
 			this.open();
 		}.bind(this));
 	},
@@ -67,41 +67,40 @@ Map.InfoMarker = new Class({
 	
 	// MVC object is usually a marker.
 	open: function(MVCObject) {
-		var MVCObject = MVCObject || this.markerObj.markerObj;
-		this.infoWindowObj.open(this.map, MVCObject);
+		var MVCObject = MVCObject || this.marker.markerObj;
+		this.infoWindow.open(this.map, MVCObject);
 	},
 	
 	setPosition: function(point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
 		this.infoMarkerObj.setPosition(point);
-		this.markerObj.setPosition(point);
+		this.marker.setPosition(point);
 	},
 	
-	getPosition: function() {
-		return { marker: this.markerObj.getPosition(), infoWindow: this.infoWindowObj.getPosition() }
+	// getPosition gives position of marker, should be the same in almost all cases
+	getPositionInfoWindow: function() {
+		this.infoWindow.getPosition();
 	},
 
-	// zIndex = { marker: 2, infoWindow: 5 }
-	setZIndex: function(zIndex) {
-		this.markerObj.setZIndex(zIndex.marker);
-		this.markerObj.setZIndex(zIndex.infoWindow);
+	setZIndexInfoWindow: function(zIndex) {
+		this.marker.setZIndex(zIndex);
 	},
 	
-	getZIndex: function() {
-		return { marker: this.markerObj.getZIndex(), infoWindow: this.infoWindowObj.getZIndex() }
+	getZIndexInfoWindow: function() {
+		return this.infoWindow.getZIndex();
 	},
 	
 	mapManualEvents: function() {
-		google.maps.event.addListener(this.markerObj, 'position_changed', function() {
+		google.maps.event.addListener(this.marker, 'position_changed', function() {
 			this.fireEvent('marker_position_changed');
 		}.bind(this));
-		google.maps.event.addListener(this.infoWindowObj, 'position_changed', function() {
+		google.maps.event.addListener(this.infoWindow, 'position_changed', function() {
 			this.fireEvent('infowindow_position_changed');
 		}.bind(this));
-		google.maps.event.addListener(this.markerObj, 'zindex_changed', function() {
+		google.maps.event.addListener(this.marker, 'zindex_changed', function() {
 			this.fireEvent('marker_zindex_changed');
 		}.bind(this));
-		google.maps.event.addListener(this.infoWindowObj, 'zindex_changed', function() {
+		google.maps.event.addListener(this.infoWindow, 'zindex_changed', function() {
 			this.fireEvent('infowindow_zindex_changed');
 		}.bind(this));
 	}
@@ -111,7 +110,9 @@ Map.InfoMarker = new Class({
 Map.implement({
 	
 	createInfoMarker: function(position, options) {
-		return new Map.InfoMarker(position, this.mapObj, options);
+		var infoMarker = new Map.InfoMarker(position, this.mapObj, options);
+		this.markers.push(infoMarker);
+		return infoMarker;
 	}
 
 });
