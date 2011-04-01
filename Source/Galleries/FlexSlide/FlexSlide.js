@@ -71,6 +71,7 @@ var FlexSlide = new Class({
 		useScroller: false,
 		scrollerMode: 'horizontal',
 		scrollerOptions: { area: 100, velocity: 0.1 },
+		scrollOptions: { offset: {x: 0, y: 0}, wheelStops: false },
 		selectTemplate: '{text}',
 		counterTemplate: '{id}/{count}',
 		descriptionTemplate: '<strong>{title}</strong><span>{text}</span>',
@@ -203,7 +204,7 @@ var FlexSlide = new Class({
 			if( this.options.scrollerMode === 'vertical' )
 				this.selectWrap.setStyle('height', this.selectWrap.getChildren().getCombinedSize().y);
 			this.scroller = new Scroller( this.selectWrap.getParent(), this.options.scrollerOptions).start();
-			this.scroll = new Fx.Scroll(this.selectScrollerWrap);
+			this.scroll = new Fx.Scroll(this.selectScrollerWrap, this.options.scrollOptions);
 		}
 		
 		this.fireEvent('onBuild');
@@ -409,7 +410,7 @@ var FlexSlide = new Class({
 			this.elements.select[id].addClass( this.options.ui.activeClass );
 			
 			if (this.options.useScroller === true) {
-				this.scroll.toElementCenter(this.elements.select[id]);
+				this.scroll.toElement(this.elements.select[id]);
 			}
 			this.fireEvent('onSelectChange', [this.elements.select[this.current], this.elements.select[id]]);
 		}
