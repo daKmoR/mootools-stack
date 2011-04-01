@@ -129,6 +129,7 @@ FlexSlide.Advanced = new Class({
 							this.loaded[id] = true;
 							this.elements.item[id] = this.fx.elements[id] = div;
 							this.itemWrap.grab(div);
+							this.fireEvent('loaded', div);
 							if( show ) this.show(id, fx);
 						}.bind(this)
 					}).send();

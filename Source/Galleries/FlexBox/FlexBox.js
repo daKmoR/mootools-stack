@@ -43,7 +43,7 @@ var FlexBox = new Class({
 			autoContainerSize: { x: true, y: true },
 			centerItem: false,
 			positionContainer: true,
-			getSizeFromElement: false,			
+			getSizeFromElement: false,
 			auto: false,
 			dynamicLoading: true,
 			wheelListener: true,
@@ -165,7 +165,11 @@ var FlexBox = new Class({
 		}) );
 		this.flexSlide.build();
 		this.flexSlide.addEvent('onImageLoaded', function(image) {
-			this.fireEvent('onImageLoaded', image);
+			this.fireEvent('imageLoaded', image);
+		}.bind(this) );
+		
+		this.flexSlide.addEvent('onLoaded', function(div) {
+			this.fireEvent('loaded', div);
 		}.bind(this) );
 		
 		this.wrap.position( $merge(this.flexSlide.options.positionContainerOptions, {returnPos: false}) );
