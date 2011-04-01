@@ -15,13 +15,22 @@ provides: FlexSlide
 */ 
 
 Array.implement({
-	getCombinedSize: function(margin){
+	getCombinedSize: function(margin, padding, border){
 		var margin = margin || true;
+		var padding = padding || true;
+		var border = border || true;
 		var elsWidth = 0, elsHeight = 0, size;
 		for (var i = 0, l = this.length; i < l; i++){
-			size = this[i].getSize();
+			size = { x: this[i].getStyle('width').toInt(), y: this[i].getStyle('height').toInt() };
+			
 			elsWidth += size.x + (margin ? this[i].getStyle('margin-left').toInt() + this[i].getStyle('margin-right').toInt() : 0);
 			elsHeight += size.y + (margin ? this[i].getStyle('margin-top').toInt() + this[i].getStyle('margin-bottom').toInt() : 0);
+			
+			elsWidth += padding ? this[i].getStyle('padding-left').toInt() + this[i].getStyle('padding-right').toInt() : 0;
+			elsHeight += padding ? this[i].getStyle('padding-top').toInt() + this[i].getStyle('padding-bottom').toInt() : 0;
+			
+			elsWidth += border ? this[i].getStyle('border-left').toInt() + this[i].getStyle('border-right').toInt() : 0;
+			elsHeight += border ? this[i].getStyle('border-top').toInt() + this[i].getStyle('border-bottom').toInt() : 0;
 		}
 		return {x: elsWidth, y: elsHeight};
 	}
