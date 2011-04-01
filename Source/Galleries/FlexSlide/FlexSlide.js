@@ -7,7 +7,7 @@ description: allows to create almost any Sliding Stuff (Galleries, Tabs...) with
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position, Class.Settings, Gallery]
+requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Fx.Scroll, More/Element.Position, Class.Settings, Gallery]
 
 provides: FlexSlide
 
@@ -203,6 +203,7 @@ var FlexSlide = new Class({
 			if( this.options.scrollerMode === 'vertical' )
 				this.selectWrap.setStyle('height', this.selectWrap.getChildren().getCombinedSize().y);
 			this.scroller = new Scroller( this.selectWrap.getParent(), this.options.scrollerOptions).start();
+			this.scroll = new Fx.Scroll(this.selectScrollerWrap);
 		}
 		
 		this.fireEvent('onBuild');
@@ -406,6 +407,10 @@ var FlexSlide = new Class({
 				this.elements.select[this.current].removeClass( this.options.ui.activeClass );
 			}
 			this.elements.select[id].addClass( this.options.ui.activeClass );
+			
+			if (this.options.useScroller === true) {
+				this.scroll.toElementCenter(this.elements.select[id]);
+			}
 			this.fireEvent('onSelectChange', [this.elements.select[this.current], this.elements.select[id]]);
 		}
 		
