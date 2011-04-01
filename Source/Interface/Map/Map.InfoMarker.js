@@ -73,7 +73,7 @@ Map.InfoMarker = new Class({
 	
 	setPosition: function(point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
-		this.infoMarkerObj.setPosition(point);
+		this.infoWindow.setPosition(point);
 		this.marker.setPosition(point);
 	},
 	

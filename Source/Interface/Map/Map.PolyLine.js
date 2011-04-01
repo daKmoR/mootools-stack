@@ -65,7 +65,7 @@ Map.PolyLine = new Class({
 
 	// Returns the number of elements in this array.
 	getLength: function() {
-		return this.getPath().getLength;
+		return this.getPath().getLength();
 	},
 
 	// Removes an element from the specified index.
