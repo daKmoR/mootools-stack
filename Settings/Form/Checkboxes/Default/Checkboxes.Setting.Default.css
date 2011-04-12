@@ -1,0 +1,9 @@
+.checkbox, .radio { width: 19px; height: 25px; padding: 0 3px 0 0; background: url(images/checkbox.gif) no-repeat; display: block; float: left; }
+.radio { background: url(images/radio.gif) no-repeat; }
+
+
+.pushed { background-position: 0 -25px; }
+.checked { background-position: 0 -50px; }
+.pushed.checked { background-position: 0 -75px; }
+
+.disabled { opacity: 0.5; }
