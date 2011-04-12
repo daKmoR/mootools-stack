@@ -88,8 +88,16 @@ Map.implement({
 		return marker;
 	},
 	
+	getMarkers: function() {
+		return this.markers;
+	},
+	
+	setMarkers: function(markers) {
+		this.markers = markers;
+	},
+	
 	zoomToMarkers: function(markers, useOnlyVisible) {
-		var markers = markers || this.markers, useOnlyVisible = useOnlyVisible || true;
+		var markers = markers || this.getMarkers(), useOnlyVisible = useOnlyVisible || true;
 		markers = useOnlyVisible ? markers.filter(function(marker) { return marker.getVisible(); }) : markers;
 		if (markers.length > 0) {
 			var bounds = [markers[0].getPosition(), markers[0].getPosition()].toLatLngBounds();
