@@ -76,7 +76,7 @@ var ScrollBar = new Class({
 		// bind onChange (?)
 		this.options.sliderOptions.onChange = this.options.sliderOptions.onChange.bind(this);
 		
-		this.slider = new Slider(this.Bar, this.Handle, this.options.sliderOptions).set(0);
+		this.slider = new Slider(this.bar, this.handle, this.options.sliderOptions).set(0);
 		
 		if (this.options.wheel) {
 			this.wrap.addEvent('mousewheel', function(e) {
@@ -101,22 +101,21 @@ var ScrollBar = new Class({
 			this.wrap = this.el.getParent();
 		}
 		
-		this.Bar = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Bar' });
-		this.Handle = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Handle' });
-		this.Bar.grab(this.Handle);
+		this.bar = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Bar' });
+		this.handle = new Element('div', {	'class': 'ui-scrollBar' + this.options.sliderOptions.mode.capitalize() + 'Handle' });
+		this.bar.grab(this.handle);
 		
 		this.el.addClass('ui-scrollBar' + this.options.sliderOptions.mode.capitalize());
-		this.Bar.inject(this.el, 'after');
+		this.bar.inject(this.el, 'after');
 		
 		if (this.options.sliderOptions.mode === 'vertical') {
-			new Element('div[style="clear: both;"]').inject(this.Bar, 'after');
-			
-			this.el.setStyle('width', this.el.getSize().x - this.Bar.getSize().x + this.options.x);
-			this.Bar.setStyle('height', this.el.getSize().y + this.options.y);
+			new Element('div[style="clear: both;"]').inject(this.bar, 'after');
+			this.el.setStyle('width', this.el.getSize().x - this.bar.getSize().x + this.options.x - this.el.getStyle('margin-left').toInt() - this.el.getStyle('margin-right').toInt());
+			this.bar.setStyle('height', this.el.getSize().y + this.options.y);
 		}
 		
 		if (this.options.sliderOptions.mode === 'horizontal') {
-			this.Bar.setStyle('width', this.el.getSize().x + this.options.x);
+			this.bar.setStyle('width', this.el.getSize().x + this.options.x - this.el.getStyle('margin-top').toInt() - this.el.getStyle('margin-bottom').toInt());
 		}
 		
 	}
