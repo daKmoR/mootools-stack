@@ -328,10 +328,14 @@ var FlexSlide = new Class({
 	},
 	
 	adjustElement: function(el) {
-		if( el.complete || el.get('tag') != 'img' ) {
+		var loaded = false;
+		if ( el && el.complete != 'undefined') {
+			loaded = el.complete ? true : false;
+		}
+		if (loaded || (el && el.get('tag') != 'img')) {
 			this._adjustElement(el);
 		} else {
-			this.adjustElement.delay(10, this);
+			this.adjustElement.delay(10, this, el);
 			// code below breaks Asset.image functionality
 			// el.addEvent('load', function() {
 				// this._adjustElement(el);
