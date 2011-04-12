@@ -63,6 +63,23 @@ Map.InfoMarker = new Class({
 		}.bind(this));
 	},
 	
+	hide: function() {
+		this.marker.hide();
+		this.infoWindow.hide();
+	},
+
+	show: function(alsoOpenInfoWindow) {
+		this.marker.show();
+		if (alsoOpenInfoWindow) {
+			this.open();
+		}
+	},
+
+	destroy: function() {
+		this.marker.destroy();
+		this.infoWindow.destroy();
+	},
+	
 	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
 	
 	// MVC object is usually a marker.

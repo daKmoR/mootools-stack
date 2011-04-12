@@ -56,6 +56,14 @@ Map.InfoWindow = new Class({
 		this.mapToSubObject();
 	},
 	
+	hide: function() {
+		this.close();
+	},
+
+	destroy: function() {
+		this.infoWindowObj = null;
+	},	
+	
 	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
 	
 	setPosition: function(point) {
