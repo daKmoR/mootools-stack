@@ -45,6 +45,20 @@ Array.implement({
 			return new google.maps.LatLngBounds(this[0], this[1]);
 		}
 		return this;
+	},
+	
+	toSize: function() {
+		if (this.length == 2 && typeOf(this[0]) === 'number' && typeOf(this[1]) === 'number' ) {
+			return new google.maps.Size(this[0], this[1]);
+		}
+		return this;
+	},
+	
+	toPoint: function() {
+		if (this.length == 2 && typeOf(this[0]) === 'number' && typeOf(this[1]) === 'number' ) {
+			return new google.maps.Point(this[0], this[1]);
+		}
+		return this;
 	}
 	
 });
@@ -54,6 +68,7 @@ var Map = new Class({
 
 	options: {
 		// use all Options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
+		// markerOptions: {}
 		mapTypeId: 'roadmap',
 		zoom: 6,
 		plugins: {}
@@ -64,7 +79,7 @@ var Map = new Class({
 			functions: ['getBounds', 'getCenter', 'getDiv', 'getProjection', 'panBy', 'setOptions'],
 			properties: ['mapTypeId', 'streetView', 'zoom'],
 			eventOptions: { instance: 'google.maps.event', addFunction: 'addListener', addObjectAsParam: true },
-			events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed'],
+			events: ['bounds_changed', 'center_changed', 'click', 'dblclick', 'drag', 'dragend', 'dragstart', 'idle', 'maptypeid_changed', 'mousemove', 'mouseout', 'mouseover', 'projection_changed', 'resize', 'rightclick', 'tilesloaded', 'zoom_changed']
 		}
 	},
 

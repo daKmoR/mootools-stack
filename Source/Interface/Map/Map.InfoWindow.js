@@ -47,13 +47,17 @@ Map.InfoWindow = new Class({
 
 	initialize: function (position, options) {
 		this.setOptions(options);
+		this.initOptions();
 		
 		this.options.position = typeOf(position) === 'array' ? position.toLatLng() : position;
-		//this.options.pixelOffset = new google.maps.Size(10,10);
 		
 		this.infoWindowObj = new google.maps.InfoWindow(this.options);
 		
 		this.mapToSubObject();
+	},
+	
+	initOptions: function() {
+		this.options.pixelOffset = typeOf(this.options.pixelOffset) === 'array' ? this.options.pixelOffset.toSize() : this.options.pixelOffset;
 	},
 	
 	hide: function() {

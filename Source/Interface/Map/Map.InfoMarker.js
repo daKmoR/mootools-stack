@@ -10,7 +10,7 @@ license: MIT-style license
 authors:
   - Thomas Allmer
 
-requires: [Map]
+requires: [Map, Map.Marker, Map.InfoWindow]
 
 provides: [Map.InfoMarker]
 
@@ -127,6 +127,7 @@ Map.InfoMarker = new Class({
 Map.implement({
 	
 	createInfoMarker: function(position, options) {
+		var options = Object.merge(this.options.markerOptions, options);
 		var infoMarker = new Map.InfoMarker(position, this.mapObj, options);
 		this.markers.push(infoMarker);
 		return infoMarker;
