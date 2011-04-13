@@ -18,7 +18,7 @@ var Checkboxes = new Class({
 
 	Implements: [Settings, Events],
 	options: {
-
+		mode: 'auto', // 'auto': determine on first click; false: disable moveselection; 'disable': only disable; 'enable': only enable; 
 	},
 	
 	checkboxes: [],
@@ -26,9 +26,8 @@ var Checkboxes = new Class({
 	mode: false,
 	first: false,
 	
-	initialize: function(elements, options) {
-		//this.elements = $$(elements);
-		this.checkboxes = $$('input[type="checkbox"]');
+	initialize: function(checkboxes, options) {
+		this.checkboxes = $$(checkboxes);
 		this.setOptions(options);
 		
 		this.build();
@@ -51,27 +50,39 @@ var Checkboxes = new Class({
 						that.first = true;
 						this.addClass('pushed');
 					},
-					'mouseup': function() { 
+					'mouseup': function() {
 						this.removeClass('pushed');
-						if (that.mode == 'enable') { this.addClass('checked');	}
-						if (that.mode == 'disable') {	this.removeClass('checked'); }
+						
+						if ((!that.options.mode === 'enable' && !that.options.mode === 'disable') || that.first === true) {
+							if (that.mode === 'enable') { this.addClass('checked');	}
+							if (that.mode === 'disable') { this.removeClass('checked'); }
+						}
 						
 						if (that.first === true) {
 							that.synch();
 						}
 					},
-					'mouseenter': function() {
-						if (that.mode == 'enable') { this.addClass('checked');	}
-						if (that.mode == 'disable') {	this.removeClass('checked'); }
-					},
-					'mouseleave': function() {
-						this.removeClass('pushed');
-						if (that.first && that.mode == 'enable') { this.addClass('checked');	}
-						if (that.first && that.mode == 'disable') {	this.removeClass('checked'); }
+					'mouseleave': function(e) {
+						e.stop();
+						if (that.options.mode !== false) {
+							if (that.first && that.mode == 'enable') { this.addClass('checked');	}
+							if (that.first && that.mode == 'disable') {	this.removeClass('checked'); }
+						}
 						that.first = false;
+						this.removeClass('pushed');
 					}
 				});
-				checkbox.addEvent('change', function() { 
+				
+				if (that.options.mode !== false) {
+					this.spans[i].addEvent('mouseenter', function(e) {
+						e.stop();
+						var localMode = that.mode && (that.options.mode === 'enable' || that.options.mode === 'disable') ? that.options.mode : that.mode;
+						if (localMode == 'enable') { this.addClass('checked');	}
+						if (localMode == 'disable') {	this.removeClass('checked'); }
+					});
+				}
+				
+				checkbox.addEvent('change', function() {
 					if (this.mode === false) {
 						this.synch('fromCheckboxes');
 					}
