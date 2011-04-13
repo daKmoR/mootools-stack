@@ -18,7 +18,7 @@ var Checkboxes = new Class({
 
 	Implements: [Settings, Events],
 	options: {
-		mode: 'auto', // 'auto': determine on first click; false: disable moveselection; 'disable': only disable; 'enable': only enable; 
+		mode: 'auto' // 'auto': determine on first click; false: disable moveselection; 'disable': only disable; 'enable': only enable; 
 	},
 	
 	checkboxes: [],
@@ -91,7 +91,7 @@ var Checkboxes = new Class({
 		
 		}, this);
 		
-		window.addEvent('mouseup', function() {
+		document.addEvent('mouseup', function() {
 			if (this.mode == 'enable' || this.mode == 'disable') {
 				if (this.first === false) {
 					this.synch();
