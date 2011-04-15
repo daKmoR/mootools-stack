@@ -92,7 +92,7 @@ var FlexBox = new Class({
 			this.anchor = $(this.options.anchor);
 			this.anchor.addEvent('click', function(e) {
 				e.stop();
-				this.open( this.anchors.indexOf(this.anchor) );
+				this.open(this.anchor);
 				
 			}.bind(this) );
 			
@@ -112,6 +112,7 @@ var FlexBox = new Class({
 	
 	open: function(id) {
 		if( this.isOpen ) return false;
+		var id = typeOf(id) === 'element' ? this.anchors.indexOf(id) : id;
 		
 		if( $defined(this.flexSlide) ) {
 			if( this.options.useOverlay ) {
