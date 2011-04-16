@@ -223,6 +223,7 @@ var FlexSlide = new Class({
 			var size = this.elements.item[this.options.getSizeFromElement].getSize();
 			this.itemWrap.setStyle('width', size.x );
 			this.itemWrap.setStyle('height', size.y );
+			this.options.getSizeFromElement = false; //only set the size once :p
 		}
 		
 		if( this.elements[item].length > 0 ) {
