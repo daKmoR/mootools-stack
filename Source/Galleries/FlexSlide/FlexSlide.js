@@ -49,6 +49,7 @@ var FlexSlide = new Class({
 		},
 		show: 0,
 		buildOnInit: true,
+		resetIframeOnChange: true,
 		container: null,
 		getSizeFromContainer: false,
 		getSizeFromElement: 'auto', // ['auto', -1, id] 'auto' same as show, -1 to not use it
@@ -57,7 +58,7 @@ var FlexSlide = new Class({
 		fixedSize: false, // {x: 640, y: 640}
 		resizeFactor: 0.95,
 		resizeLimit: false, // {x: 640, y: 640}
-		autoItemSize: { x: true, y: true },
+		autoItemSize: { mode: 'scale', x: true, y: true },
 		autoItemSizeSpecial: ['img', 'a'],
 		centerItemTags: ['img', 'a'],
 		autoContainerSize: { x: false, y: false },
@@ -314,8 +315,14 @@ var FlexSlide = new Class({
 			
 			this.running = true;
 			this.fireEvent('onShow', [this.current, id]);
+			
+			var oldcurrent = this.current;
 			this.fx.start(this.fxConfig).chain( function() {
 				this.running = false;
+				// "reset" iframe src to stop started flash videos
+				if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
+					this.elements.item[oldcurrent].set('src', this.elements.item[oldcurrent].get('src'));
+				}
 				this.fireEvent('onShowEnd');
 			}.bind(this) );
 			this.wrapFx.start(this.wrapFxConfig);
@@ -329,6 +336,7 @@ var FlexSlide = new Class({
 	},
 	
 	adjustElement: function(el) {
+		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
 		var loaded = false;
 		if ( el && el.complete != 'undefined') {
 			loaded = el.complete ? true : false;
@@ -359,19 +367,24 @@ var FlexSlide = new Class({
 		var autoItemSize = this.options.autoItemSize;
 		
 		if( this.options.autoItemSizeSpecial.contains(el.get('tag')) ) {
-			autoItemSize = { x: false, y: false };
+			autoItemSize.x = false;
+			autoItemSize.y = false;
 			if ( diffHeight > diffWidth ) //quer
 				autoItemSize.x = true;
 			else
 				autoItemSize.y = true;
 		}
 
-		if( this.options.autoContainerSize.y && this.options.autoContainerSize.x )
-			autoItemSize = { x: false, y: false };
-		else if ( this.options.autoContainerSize.y )
-			autoItemSize = { x: true, y: false };
-		else if ( this.options.autoContainerSize.x )
-			autoItemSize = { x: false, y: true };
+		if( this.options.autoContainerSize.y && this.options.autoContainerSize.x ) {
+			autoItemSize.x = false;
+			autoItemSize.y = false;
+		} else if ( this.options.autoContainerSize.y ) {
+			autoItemSize.x = true;
+			autoItemSize.y = false;
+		} else if ( this.options.autoContainerSize.x ) {
+			autoItemSize.x = false;
+			autoItemSize.y = true;
+		}
 			
 		var childs = el.getElements('*');
 		if( autoItemSize.x ) {
@@ -392,6 +405,15 @@ var FlexSlide = new Class({
 			} else {
 				el.setStyle('margin', '0 ' + (width - elSize.x) / 2 + 'px' );
 			}
+		}
+
+		if (autoItemSize.mode === 'crop') {
+			var ratiox = parentSize.x / elSize.x, ratioy = parentSize.y / elSize.y;
+			var ratio = ratioy > ratiox ? ratioy : ratiox;
+			el.erase('height');
+			el.erase('width');
+			el.setStyle('height', elSize.y * ratio);
+			el.setStyle('width', elSize.x * ratio);
 		}
 	},
 	
@@ -422,6 +444,25 @@ var FlexSlide = new Class({
 		}
 		
 		this.updateCounter(id);
+
+		if (this.options.mode === 'once') {
+			if (id === 0) {
+				if (this.current === 0) {
+					if (this.previousWrap) this.previousWrap.fade('hide');
+				} else {
+					if (this.previousWrap) this.previousWrap.fade(0);
+				}
+				if (this.nextWrap) this.nextWrap.fade(1);
+			}	else if(id === this.elements.item.length-1) {
+				if (this.previousWrap) this.previousWrap.fade(1);
+				if (this.nextWrap) this.nextWrap.fade(0);
+			} else {
+				if (this.previousWrap) this.previousWrap.fade(1);
+				if (this.nextWrap) this.nextWrap.fade(1);
+			}
+		}
+
+		this.fireEvent('process', [id, this.current]);
 			
 		this.current = id;
 		if( this.options.auto ) this.auto();

@@ -79,10 +79,11 @@ var FlexBox = new Class({
 	},
 	
 	isOpen: false,
+	anchors: [],
 
 	initialize: function(anchors, options){
 		this.setOptions(options);
-		this.anchors = $$(anchors);
+		var anchors = $$(anchors);
 		
 		if( this.options.wrap || this.options.anchor ) {
 			this.options.singleMode = true;
@@ -93,23 +94,24 @@ var FlexBox = new Class({
 			this.anchor.addEvent('click', function(e) {
 				e.stop();
 				this.open(this.anchor);
-				
 			}.bind(this) );
-			
 		} else {
-		
-			this.anchors.each( function(el, i) {
-				el.addEvent('click', function(e) {
-					e.stop();
-					this.open(i);
-					
-				}.bind(this) );
-			}, (this) );
-			
+			this.attach(anchors);
 		}
 
 	},
 	
+	attach: function(anchors) {
+		var that = this;
+		anchors.each(function(anchor) {
+			anchor.addEvent('click', function(e) {
+				e.stop();
+				that.open(this);
+			});
+			this.anchors.include(anchor);
+		}, this);
+	},
+
 	open: function(id) {
 		if( this.isOpen ) return false;
 		var id = typeOf(id) === 'element' ? this.anchors.indexOf(id) : id;
@@ -218,7 +220,6 @@ var FlexBox = new Class({
 		this.flexSlide.elements.item[this.flexSlide.current].set('style', '');
 		
 		this.flexSlide.removeEvent('onShowEnd', this.closeEndEvent);
-		
 		
 		this.isOpen = false;
 		this.options.active = false;

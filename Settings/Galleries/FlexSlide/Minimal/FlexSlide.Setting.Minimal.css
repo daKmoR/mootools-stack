@@ -7,4 +7,5 @@
 	.ui-Previous { cursor: pointer; }
 	.ui-Loader { background: #fff url('images/loader.gif') no-repeat center center; height: 100%; width: 100%; display: block; }
 	.ui-RequestItem, .ui-InlineItem { min-width: 200px; }
+	.ui-IframeItem { width: 560px; height: 349px; }
 	.ui-SelectScroller { overflow: hidden; }

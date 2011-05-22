@@ -1,0 +1,16 @@
+	
+	div.mediaBox .ui-Controls { bottom: 5px; position: absolute; left: 0; }
+		div.mediaBox .ui-Counter { float: left; color: #aaa; font-family: "Trebuchet MS"; font-weight: bold; }
+		div.mediaBox .ui-Next, div.mediaBox .ui-Previous { background: url(images/controls.gif) no-repeat left top; width: 16px; height: 20px; float: left; }
+		div.mediaBox .ui-Previous { background-position: right top; }
+			div.mediaBox .ui-Next:hover { background-position: left bottom; }
+			div.mediaBox .ui-Previous:hover { background-position: right bottom; }
+	
+	div.mediaBox .ui-Close { height: 22px; width: 66px; background: url(images/close.gif) no-repeat; position: absolute; right: 10px; top: 10px; }
+	
+	div.mediaBox .ui-Description { margin: 5px 0 0 10px; height: 40px; color: #666; font-size: 13px; }
+	
+	div.mediaBox .ui-Bottom { position: absolute; background: #fff; width: 100%; left: 0; height: 45px; }
+
+	div.mediaBox { background: #fff; padding: 10px; font-family: Helvetica, Arial, sans-serif; }
+	div.mediaBox .ui-Item { margin: 10px; }

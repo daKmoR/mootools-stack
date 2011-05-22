@@ -28,6 +28,7 @@ sources:
   - "Source/Galleries/FlexBox/FlexBox.js"
   - "Source/Galleries/FlexBox/FlexBoxes.js"
   - "Settings/Galleries/FlexBox/LightBox/FlexBox.Setting.LightBox.js"
+  - "Settings/Galleries/FlexBox/MediaBox/FlexBox.Setting.MediaBox.js"
   - "Source/Menus/MenuMatic.js"
   - "Source/Visual/MooPath/Fx.Any.js"
   - "Source/Visual/MooPath/MooPath.js"

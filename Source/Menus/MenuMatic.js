@@ -819,7 +819,8 @@ var MenuMaticSubMenu = new Class({
 				}
 			}
 		}else{
-			this.childMenu.setStyles({'display':'block','visibility':'visible'}).chain(function(){	this.showSubMenuComplete(this);	}.bind(this));
+			this.childMenu.setStyles({'display':'block','visibility':'visible'});
+			this.showSubMenuComplete(this);
 		}
 		this.childMenu.store('status','open');
 		

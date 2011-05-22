@@ -19,7 +19,7 @@ var Gallery = new Class({
 	options: {
 		auto: true,
 		duration: 5000,
-		mode: 'continuous', /* [continuous, reverse, random] */
+		mode: 'repeat', /* [repeat, reverse, random, once] */
 		step: 1,
 		times: 1,
 		effect: {
@@ -74,6 +74,14 @@ var Gallery = new Class({
 	process: function(id) {
 		this.current = id;
 		if( this.options.auto ) this.auto();
+	},
+	
+	stop: function() {
+		$clear(this.autotimer);
+	},
+	
+	start: function() {
+		this.auto();
 	}
 
 });

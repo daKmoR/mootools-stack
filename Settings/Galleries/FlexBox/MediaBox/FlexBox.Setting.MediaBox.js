@@ -1,26 +1,26 @@
 /*
 ---
 
-name: Setting.FlexBox.LightBox
+name: Setting.FlexBox.MediaBox
 
-description: mimics the "original" LightBox Theme
+description: mimics the "original" LightBox Theme with bottom controls to allow media elements
 
 license: MIT-style license.
 
 requires: [FlexBox]
 
-provides: [Setting.FlexBox.LightBox]
+provides: [Setting.FlexBox.MediaBox]
 
 ...
 */
 
 SettingsStore.FlexBox = SettingsStore.FlexBox || {};
 
-SettingsStore.FlexBox.LightBox = {
-	ui: { wrap: { 'class': 'flexBoxWrap lightBox' } },
+SettingsStore.FlexBox.MediaBox = {
+	ui: { wrap: { 'class': 'flexBoxWrap mediaBox' } },
 	manualClose: true,
 	flexSlide: {
-		render: ['item', {'controls': ['previous', 'next']}, {'bottom': [{'description': ['counter']}, 'close']}],
+		render: ['item', {'bottom': [{'description': [{'controls': ['previous', 'counter', 'next']}]}, 'close']}],
 		counterTemplate: 'Image {id} of {count}'
 	},
 	onOpen: function() {

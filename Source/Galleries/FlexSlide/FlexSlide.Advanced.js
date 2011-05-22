@@ -21,6 +21,7 @@ FlexSlide.Advanced = new Class({
 		ui: {
 			requestItem: { 'class': 'ui-RequestItem' },
 			inlineItem: { 'class': 'ui-InlineItem' },
+			iframeItem: { 'class': 'ui-IframeItem' },
 			loader: { 'class': 'ui-Loader ui-ItemItem' }
 		},
 		container: null,
@@ -142,6 +143,27 @@ FlexSlide.Advanced = new Class({
 					this.itemWrap.grab(div);
 					if( show ) this.show(id, fx);
 					break;
+				case 'youtube':
+					var youtubeId = '';
+					if (href.contains('youtube.com')) {
+						youtubeId = href.substring(href.indexOf('v=')+2);
+						youtubeId = youtubeId.contains('&') ? youtubeId.substring(0, youtubeId.indexOf('&')) : youtubeId;
+					}
+					if (href.contains('youtu.be')) {
+						youtubeId = href.substr(href.lastIndexOf('/')+1);
+					}
+					href = (youtubeId.length > 0) ? 'http://www.youtube.com/embed/' + youtubeId + '?wmode=opaque' : href;
+					// no break as the iframe code below will actually insert the video
+				case 'iframe':
+					var iframe = new Element('iframe', {
+						'class': this.options.ui.itemItem['class'] + ' ' + this.options.ui.iframeItem['class'],
+						'src': href,
+						'frameborder': 0
+					});
+					this.elements.item[id] = this.fx.elements[id] = iframe;
+					this.itemWrap.grab(iframe);
+					if (show) this.show(id, fx);
+					break;
 			}
 			
 		}
@@ -209,6 +231,8 @@ FlexSlide.Advanced = new Class({
 					return 'inline';
 				} else if( document.location.host === href.toURI().get('host') + (document.location.host.contains(':') ? ':' + href.toURI().get('port') : '') ) {
 					return 'request';
+				} else if (href.contains('youtube.com') || href.contains('youtu.be')) {
+					return 'youtube';
 				} else {
 					return 'iframe';
 				}
