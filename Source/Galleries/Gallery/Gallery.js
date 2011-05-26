@@ -22,6 +22,10 @@ var Gallery = new Class({
 		mode: 'repeat', /* [repeat, reverse, random, once] */
 		step: 1,
 		times: 1,
+		ui: {
+			activeClass: 'ui-Active',
+			stopClass: 'ui-Stop'
+		},
 		effect: {
 			up: 'random', /* any availabele effect */
 			down: 'random' /* any availabele effect */
@@ -76,12 +80,40 @@ var Gallery = new Class({
 		if( this.options.auto ) this.auto();
 	},
 	
+	toggle: function() {
+		if (this.options.auto) {
+			this.stop();
+		} else {
+			this.start();
+		}
+	},
+	
 	stop: function() {
+		this.options.auto = false;
 		$clear(this.autotimer);
+		if (this.toggleWrap) {
+			this.toggleWrap.addClass(this.options.ui.stopClass);
+		}
+		if (this.stopWrap) {
+			this.stopWrap.addClass(this.options.ui.activeClass);
+		}
+		if (this.startWrap) {
+			this.startWrap.removeClass(this.options.ui.activeClass);
+		}
 	},
 	
 	start: function() {
-		this.auto();
+		this.options.auto = true;
+		this.next();
+		if (this.toggleWrap) {
+			this.toggleWrap.removeClass(this.options.ui.stopClass);
+		}
+		if (this.stopWrap) {
+			this.stopWrap.removeClass(this.options.ui.activeClass);
+		}
+		if (this.startWrap) {
+			this.startWrap.addClass(this.options.ui.activeClass);
+		}
 	}
 
 });

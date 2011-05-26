@@ -40,12 +40,11 @@ var FlexSlide = new Class({
 	Implements: [Settings, Events, Gallery],
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
-		render: ['item'],
+		render: ['item'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
 		ui: {
 			wrap: { 'class': 'ui-Wrap' },
 			selectItem: { 'class': 'ui-SelectItem' },
-			descriptionItem: { 'class': 'ui-DescriptionItem' },
-			activeClass: 'ui-active'
+			descriptionItem: { 'class': 'ui-DescriptionItem' }
 		},
 		show: 0,
 		buildOnInit: true,
@@ -144,8 +143,9 @@ var FlexSlide = new Class({
 				var select = new Element('div', this.options.ui.selectItem)
 					.addEvent('click', this.show.bind(this, i))
 					.inject(this.selectWrap);
-				
-				select.set('html', this.options.selectTemplate.substitute({id: i+1}) );
+					
+				var text = el.get('alt') || '';
+				select.set('html', this.options.selectTemplate.substitute({id: i+1, text: text}));
 				this.elements.select.push(select);
 			}, this);
 		}
@@ -198,6 +198,16 @@ var FlexSlide = new Class({
 		}
 		if( this.previousWrap ) {
 			this.previousWrap.addEvent('click', this.previous.bind(this, this.options.times) );
+		}
+		
+		if( this.startWrap ) {
+			this.startWrap.addEvent('click', this.start.bind(this) );
+		}
+		if( this.stopWrap ) {
+			this.stopWrap.addEvent('click', this.stop.bind(this) );
+		}
+		if( this.toggleWrap ) {
+			this.toggleWrap.addEvent('click', this.toggle.bind(this) );
 		}
 		
 		if( this.options.useScroller == true ) {
