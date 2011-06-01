@@ -144,7 +144,7 @@ var FlexSlide = new Class({
 					.addEvent('click', this.show.bind(this, i))
 					.inject(this.selectWrap);
 					
-				var text = el.get('alt') || '';
+				var text = el.get('alt') || el.get('title') || '';
 				select.set('html', this.options.selectTemplate.substitute({id: i+1, text: text}));
 				this.elements.select.push(select);
 			}, this);
