@@ -417,14 +417,35 @@ var FlexSlide = new Class({
 			}
 		}
 
-		if (autoItemSize.mode === 'crop') {
-			var ratiox = parentSize.x / elSize.x, ratioy = parentSize.y / elSize.y;
+		if (autoItemSize.mode === 'crop' || autoItemSize.mode === 'cropBody') {
+			scrollSize = parentSize;
+			if (autoItemSize.mode === 'cropBody') {
+				parent.setStyle('height', 'auto');
+				parent.setStyle('width', 'auto');
+				var scrollSize = $(document.body).getScrollSize();
+				parent.setStyle('height', scrollSize.y);
+				parent.setStyle('width', scrollSize.x);
+			}
+			
+			var ratiox = scrollSize.x / elSize.x, ratioy = scrollSize.y / elSize.y;
 			var ratio = ratioy > ratiox ? ratioy : ratiox;
+			
+			if (ratio == 'Infinity') {
+				ratio = 1.1;
+			}
+			
 			el.erase('height');
 			el.erase('width');
+			
 			el.setStyle('height', elSize.y * ratio);
 			el.setStyle('width', elSize.x * ratio);
+			if (this.options.centerItem === true) {
+				el.setStyle('margin', 0);
+				el.setStyle('margin-top', (scrollSize.y - elSize.y*ratio)/2 + 'px');
+				el.setStyle('margin-left', (scrollSize.x - elSize.x*ratio)/2 + 'px');
+			}
 		}
+		
 	},
 	
 	positionContainer: function(id) {
