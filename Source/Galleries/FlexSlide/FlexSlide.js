@@ -41,7 +41,7 @@ var FlexSlide = new Class({
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
 		render: ['item'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
-		render: ['item', 'next'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
+		render: ['item', 'next', 'previous'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
 		ui: {
 			wrap: { 'class': 'ui-Wrap' },
 			selectItem: { 'class': 'ui-SelectItem' },
@@ -168,8 +168,7 @@ var FlexSlide = new Class({
 							this.itemWrap.grab(this.elements.item[this.options.getSizeFrom]);
 							
 							this.options.size = this.elements.item[this.options.getSizeFrom].getSize();
-							this.itemWrap.setStyle('width', this.options.size.x);
-							this.itemWrap.setStyle('height', this.options.size.y);
+							this.itemWrap.setStyle('width', this.options.size.x).setStyle('height', this.options.size.y);
 							
 							this.elements.item[this.options.getSizeFrom].dispose();
 							
@@ -180,15 +179,13 @@ var FlexSlide = new Class({
 				// container
 				if (this.options.getSizeFrom === 'wrap') {
 					this.options.size = this.wrap.getSize();
-					this.itemWrap.setStyle('width', this.options.size.x);
-					this.itemWrap.setStyle('height', this.options.size.y);
+					this.itemWrap.setStyle('width', this.options.size.x).itemWrap.setStyle('height', this.options.size.y);
 				}
 				
 			}
 			
 		} else {
-			this.itemWrap.setStyle('width', this.options.size.x);
-			this.itemWrap.setStyle('height', this.options.size.y);
+			this.itemWrap.setStyle('width', this.options.size.x).setStyle('height', this.options.size.y);
 		}
 	},
 	
@@ -332,7 +329,7 @@ var FlexSlide = new Class({
 			this.wrapFx.setOptions( this.options.effect.wrapFxOptions );
 			
 			if (this.current >= 0) {
-				this.currentElement(this.current);
+				this.prepareCurrent(this.current);
 			}
 			this.prepareElement(id);
 			
@@ -359,15 +356,7 @@ var FlexSlide = new Class({
 				this.elements.item[id].setStyles(tmp);
 			}
 
-			//this.itemWrap.grab( this.elements.item[id] );
-			
-			
 			this.fireEvent('onShow', [this.current, id]);
-			
-			//if (this.current >= 0) {
-				//this.transition();
-			//}
-			
 			
 			// this.wrapFx.start(this.wrapFxConfig).chain( function() {
 				// this.fx.start(this.fxConfig)
@@ -379,30 +368,31 @@ var FlexSlide = new Class({
 	
 	transition: function() {
 		if (this.current < 0) return;
+		console.log('trans');
 		
 		this.running = true;
-		
 		var oldcurrent = this.current;
-		
-		//this.fx = new Fx.Elements(this.elements.item);
-		
 		this.fx.elements = this.fx.subject = this.elements.item;
 		
 		this.fx.start(this.fxConfig).chain( function() {
 			this.running = false;
 			
-			// "reset" iframe src to stop started flash videos
-			if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
-				this.elements.item[oldcurrent].set('src', this.elements.item[oldcurrent].get('src'));
-			}
-			
-			this.fireEvent('onShowEnd');
 			
 		}.bind(this) );
 		this.wrapFx.start(this.wrapFxConfig);
 	},
 	
-	currentElement: function(el) {
+	showEnd: function() {
+	
+		// "reset" iframe src to stop started flash videos
+		if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
+			this.elements.item[oldcurrent].set('src', this.elements.item[oldcurrent].get('src'));
+		}
+		
+		this.fireEvent('onShowEnd');
+	},
+	
+	prepareCurrent: function(el) {
 		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
 		var el = this.elements.item[i];
 		this.elements.item[i] = el;
@@ -437,12 +427,6 @@ var FlexSlide = new Class({
 			this.adjustElement(el);
 			this.transition();
 		}
-		
-	},
-	
-	prepareCurrent: function(el) {
-		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
-		
 		
 	},
 	
@@ -492,7 +476,7 @@ var FlexSlide = new Class({
 			el.setStyle('width', elSize.x * ratio).setStyle('height', elSize.y * ratio);
 			
 			if (itemSize === 'scale') {
-				var returnPos = el.position(Object.merge({relativeTo: this.itemWrap, returnPos: true}, itemPosition));
+				var returnPos = el.calculatePosition(Object.merge({relativeTo: this.itemWrap}, itemPosition));
 				if (returnPos.left !== 0) {
 					el.setStyle('margin-left', returnPos.left).setStyle('margin-right', returnPos.left);
 				}
