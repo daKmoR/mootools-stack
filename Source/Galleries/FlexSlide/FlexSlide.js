@@ -54,7 +54,10 @@ var FlexSlide = new Class({
 		size: null, // { x: 500, y: 500 }
 		size: { x: 500, y: 300 },
 		getSizeFrom: 'none', // ['none', 'element', 'element[x]', 'wrap'] element uses the show element
-		itemSize: 'scale', // ['scale', 'crop']
+		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
+		itemSizeOverride: {
+			div: 'same'
+		},
 		itemPosition: { position: 'center' },
 		itemPositionOverride: {
 			div: { position: 'leftTop' }
@@ -456,36 +459,51 @@ var FlexSlide = new Class({
 	adjustElement: function(el) {
 		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
 		
-		var itemPosition = Object.clone(this.options.itemPosition);
-		if (override = this.options.itemPositionOverride[el.get('tag')]) {
-			Object.merge(itemPosition, override);
-		}
+		var itemSize = this.options.itemSizeOverride[el.get('tag')] || this.options.itemSize;
+		if (itemSize === 'none') {
+			return;
+		} else if (itemSize === 'same') {
+			el.erase('width').erase('height');
+			el.setStyle('width', this.options.size.x).setStyle('height', this.options.size.y);
+		} else {
 		
-		//var scrollSize = $(document.body).getScrollSize();
-		//this.options.itemSize = 'crop';
-		//this.options.itemPosition.position = 'left';
+			var itemPosition = Object.clone(this.options.itemPosition);
+			if (itemPositionOverride = this.options.itemPositionOverride[el.get('tag')]) {
+				Object.merge(itemPosition, itemPositionOverride);
+			}
+			
+			//var scrollSize = $(document.body).getScrollSize();
+			//itemSize = 'crop';
+			//this.options.itemPosition.position = 'left';
 
-		var size = this.itemWrap.getSize(), elSize = el.getSize();
-		if (this.options.itemSize === 'cropScroll' || this.options.itemSize === 'scaleScroll') {
-			size = this.itemWrap.getScrollSize();
-		}
-		var ratiox = size.x / elSize.x, ratioy = size.y / elSize.y;
-		
-		if (this.options.itemSize === 'scale') {
-			var ratio = ratioy < ratiox ? ratioy : ratiox;
-		} else if (this.options.itemSize === 'crop') {
-			var ratio = ratioy > ratiox ? ratioy : ratiox;
-		}
-		
-		el.erase('height').erase('width');
-		el.setStyle('height', elSize.y * ratio);
-		el.setStyle('width', elSize.x * ratio);
-		
-		if (this.options.itemSize === 'scale') {
-			el.position(Object.merge({relativeTo: this.itemWrap}, itemPosition));
-		} else if (this.options.itemSize === 'crop' && itemPosition.position === 'center') {
-			el.setStyle('top', (size.y - elSize.y*ratio)/2 + 'px');
-			el.setStyle('left', (size.x - elSize.x*ratio)/2 + 'px');
+			var size = this.itemWrap.getSize(), elSize = el.getSize();
+			if (itemSize === 'cropScroll' || itemSize === 'scaleScroll') {
+				size = this.itemWrap.getScrollSize();
+			}
+			var ratiox = size.x / elSize.x, ratioy = size.y / elSize.y;
+			
+			if (itemSize === 'scale') {
+				var ratio = ratioy < ratiox ? ratioy : ratiox;
+			} else if (itemSize === 'crop') {
+				var ratio = ratioy > ratiox ? ratioy : ratiox;
+			}
+			
+			el.erase('width').erase('height');
+			el.setStyle('width', elSize.x * ratio).setStyle('height', elSize.y * ratio);
+			
+			if (itemSize === 'scale') {
+				var returnPos = el.position(Object.merge({relativeTo: this.itemWrap, returnPos: true}, itemPosition));
+				if (returnPos.left !== 0) {
+					el.setStyle('margin-left', returnPos.left).setStyle('margin-right', returnPos.left);
+				}
+				if (returnPos.top !== 0) {
+					el.setStyle('margin-top', returnPos.top).setStyle('margin-bottom', returnPos.top);
+				}
+			} else if (itemSize === 'crop' && itemPosition.position === 'center') {
+				el.setStyle('top', (size.y - elSize.y*ratio)/2 + 'px');
+				el.setStyle('left', (size.x - elSize.x*ratio)/2 + 'px');
+			}
+			
 		}
 	},
 	
