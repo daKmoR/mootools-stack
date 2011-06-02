@@ -7,7 +7,7 @@ description: allows to create almost any Sliding Stuff (Galleries, Tabs...) with
 
 license: MIT-style license.
 
-requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Fx.Scroll, More/Element.Position, Class.Settings, Gallery]
+requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Fx.Scroll, More/Element.Position, Class.Settings, Gallery, More/Assets]
 
 provides: FlexSlide
 
@@ -41,6 +41,7 @@ var FlexSlide = new Class({
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
 		render: ['item'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
+		render: ['item', 'next'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
 		ui: {
 			wrap: { 'class': 'ui-Wrap' },
 			selectItem: { 'class': 'ui-SelectItem' },
@@ -48,15 +49,27 @@ var FlexSlide = new Class({
 		},
 		show: 0,
 		buildOnInit: true,
-		resetIframeOnChange: true,
+		initFx: 'display',
 		container: null,
+		size: null, // { x: 500, y: 500 }
+		size: { x: 300, y: 300 },
+		getSizeFrom: 'none', // ['none', 'element', 'element[x]', 'wrap'] element uses the show element
+		itemSize: 'scale', // ['scale', 'crop']
+		itemPosition: { position: 'center' },
+		
+		
+		/* replace, use... */ 
+		resetIframeOnChange: true,
 		getSizeFromContainer: false,
+		
+		/* remove */
 		getSizeFromElement: 'auto', // ['auto', -1, id] 'auto' same as show, -1 to not use it
 		setSizeForContainer: false,
-		initFx: 'display',
 		fixedSize: false, // {x: 640, y: 640}
 		resizeFactor: 0.95,
 		resizeLimit: false, // {x: 640, y: 640}
+		auto: false,
+		
 		autoItemSize: { mode: 'scale', x: true, y: true },
 		autoItemSizeSpecial: ['img', 'a'],
 		centerItemTags: ['img', 'a'],
@@ -91,7 +104,9 @@ var FlexSlide = new Class({
 			},
 			display: function(current, next, currentEl, nextEl) {
 				this.wrapFx.setOptions({ duration: 0 });
-				currentEl.setStyle('display', 'none');
+				if (currentEl) {
+					currentEl.setStyle('display', 'none');
+				}
 				nextEl.setStyle('display', 'block');
 			}
 		},
@@ -115,10 +130,6 @@ var FlexSlide = new Class({
 		if( !(this.wrap = $(wrap)) ) return;
 		this.setOptions(options);
 		
-		if( this.options.getSizeFromElement === 'auto' ) {
-			this.options.getSizeFromElement = this.options.show;
-		}
-		
 		if( !$defined(this.options.container) ) this.options.container = this.wrap.getParent();
 		
 		if( this.options.buildOnInit === true ) {
@@ -131,6 +142,48 @@ var FlexSlide = new Class({
 		
 		if( this.options.buildOnInit === true && this.options.show >= 0 && this.options.show < this.elements.item.length ) {
 			this.show( this.options.show, this.options.initFx );
+		}
+	},
+	
+	guessSize: function() {
+		if (!this.options.size) {
+			if (this.options.getSizeFrom !== 'none') {
+			
+				// element
+				if (this.options.getSizeFrom === 'element') {
+					this.options.getSizeFrom = this.options.show;
+				}
+				
+				// element[x]
+				if (this.options.getSizeFrom >= 0 && this.options.getSizeFrom < this.elements.item.length ) {
+					var img = Asset.image(this.elements.item[this.options.getSizeFrom].get('src'), {
+						onLoad: function() {
+							this.itemWrap.grab(this.elements.item[this.options.getSizeFrom]);
+							
+							this.options.size = this.elements.item[this.options.getSizeFrom].getSize();
+							this.itemWrap.setStyle('width', this.options.size.x);
+							this.itemWrap.setStyle('height', this.options.size.y);
+							
+							this.elements.item[this.options.getSizeFrom].dispose();
+							
+						}.bind(this)
+					});
+				}
+				
+				// container
+				if (this.options.getSizeFrom === 'wrap') {
+					this.options.size = this.wrap.getSize();
+					this.itemWrap.setStyle('width', this.options.size.x);
+					this.itemWrap.setStyle('height', this.options.size.y);
+				}
+				
+				
+			}
+			
+			
+		} else {
+			this.itemWrap.setStyle('width', this.options.size.x);
+			this.itemWrap.setStyle('height', this.options.size.y);
 		}
 	},
 	
@@ -181,17 +234,19 @@ var FlexSlide = new Class({
 		
 		this.wrap.addClass( this.options.ui.wrap['class'] );
 		
-		if( this.options.getSizeFromContainer ) {
-			this.itemWrap.setStyle('height', this.wrap.getStyle('height') );
-			this.itemWrap.setStyle('width', this.wrap.getStyle('width') );
+		// if( this.options.getSizeFromContainer ) {
+			// this.itemWrap.setStyle('height', this.wrap.getStyle('height') );
+			// this.itemWrap.setStyle('width', this.wrap.getStyle('width') );
 			
-			if( this.options.setSizeForContainer ) {
-				this.wrap.setStyles({
-					width: 'auto',
-					height: 'auto'
-				});
-			}
-		}
+			// if( this.options.setSizeForContainer ) {
+				// this.wrap.setStyles({
+					// width: 'auto',
+					// height: 'auto'
+				// });
+			// }
+		// }
+		
+		this.guessSize();
 		
 		if( this.nextWrap ) {
 			this.nextWrap.addEvent('click', this.next.bind(this, this.options.times) );
@@ -230,12 +285,12 @@ var FlexSlide = new Class({
 		this.elements[item] = this.wrap.getElements( this.options.selections[item] );
 		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject( wrapper );
 		
-		if( this.options.getSizeFromElement !== false && this.options.getSizeFromElement >= 0 && this.options.getSizeFromElement < this.elements.item.length ) {
-			var size = this.elements.item[this.options.getSizeFromElement].getSize();
-			this.itemWrap.setStyle('width', size.x );
-			this.itemWrap.setStyle('height', size.y );
-			this.options.getSizeFromElement = false; //only set the size once :p
-		}
+		// if( this.options.getSizeFromElement !== false && this.options.getSizeFromElement >= 0 && this.options.getSizeFromElement < this.elements.item.length ) {
+			// var size = this.elements.item[this.options.getSizeFromElement].getSize();
+			// this.itemWrap.setStyle('width', size.x );
+			// this.itemWrap.setStyle('height', size.y );
+			// this.options.getSizeFromElement = false; //only set the size once :p
+		// }
 		
 		if( this.elements[item].length > 0 ) {
 			this.elements[item].each( function(el, i) {
@@ -248,7 +303,10 @@ var FlexSlide = new Class({
 				if( !$chk(this.options.ui[item + 'Item']) )
 					this.options.ui[item + 'Item'] = { 'class': 'ui-' + item.capitalize() + 'Item' };
 				el.addClass( this.options.ui[item + 'Item']['class'] );
-				this[item + 'Wrap'].grab(el);
+				//this[item + 'Wrap'].grab(el);
+				//console.log(el.get('class'));
+				this.elements[item][i] = el.dispose();
+				//console.log('dispose', this.elements[item][i].get('class'));
 			}, this);
 		}
 	},
@@ -284,19 +342,15 @@ var FlexSlide = new Class({
 			var fx = fx || ( (id > this.current) ? this.options.effect.up : this.options.effect.down);
 			if(fx === 'random') fx = this.options.effect.random.getRandom();
 			
-			var currentEl = this.elements.item[this.current];
-			if( this.current === -1 ) {
-				this.current = id;
-				currentEl = fx !== 'display' ? this.itemWrap : this.elements.item[this.current];
-			}
-			
 			var newOptions = $unlink(this.options.effect.globalOptions);
 			$extend( newOptions, this.options.effect.options[fx] );
 			this.fx.setOptions( newOptions );
 			this.wrapFx.setOptions( this.options.effect.wrapFxOptions );
 			
-			this.adjustElement(this.elements.item[this.current]);
-			this.adjustElement(this.elements.item[id]);
+			if (this.current >= 0) {
+				this.prepareCurrent(this.current);
+			}
+			this.prepareNext(id);
 			
 			this.fxConfig = {};
 			this.wrapFxConfig = {};
@@ -311,7 +365,7 @@ var FlexSlide = new Class({
 				this.positionContainer(id);
 				
 			// call the used effect
-			this.options.effects[fx].call( this, this.current, id, currentEl, this.elements.item[id] );
+			this.options.effects[fx].call( this, this.current, id, this.elements.item[this.current], this.elements.item[id] );
 			
 			var tmp = {'display': 'block'};
 			if( $defined(this.fxConfig[id]) ) {
@@ -321,21 +375,15 @@ var FlexSlide = new Class({
 				this.elements.item[id].setStyles(tmp);
 			}
 
-			this.itemWrap.grab( this.elements.item[id] );
+			//this.itemWrap.grab( this.elements.item[id] );
 			
-			this.running = true;
+			
 			this.fireEvent('onShow', [this.current, id]);
 			
-			var oldcurrent = this.current;
-			this.fx.start(this.fxConfig).chain( function() {
-				this.running = false;
-				// "reset" iframe src to stop started flash videos
-				if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
-					this.elements.item[oldcurrent].set('src', this.elements.item[oldcurrent].get('src'));
-				}
-				this.fireEvent('onShowEnd');
-			}.bind(this) );
-			this.wrapFx.start(this.wrapFxConfig);
+			if (this.current >= 0) {
+				this.transition();
+			}
+			
 			
 			// this.wrapFx.start(this.wrapFxConfig).chain( function() {
 				// this.fx.start(this.fxConfig)
@@ -345,25 +393,95 @@ var FlexSlide = new Class({
 		}
 	},
 	
+	transition: function() {
+		this.running = true;
+		
+		var oldcurrent = this.current;
+		this.fx.start(this.fxConfig).chain( function() {
+			this.running = false;
+			// "reset" iframe src to stop started flash videos
+			if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
+				this.elements.item[oldcurrent].set('src', this.elements.item[oldcurrent].get('src'));
+			}
+			
+			this.fireEvent('onShowEnd');
+			
+		}.bind(this) );
+		this.wrapFx.start(this.wrapFxConfig);
+	},
+	
+	prepareNext: function(el) {
+		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
+		
+		if (el.get('tag') === 'img') {
+			var img = Asset.image(el.get('src'), {
+				onLoad: function() {
+					img.set('style', el.get('style'));
+					img.set('class', el.get('class'));
+					this.itemWrap.grab(img);
+					this.adjustElement(img);
+				}.bind(this)
+			});
+		}
+		
+	},
+	
+	prepareCurrent: function(el) {
+		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
+		
+		if (!el.retrieve('FlexSlide:ElementStyle')) {
+			el.setStyle('display', 'block');
+			el.store('FlexSlide:ElementStyle', el.get('style'));
+		}
+		el.set('style', el.retrieve('FlexSlide:ElementStyle') );
+		
+	},
+	
+	disposeLast: function(el) {
+		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
+		
+		if (!el.retrieve('FlexSlide:ElementStyle')) {
+			el.setStyle('display', 'block');
+			el.store('FlexSlide:ElementStyle', el.get('style'));
+		}
+		el.set('style', el.retrieve('FlexSlide:ElementStyle') );
+	},
+	
 	adjustElement: function(el) {
 		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
-		var loaded = false;
-		if ( el && el.complete != 'undefined') {
-			loaded = el.complete ? true : false;
+		
+		//var scrollSize = $(document.body).getScrollSize();
+		//this.options.itemSize = 'crop';
+
+		var size = this.itemWrap.getSize(), elSize = el.getSize();
+		if (this.options.itemSize === 'cropScroll' || this.options.itemSize === 'scaleScroll') {
+			size = this.itemWrap.getScrollSize();
 		}
-		if (loaded || (el && el.get('tag') != 'img')) {
-			this._adjustElement(el);
-		} else {
-			this.adjustElement.delay(10, this, el);
-			// code below breaks Asset.image functionality
-			// el.addEvent('load', function() {
-				// this._adjustElement(el);
-			// }.bind(this) );
+		var ratiox = size.x / elSize.x, ratioy = size.y / elSize.y;
+		
+		
+		if (this.options.itemSize === 'scale') {
+			var ratio = ratioy < ratiox ? ratioy : ratiox;
+		} else if (this.options.itemSize === 'crop') {
+			var ratio = ratioy > ratiox ? ratioy : ratiox;
+		}
+		
+		el.erase('height');
+		el.erase('width');
+		
+		el.setStyle('height', elSize.y * ratio);
+		el.setStyle('width', elSize.x * ratio);
+		
+		if (this.options.itemSize === 'scale') {
+			el.position(Object.extend({relativeTo: this.itemWrap}, this.options.itemPosition));
+		} else if (this.options.itemSize === 'crop' && this.options.itemPosition.position === 'center') {
+			el.setStyle('top', (size.y - elSize.y*ratio)/2 + 'px');
+			el.setStyle('left', (size.x - elSize.x*ratio)/2 + 'px');
 		}
 	},
 	
 	_adjustElement: function(el) {
-		if( !el.retrieve('FlexSlide:ElementStyle') ) {
+		if (!el.retrieve('FlexSlide:ElementStyle')) {
 			el.setStyle('display', 'block');
 			el.store('FlexSlide:ElementStyle', el.get('style'));
 		}
