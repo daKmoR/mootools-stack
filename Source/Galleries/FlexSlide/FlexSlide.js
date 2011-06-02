@@ -56,7 +56,9 @@ var FlexSlide = new Class({
 		getSizeFrom: 'none', // ['none', 'element', 'element[x]', 'wrap'] element uses the show element
 		itemSize: 'scale', // ['scale', 'crop']
 		itemPosition: { position: 'center' },
-		
+		itemPositionOverride: {
+			div: { position: 'leftTop' }
+		},
 		
 		/* replace, use... */ 
 		resetIframeOnChange: true,
@@ -69,12 +71,12 @@ var FlexSlide = new Class({
 		resizeFactor: 0.95,
 		resizeLimit: false, // {x: 640, y: 640}
 		auto: false,
+		centerItem: true,
 		
 		autoItemSize: { mode: 'scale', x: true, y: true },
 		autoItemSizeSpecial: ['img', 'a'],
 		centerItemTags: ['img', 'a'],
 		autoContainerSize: { x: false, y: false },
-		centerItem: true,
 		positionContainer: false,
 		positionContainerOptions: {
 			ignoreOffsetParent: true,
@@ -127,10 +129,12 @@ var FlexSlide = new Class({
 	wrapFxConfig: {},
 	
 	initialize: function(wrap, options) {
-		if( !(this.wrap = $(wrap)) ) return;
+		if (!(this.wrap = $(wrap))) return;
 		this.setOptions(options);
 		
-		if( !$defined(this.options.container) ) this.options.container = this.wrap.getParent();
+		if (this.options.container == undefined) {
+			this.options.container = this.wrap.getParent();
+		}
 		
 		if( this.options.buildOnInit === true ) {
 			this.build();
@@ -177,9 +181,7 @@ var FlexSlide = new Class({
 					this.itemWrap.setStyle('height', this.options.size.y);
 				}
 				
-				
 			}
-			
 			
 		} else {
 			this.itemWrap.setStyle('width', this.options.size.x);
@@ -373,20 +375,18 @@ var FlexSlide = new Class({
 	},
 	
 	transition: function() {
+		if (this.current < 0) return;
+		
 		this.running = true;
 		
 		var oldcurrent = this.current;
 		
-		console.log(this.elements.item[0]);
-		console.log(this.fxConfig);
 		//this.fx = new Fx.Elements(this.elements.item);
 		
 		this.fx.elements = this.fx.subject = this.elements.item;
 		
 		this.fx.start(this.fxConfig).chain( function() {
 			this.running = false;
-			
-			console.log('finish');
 			
 			// "reset" iframe src to stop started flash videos
 			if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
@@ -402,6 +402,7 @@ var FlexSlide = new Class({
 	currentElement: function(el) {
 		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
 		var el = this.elements.item[i];
+		this.elements.item[i] = el;
 		this.adjustElement(el);
 	},
 	
@@ -427,6 +428,11 @@ var FlexSlide = new Class({
 					this.transition();
 				}.bind(this)
 			});
+		} else {
+			el.inject(this.itemWrap);
+			this.elements.item[i] = el;
+			this.adjustElement(el);
+			this.transition();
 		}
 		
 	},
@@ -450,6 +456,11 @@ var FlexSlide = new Class({
 	adjustElement: function(el) {
 		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
 		
+		var itemPosition = Object.clone(this.options.itemPosition);
+		if (override = this.options.itemPositionOverride[el.get('tag')]) {
+			Object.merge(itemPosition, override);
+		}
+		
 		//var scrollSize = $(document.body).getScrollSize();
 		//this.options.itemSize = 'crop';
 		//this.options.itemPosition.position = 'left';
@@ -460,22 +471,19 @@ var FlexSlide = new Class({
 		}
 		var ratiox = size.x / elSize.x, ratioy = size.y / elSize.y;
 		
-		
 		if (this.options.itemSize === 'scale') {
 			var ratio = ratioy < ratiox ? ratioy : ratiox;
 		} else if (this.options.itemSize === 'crop') {
 			var ratio = ratioy > ratiox ? ratioy : ratiox;
 		}
 		
-		el.erase('height');
-		el.erase('width');
-		
+		el.erase('height').erase('width');
 		el.setStyle('height', elSize.y * ratio);
 		el.setStyle('width', elSize.x * ratio);
 		
 		if (this.options.itemSize === 'scale') {
-			el.position(Object.merge({relativeTo: this.itemWrap}, this.options.itemPosition));
-		} else if (this.options.itemSize === 'crop' && this.options.itemPosition.position === 'center') {
+			el.position(Object.merge({relativeTo: this.itemWrap}, itemPosition));
+		} else if (this.options.itemSize === 'crop' && itemPosition.position === 'center') {
 			el.setStyle('top', (size.y - elSize.y*ratio)/2 + 'px');
 			el.setStyle('left', (size.x - elSize.x*ratio)/2 + 'px');
 		}
@@ -615,7 +623,7 @@ var FlexSlide = new Class({
 		this.fireEvent('process', [id, this.current]);
 			
 		this.current = id;
-		if( this.options.auto ) this.auto();
+		if (this.options.auto) this.auto();
 	},
 	
 	// fixSizes: function() {
