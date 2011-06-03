@@ -328,10 +328,12 @@ var FlexSlide = new Class({
 			this.fx.setOptions( newOptions );
 			this.wrapFx.setOptions( this.options.effect.wrapFxOptions );
 			
+			//console.log('show', this.current + ' -> ' + id);
+			
 			if (this.current >= 0) {
 				this.prepareCurrent(this.current);
 			}
-			this.prepareElement(id);
+			this.prepareElement(id, fx);
 			
 			this.fxConfig = {};
 			this.wrapFxConfig = {};
@@ -345,16 +347,15 @@ var FlexSlide = new Class({
 			if( this.options.positionContainer )
 				this.positionContainer(id);
 				
-			// call the used effect
-			this.options.effects[fx].call( this, this.current, id, this.elements.item[this.current], this.elements.item[id] );
+				
 			
-			var tmp = {'display': 'block'};
-			if( $defined(this.fxConfig[id]) ) {
-				$each( this.fxConfig[id], function(values, property) {
-					tmp[property] = values[0];
-				});
-				this.elements.item[id].setStyles(tmp);
-			}
+			// var tmp = {'display': 'block'};
+			// if( $defined(this.fxConfig[id]) ) {
+				// $each( this.fxConfig[id], function(values, property) {
+					// tmp[property] = values[0];
+				// });
+				// this.elements.item[id].setStyles(tmp);
+			// }
 
 			this.fireEvent('onShow', [this.current, id]);
 			
@@ -362,53 +363,73 @@ var FlexSlide = new Class({
 				// this.fx.start(this.fxConfig)
 			// }.bind(this) );
 			
-			this.process(id);
+			
 		}
 	},
 	
-	transition: function() {
-		if (this.current < 0) return;
-		console.log('trans');
+	transition: function(old, id, fx) {
+		//if (this.current < 0) return;
+		console.log('trans', old + ' -> ' + id + ' [' + this.current + ']');
 		
+		if (this.options.effects[fx + 'Prepare']) {
+			this.options.effects[fx + 'Prepare'].call( this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
+		}
+		
+		// call the used effect
+		this.options.effects[fx].call(this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
+
 		this.running = true;
 		var oldcurrent = this.current;
 		this.fx.elements = this.fx.subject = this.elements.item;
 		
-		this.fx.start(this.fxConfig).chain( function() {
+		console.log('el', this.elements.item[this.current].getElement('h2').get('text') + ' -> ' + this.elements.item[id].getElement('h2').get('text'));
+		console.log('el-style', this.elements.item[this.current].getStyle('left') + ' -> ' + this.elements.item[id].getStyle('left'));
+		console.log(this.fxConfig);
+		
+		this.fx.start(this.fxConfig).chain(function() {
 			this.running = false;
-			
-			
-		}.bind(this) );
+			this.showEnd(oldcurrent);
+		}.bind(this));
+		
 		this.wrapFx.start(this.wrapFxConfig);
+		
+		this.process(id);
 	},
 	
-	showEnd: function() {
+	showEnd: function(oldcurrent) {
 	
 		// "reset" iframe src to stop started flash videos
 		if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
 			this.elements.item[oldcurrent].set('src', this.elements.item[oldcurrent].get('src'));
 		}
 		
+		//this.elements.item[oldcurrent] = this.elements.item[oldcurrent].dispose();
+		
 		this.fireEvent('onShowEnd');
 	},
 	
-	prepareCurrent: function(el) {
-		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
-		var el = this.elements.item[i];
-		this.elements.item[i] = el;
-		this.adjustElement(el);
-	},
-	
-	prepareElement: function(el, inject) {
-		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
-		var el = this.elements.item[i];
-		
+	resetElement: function(el) {
 		if (!el.retrieve('FlexSlide:ElementStyle')) {
 			el.setStyle('display', 'block');
 			el.store('FlexSlide:ElementStyle', el.get('style'));
 		}
 		el.set('style', el.retrieve('FlexSlide:ElementStyle'));
+	},
+	
+	prepareCurrent: function(el) {
+		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
+		var el = this.elements.item[i];
 		
+		this.resetElement(el);
+		this.elements.item[i] = el;
+		this.adjustElement(el);
+	},
+	
+	prepareElement: function(el, fx) {
+		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
+		var el = this.elements.item[i];
+		
+		this.resetElement(el);
 		if (el.get('tag') === 'img') {
 			var img = Asset.image(el.get('src'), {
 				onLoad: function() {
@@ -418,14 +439,23 @@ var FlexSlide = new Class({
 					img.inject(this.itemWrap);
 					this.elements.item[i] = img;
 					this.adjustElement(img);
-					this.transition();
+					
+					if (this.current >= 0) {
+						this.transition(this.current, i, fx);
+					} else {
+						this.process(i);
+					}
 				}.bind(this)
 			});
 		} else {
 			el.inject(this.itemWrap);
 			this.elements.item[i] = el;
 			this.adjustElement(el);
-			this.transition();
+			if (this.current >= 0) {
+				this.transition(this.current, i, fx);
+			} else {
+				this.process(i);
+			}
 		}
 		
 	},
@@ -625,6 +655,7 @@ var FlexSlide = new Class({
 		this.fireEvent('process', [id, this.current]);
 			
 		this.current = id;
+		//console.log('set cur', id);
 		if (this.options.auto) this.auto();
 	},
 	
