@@ -332,14 +332,12 @@ var FlexSlide = new Class({
 			var fx = fx || ( (id > this.current) ? this.options.effect.up : this.options.effect.down);
 			if(fx === 'random') fx = this.options.effect.random.getRandom();
 			
-			var newOptions = $unlink(this.options.effect.globalOptions);
-			$extend( newOptions, this.options.effect.options[fx] );
-			this.fx.setOptions( newOptions );
-			this.wrapFx.setOptions( this.options.effect.wrapFxOptions );
+			var newOptions = Object.clone(this.options.effect.globalOptions);
+			Object.merge(newOptions, this.options.effect.options[fx]);
+			this.fx.setOptions(newOptions);
+			this.wrapFx.setOptions(this.options.effect.wrapFxOptions);
 			
 			//console.log('show', this.current + ' -> ' + id);
-			
-			//console.log('_show', this.elements.item[id].get('style'));
 			//this.resetElement(this.elements.item[id]);
 			
 			if (this.current >= 0) {
@@ -352,9 +350,9 @@ var FlexSlide = new Class({
 			if( this.options.autoContainerSize.x || this.options.autoContainerSize.y )
 				this.wrapFxConfig[0] = {};
 			if( this.options.autoContainerSize.x )
-				$extend(this.wrapFxConfig[0], {'width': this.elements.item[id].getSize().x} );
+				Object.merge(this.wrapFxConfig[0], {'width': this.elements.item[id].getSize().x} );
 			if( this.options.autoContainerSize.y )
-				$extend(this.wrapFxConfig[0], {'height': this.elements.item[id].getSize().y} );
+				Object.merge(this.wrapFxConfig[0], {'height': this.elements.item[id].getSize().y} );
 
 			if( this.options.positionContainer )
 				this.positionContainer(id);
@@ -528,7 +526,7 @@ var FlexSlide = new Class({
 		this.wrapFxConfig[1] = this.wrapFxConfig[1] || {};
 
 		var newPos = this.elements.item[id].position(this.options.positionContainerOptions);
-		$extend(this.wrapFxConfig[1], newPos);
+		Object.merge(this.wrapFxConfig[1], newPos);
 	},
 	
 	updateCounter: function(id) {
