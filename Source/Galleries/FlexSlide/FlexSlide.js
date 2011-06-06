@@ -62,6 +62,9 @@ var FlexSlide = new Class({
 		itemPositionOverride: {
 			div: { position: 'leftTop' }
 		},
+		containerSize: 'none', //['none', 'width', 'height']
+		containerPosition: { position: 'center' },
+		
 		
 		/* replace, use... */ 
 		resetIframeOnChange: true,
@@ -86,6 +89,8 @@ var FlexSlide = new Class({
 			ignoreAllScroll: true,
 			returnPos: true
 		},
+		
+		
 		useScroller: false,
 		scrollerMode: 'horizontal',
 		scrollerOptions: { area: 100, velocity: 0.1 },
@@ -330,6 +335,9 @@ var FlexSlide = new Class({
 			
 			//console.log('show', this.current + ' -> ' + id);
 			
+			//console.log('_show', this.elements.item[id].get('style'));
+			//this.resetElement(this.elements.item[id]);
+			
 			if (this.current >= 0) {
 				this.prepareCurrent(this.current);
 			}
@@ -347,16 +355,6 @@ var FlexSlide = new Class({
 			if( this.options.positionContainer )
 				this.positionContainer(id);
 				
-				
-			
-			// var tmp = {'display': 'block'};
-			// if( $defined(this.fxConfig[id]) ) {
-				// $each( this.fxConfig[id], function(values, property) {
-					// tmp[property] = values[0];
-				// });
-				// this.elements.item[id].setStyles(tmp);
-			// }
-
 			this.fireEvent('onShow', [this.current, id]);
 			
 			// this.wrapFx.start(this.wrapFxConfig).chain( function() {
@@ -369,7 +367,7 @@ var FlexSlide = new Class({
 	
 	transition: function(old, id, fx) {
 		//if (this.current < 0) return;
-		console.log('trans', old + ' -> ' + id + ' [' + this.current + ']');
+		//console.log('trans', old + ' -> ' + id + ' [' + this.current + ']');
 		
 		if (this.options.effects[fx + 'Prepare']) {
 			this.options.effects[fx + 'Prepare'].call( this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
@@ -382,9 +380,9 @@ var FlexSlide = new Class({
 		var oldcurrent = this.current;
 		this.fx.elements = this.fx.subject = this.elements.item;
 		
-		console.log('el', this.elements.item[this.current].getElement('h2').get('text') + ' -> ' + this.elements.item[id].getElement('h2').get('text'));
-		console.log('el-style', this.elements.item[this.current].getStyle('left') + ' -> ' + this.elements.item[id].getStyle('left'));
-		console.log(this.fxConfig);
+		// console.log('el', this.elements.item[this.current].getElement('h2').get('text') + ' -> ' + this.elements.item[id].getElement('h2').get('text'));
+		//console.log('el-style', this.elements.item[this.current].getStyle('left') + ' -> ' + this.elements.item[id].getStyle('left'));
+		//console.log(this.fxConfig);
 		
 		this.fx.start(this.fxConfig).chain(function() {
 			this.running = false;
@@ -409,11 +407,12 @@ var FlexSlide = new Class({
 	},
 	
 	resetElement: function(el) {
-		if (!el.retrieve('FlexSlide:ElementStyle')) {
-			el.setStyle('display', 'block');
-			el.store('FlexSlide:ElementStyle', el.get('style'));
-		}
-		el.set('style', el.retrieve('FlexSlide:ElementStyle'));
+		// if (!el.retrieve('FlexSlide:ElementStyle')) {
+			// el.setStyle('display', 'block');
+			// el.store('FlexSlide:ElementStyle', el.get('style'));
+		// }
+		// el.set('style', el.retrieve('FlexSlide:ElementStyle'));
+		el.set('style', 'display: block;');
 	},
 	
 	prepareCurrent: function(el) {
