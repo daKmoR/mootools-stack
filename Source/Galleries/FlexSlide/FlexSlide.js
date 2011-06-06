@@ -109,8 +109,12 @@ var FlexSlide = new Class({
 		},
 		effects: {
 			fade: function(current, next, currentEl, nextEl) {
-				this.fxConfig[current] = { 'opacity': [1, 0] };
-				this.fxConfig[next]    = { 'opacity': [0, 1] };
+				this.fxConfig[current] = { 'opacity': 0 };
+				this.fxConfig[next]    = { 'opacity': 1 };
+			},
+			fadePrepare: function(current, next, currentEl, nextEl) {
+				currentEl.fade('show');
+				nextEl.fade('hide');
 			},
 			display: function(current, next, currentEl, nextEl) {
 				this.wrapFx.setOptions({ duration: 0 });
@@ -370,7 +374,7 @@ var FlexSlide = new Class({
 		//console.log('trans', old + ' -> ' + id + ' [' + this.current + ']');
 		
 		if (this.options.effects[fx + 'Prepare']) {
-			this.options.effects[fx + 'Prepare'].call( this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
+			this.options.effects[fx + 'Prepare'].call(this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
 		}
 		
 		// call the used effect
@@ -489,11 +493,11 @@ var FlexSlide = new Class({
 			//itemSize = 'crop';
 			//this.options.itemPosition.position = 'left';
 
-			var size = this.itemWrap.getSize(), elSize = el.getSize();
-			if (itemSize === 'cropScroll' || itemSize === 'scaleScroll') {
-				size = this.itemWrap.getScrollSize();
-			}
-			var ratiox = size.x / elSize.x, ratioy = size.y / elSize.y;
+			var size = this.itemWrap.getComputedSize(), elSize = el.getDimensions();
+			// if (itemSize === 'cropScroll' || itemSize === 'scaleScroll') {
+				// size = this.itemWrap.getScrollSize();
+			// }
+			var ratiox = size.width / elSize.x, ratioy = size.height / elSize.y;
 			
 			if (itemSize === 'scale') {
 				var ratio = ratioy < ratiox ? ratioy : ratiox;
@@ -505,7 +509,7 @@ var FlexSlide = new Class({
 			el.setStyle('width', elSize.x * ratio).setStyle('height', elSize.y * ratio);
 			
 			if (itemSize === 'scale') {
-				var returnPos = el.calculatePosition(Object.merge({relativeTo: this.itemWrap}, itemPosition));
+				var returnPos = el.calculatePosition(Object.merge({relativeTo: this.itemWrap, offset: {x: size.computedLeft*-1, y: size.computedTop*-1}}, itemPosition));
 				if (returnPos.left !== 0) {
 					el.setStyle('margin-left', returnPos.left).setStyle('margin-right', returnPos.left);
 				}
@@ -513,8 +517,8 @@ var FlexSlide = new Class({
 					el.setStyle('margin-top', returnPos.top).setStyle('margin-bottom', returnPos.top);
 				}
 			} else if (itemSize === 'crop' && itemPosition.position === 'center') {
-				el.setStyle('top', (size.y - elSize.y*ratio)/2 + 'px');
-				el.setStyle('left', (size.x - elSize.x*ratio)/2 + 'px');
+				el.setStyle('top', (size.height - elSize.y*ratio)/2 + 'px');
+				el.setStyle('left', (size.width - elSize.x*ratio)/2 + 'px');
 			}
 			
 		}
