@@ -377,6 +377,9 @@ var FlexSlide = new Class({
 		
 		// call the used effect
 		this.options.effects[fx].call(this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
+		
+		this.elements.item[this.current].setStyle('display', 'block');
+		this.elements.item[id].setStyle('display', 'block');
 
 		this.running = true;
 		var oldcurrent = this.current;
@@ -414,7 +417,8 @@ var FlexSlide = new Class({
 			// el.store('FlexSlide:ElementStyle', el.get('style'));
 		// }
 		// el.set('style', el.retrieve('FlexSlide:ElementStyle'));
-		el.set('style', 'display: block;');
+		//el.set('style', 'display: block;');
+		el.set('style', '');
 	},
 	
 	prepareCurrent: function(el) {
@@ -422,6 +426,7 @@ var FlexSlide = new Class({
 		var el = this.elements.item[i];
 		
 		this.resetElement(el);
+		el.set('style', 'display: block;');
 		this.elements.item[i] = el;
 		this.adjustElement(el);
 	},
