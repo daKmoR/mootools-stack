@@ -51,9 +51,8 @@ var FlexSlide = new Class({
 		buildOnInit: true,
 		initFx: 'display',
 		container: null,
-		size: null, // { x: 500, y: 500 }
+		size: 'none', // { x: 500, y: 500 } ['none', 'element', 'element[x]', 'wrap'] element uses the show element
 		size: { x: 500, y: 300 },
-		getSizeFrom: 'none', // ['none', 'element', 'element[x]', 'wrap'] element uses the show element
 		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
 		itemSizeOverride: {
 			div: 'same'
@@ -68,10 +67,8 @@ var FlexSlide = new Class({
 		
 		/* replace, use... */ 
 		resetIframeOnChange: true,
-		getSizeFromContainer: false,
 		
 		/* remove */
-		getSizeFromElement: 'auto', // ['auto', -1, id] 'auto' same as show, -1 to not use it
 		setSizeForContainer: false,
 		fixedSize: false, // {x: 640, y: 640}
 		resizeFactor: 0.95,
@@ -162,31 +159,31 @@ var FlexSlide = new Class({
 	},
 	
 	guessSize: function() {
-		if (!this.options.size) {
-			if (this.options.getSizeFrom !== 'none') {
+		if (typeOf(this.options.size) === 'string') {
+			if (this.options.size !== 'none') {
 			
 				// element
-				if (this.options.getSizeFrom === 'element') {
-					this.options.getSizeFrom = this.options.show;
+				if (this.options.size === 'element') {
+					this.options.size = this.options.show;
 				}
 				
 				// element[x]
-				if (this.options.getSizeFrom >= 0 && this.options.getSizeFrom < this.elements.item.length ) {
-					var img = Asset.image(this.elements.item[this.options.getSizeFrom].get('src'), {
+				if (this.options.size >= 0 && this.options.size < this.elements.item.length ) {
+					var img = Asset.image(this.elements.item[this.options.size].get('src'), {
 						onLoad: function() {
-							this.itemWrap.grab(this.elements.item[this.options.getSizeFrom]);
+							this.itemWrap.grab(this.elements.item[this.options.size]);
 							
-							this.options.size = this.elements.item[this.options.getSizeFrom].getSize();
+							this.options.size = this.elements.item[this.options.size].getSize();
 							this.itemWrap.setStyle('width', this.options.size.x).setStyle('height', this.options.size.y);
 							
-							this.elements.item[this.options.getSizeFrom].dispose();
+							this.elements.item[this.options.size].dispose();
 							
 						}.bind(this)
 					});
 				}
 				
 				// container
-				if (this.options.getSizeFrom === 'wrap') {
+				if (this.options.size === 'wrap') {
 					this.options.size = this.wrap.getSize();
 					this.itemWrap.setStyle('width', this.options.size.x).itemWrap.setStyle('height', this.options.size.y);
 				}
@@ -439,8 +436,7 @@ var FlexSlide = new Class({
 		if (el.get('tag') === 'img') {
 			var img = Asset.image(el.get('src'), {
 				onLoad: function() {
-					img.set('style', el.get('style'));
-					img.set('class', el.get('class'));
+					img.set('style', el.get('style')).set('class', el.get('class'));
 					el.dispose();
 					img.inject(this.itemWrap);
 					this.elements.item[i] = img;
@@ -454,13 +450,33 @@ var FlexSlide = new Class({
 				}.bind(this)
 			});
 		} else {
-			el.inject(this.itemWrap);
-			this.elements.item[i] = el;
-			this.adjustElement(el);
-			if (this.current >= 0) {
-				this.transition(this.current, i, fx);
+			var childs = el.getElements('> *');
+			if (childs.length === 1 && childs[0].get('tag') === 'img') {
+				var subImg = Asset.image(childs[0].get('src'), {
+					onLoad: function() {
+						subImg.set('style', childs[0].get('style')).set('class', childs[0].get('class'));
+						subImg.erase('width').erase('height');
+						childs[0].dispose();
+						subImg.inject(el);
+						el.inject(this.itemWrap);
+						this.elements.item[i] = el;
+						this.adjustElement(el);
+						if (this.current >= 0) {
+							this.transition(this.current, i, fx);
+						} else {
+							this.process(i);
+						}
+					}.bind(this)
+				});
 			} else {
-				this.process(i);
+				el.inject(this.itemWrap);
+				this.elements.item[i] = el;
+				this.adjustElement(el);
+				if (this.current >= 0) {
+					this.transition(this.current, i, fx);
+				} else {
+					this.process(i);
+				}
 			}
 		}
 		
