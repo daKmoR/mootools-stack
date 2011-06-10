@@ -40,8 +40,7 @@ var FlexSlide = new Class({
 	Implements: [Settings, Events, Gallery],
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
-		render: ['item'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
-		render: ['item', 'next', 'previous'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
+		render: ['item'], // special elements are: ['item', 'select', 'advSelect', 'description', 'counter', 'next', 'previous',  'selectScroller', 'start', 'stop', 'toggle']
 		ui: {
 			wrap: { 'class': 'ui-Wrap' },
 			selectItem: { 'class': 'ui-SelectItem' },
@@ -52,7 +51,6 @@ var FlexSlide = new Class({
 		initFx: 'display',
 		container: null,
 		size: 'none', // { x: 500, y: 500 } ['none', 'element', 'element[x]', 'wrap'] element uses the show element
-		size: { x: 500, y: 300 },
 		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
 		itemSizeOverride: {
 			div: 'same'
@@ -63,10 +61,7 @@ var FlexSlide = new Class({
 		},
 		containerSize: 'none', //['none', 'width', 'height']
 		containerPosition: { position: 'center' },
-		containerPosition: null,
-		
-		/* remove */
-		auto: false,
+		containerPosition: null, //{ position: 'center' }
 		
 		/* replace, use... */ 
 		resetIframeOnChange: true,
@@ -90,17 +85,26 @@ var FlexSlide = new Class({
 			fadeInPrepare:  function(id, el) { el.setStyle('opacity', 0); },
 			fadeIn:         function(id, el) { this.fxConfig[id] = { 'opacity': 1 }; },
 			fadeOutPrepare: function(id, el) { el.setStyle('opacity', 1); },
-			fadeOut:        function(id, el) {	this.fxConfig[id] = { 'opacity': 0 }; },
-			displayIn: function(id, el) { el.setStyle('display', 'block'); },
+			fadeOut:        function(id, el) { this.fxConfig[id] = { 'opacity': 0 }; },
+			displayIn:  function(id, el) { el.setStyle('display', 'block'); },
 			displayOut: function(id, el) { el.setStyle('display', 'none'); }
 		},
-		onShow: function(current, next) {
-			if( $defined(this.elements.description) ) {
-				this.elements.description[current].setStyle('display', 'block').fade(0);
-				this.elements.description[next].fade('hide').setStyle('display', 'block').fade(1);
+		onShowIn: function(id, el) {
+			if (this.elements.description && this.elements.description[id]) {
+				this.elements.description[id].fade('hide').setStyle('display', 'block').fade(1);
 			}
-		}
-		/*onBuild, onSelectChange(currentEl, nextEl) */
+		},
+		onShowOut: function(id, el) {
+			if (this.elements.description && this.elements.description[id]) {
+				this.elements.description[id].fade('hide').setStyle('display', 'block').fade(0);
+			}
+		},
+		/*onShow, onBuild, onSelectChange(currentEl, nextEl) */
+		
+		/* remove */
+		auto: false,
+		render: ['item', 'select', 'next', 'previous'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
+		size: { x: 500, y: 300 }
 	},
 	
 	current: -1,
@@ -212,26 +216,15 @@ var FlexSlide = new Class({
 		this.wrapFx = new Fx.Elements([this.itemWrap, this.wrap]);
 		
 		this.updateCounter(0);
-		this.wrap.addClass( this.options.ui.wrap['class'] );
+		this.wrap.addClass(this.options.ui.wrap['class']);
 		
 		this.guessSize();
 		
-		if (this.nextWrap) {
-			this.nextWrap.addEvent('click', this.next.bind(this, this.options.times) );
-		}
-		if (this.previousWrap) {
-			this.previousWrap.addEvent('click', this.previous.bind(this, this.options.times) );
-		}
-		
-		if (this.startWrap) {
-			this.startWrap.addEvent('click', this.start.bind(this) );
-		}
-		if (this.stopWrap) {
-			this.stopWrap.addEvent('click', this.stop.bind(this) );
-		}
-		if (this.toggleWrap) {
-			this.toggleWrap.addEvent('click', this.toggle.bind(this) );
-		}
+		if (this.nextWrap)     { this.nextWrap.addEvent(    'click', this.next.bind(this, this.options.times)); }
+		if (this.previousWrap) { this.previousWrap.addEvent('click', this.previous.bind(this, this.options.times)); }
+		if (this.startWrap)    { this.startWrap.addEvent(   'click', this.start.bind(this) );	}
+		if (this.stopWrap)     { this.stopWrap.addEvent(    'click', this.stop.bind(this)  ); }
+		if (this.toggleWrap)   { this.toggleWrap.addEvent(  'click', this.toggle.bind(this));	}
 		
 		if( this.options.useScroller == true ) {
 			if( this.options.scrollerMode === 'horizontal' )
@@ -311,6 +304,7 @@ var FlexSlide = new Class({
 		this.options.effects[fx].call(this, id, this.elements.item[id]);
 		
 		this.doFx(id, fxGroup);
+		this.fireEvent('showIn', [id, this.elements.item[id]]);
 	},
 	
 	out: function(fxGroup, id) {
@@ -323,6 +317,7 @@ var FlexSlide = new Class({
 				this.options.effects[fx + 'Prepare'].call(this, id, this.elements.item[id]);
 			}
 			this.options.effects[fx].call(this, id, this.elements.item[id]);
+			this.fireEvent('showOut', [id, this.elements.item[id]]);
 		}
 	},
 	
@@ -331,10 +326,10 @@ var FlexSlide = new Class({
 		fxGroup = fxGroup === 'random' ? fxGroup = this.options.effect.random.getRandom() : fxGroup;
 	
 		if (id != this.current && id < this.elements.item.length && this.running === false) {
-			this.fxGroupConfig = {};
+			this.fxConfig = {};
 			this.out(fxGroup);
 			this._in(id, fxGroup);
-			this.fireEvent('onShow', [this.current, id]);
+			this.fireEvent('show', [this.current, id]);
 		}
 	},
 	
@@ -349,7 +344,7 @@ var FlexSlide = new Class({
 		
 		this.fx.start(this.fxConfig).chain(function() {
 			this.running = false;
-			//this.showEnd(oldcurrent);
+			this.showEnd(oldcurrent);
 		}.bind(this));
 		
 		if (this.elements.item[this.current]) {
@@ -358,19 +353,16 @@ var FlexSlide = new Class({
 		this.elements.item[id].setStyle('display', 'block');
 		
 		//this.wrapFx.start(this.wrapFxConfig);
-		
 		this.process(id);
 	},
 	
 	showEnd: function(oldcurrent) {
-	
 		// "reset" iframe src to stop started flash videos
-		if (this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
+		if (this.elements.item[oldcurrent] && this.elements.item[oldcurrent].get('tag') === 'iframe' && this.options.resetIframeOnChange) {
 			this.elements.item[oldcurrent].set('src', this.elements.item[oldcurrent].get('src'));
 		}
-		
 		//this.elements.item[oldcurrent] = this.elements.item[oldcurrent].dispose();
-		this.fireEvent('onShowEnd');
+		this.fireEvent('showEnd');
 	},
 
 	
