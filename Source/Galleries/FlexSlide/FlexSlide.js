@@ -50,7 +50,7 @@ var FlexSlide = new Class({
 		buildOnInit: true,
 		initFx: 'display',
 		container: null,
-		size: 'element', // [{ width: 500, height: 500 }, 'none', 'element', 'element[x]', 'wrap', 'autoHeight'] element uses the show element
+		size: 'element', // [{width: 500, height: 500}, 'none', 'element', 'element[x]', 'wrap', 'auto', {width: 300, height: 'auto'}] element uses the show element
 		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
 		itemSizeOverride: {
 			div: 'same'
@@ -109,6 +109,7 @@ var FlexSlide = new Class({
 	current: -1,
 	running: false,
 	autotimer: null,
+	size: {},
 	elements: {},
 	fxConfig: {},
 	wrapFxConfig: {},
@@ -131,6 +132,7 @@ var FlexSlide = new Class({
 	},
 	
 	buildFinished: function() {
+		console.log('finished');
 		if (this.options.useScroller == true) {
 			if (this.options.scrollerMode === 'horizontal') {
 				this.selectWrap.setStyle('width', this.selectWrap.getChildren().getCombinedSize().x);
@@ -150,14 +152,26 @@ var FlexSlide = new Class({
 	},
 	
 	guessSize: function() {
-		if (typeOf(this.options.size) === 'string') {
+	
+		if (typeOf(this.options.size) === 'object' && (typeOf(this.options.size.width) === 'number' || typeOf(this.options.size.height) === 'number')) {
+			if (typeOf(this.options.size.width) === 'number') {
+				this.size.width = this.options.size.width;
+			}
+			if (typeOf(this.options.size.height) === 'number') {
+				this.size.width = this.options.size.height;
+			}
+			
+			this.itemWrap.setStyles(this.size);
+		}
+	
+		if (typeOf(this.options.size) === 'string' || (typeOf(this.options.size) === 'object' && (this.options.size.width === 'auto' || this.options.size.height === 'auto'))) {
 			if (this.options.size !== 'none') {
 			
 				// element
-				if (this.options.size === 'element') {
+				if (this.options.size === 'element' || this.options.size.width === 'auto' || this.options.size.height === 'auto') {
 					this.size = this.options.show;
 				}
-				if (this.options.size.indexOf('element[') >= 0) {
+				if (typeOf(this.options.size) === 'string' && this.options.size.indexOf('element[') >= 0) {
 					this.size = this.options.size.substr(8).toInt();
 				}
 				
@@ -208,8 +222,7 @@ var FlexSlide = new Class({
 				
 			}
 			
-		} else if (typeOf(this.options.size) === 'object' && this.options.size.width && this.options.size.height) {
-			this.itemWrap.setStyles(this.options.size);
+		} else {
 			this.buildFinished();
 		}
 	},
@@ -294,9 +307,8 @@ var FlexSlide = new Class({
 					this.options.ui[item + 'Item'] = { 'class': 'ui-' + item.capitalize() + 'Item' };
 				}
 				el.addClass(this.options.ui[item + 'Item']['class']);
-				//this[item + 'Wrap'].grab(el);
-				this.elements[item][i] = el.dispose();
-				//console.log('dispose', this.elements[item][i].get('class'));
+				this[item + 'Wrap'].grab(el);
+				//this.elements[item][i] = el.dispose();
 			}, this);
 		}
 	},
