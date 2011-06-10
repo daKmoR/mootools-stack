@@ -50,7 +50,7 @@ var FlexSlide = new Class({
 		buildOnInit: true,
 		initFx: 'display',
 		container: null,
-		size: 'none', // { width: 500, height: 500 } ['none', 'element', 'element[x]', 'wrap'] element uses the show element
+		size: 'element', // { width: 500, height: 500 } ['none', 'element', 'element[x]', 'wrap'] element uses the show element
 		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
 		itemSizeOverride: {
 			div: 'same'
@@ -110,7 +110,7 @@ var FlexSlide = new Class({
 	
 	current: -1,
 	running: false,
-	autotimer: $empty,
+	autotimer: null,
 	elements: {},
 	fxConfig: {},
 	wrapFxConfig: {},
@@ -128,7 +128,7 @@ var FlexSlide = new Class({
 		}
 		
 		if (this.options.show === 'random') {
-			this.options.show = $random(0, this.elements.item.length-1);
+			this.options.show = Number.random(0, this.elements.item.length-1);
 		}
 	},
 	
@@ -189,8 +189,10 @@ var FlexSlide = new Class({
 								}.bind(this)
 							});
 						} else {
+							el.inject(this.itemWrap);
 							this.options.size = el.getDimensions();
 							this.itemWrap.setStyles(this.options.size);
+							el.dispose();
 							this.buildFinished();
 						}
 					}
@@ -212,10 +214,10 @@ var FlexSlide = new Class({
 	},
 	
 	build: function() {
-		this.builder( this.options.render, this.wrap );
+		this.builder(this.options.render, this.wrap);
 		
 		//automatically build the select if no costum select items are found
-		if( $chk(this.elements.select) && this.elements.select.length <= 0 ) {
+		if (this.elements.select && this.elements.select.length <= 0) {
 			this.elements.item.each( function(el, i) {
 				var select = new Element('div', this.options.ui.selectItem)
 					.addEvent('click', this.show.bind(this, i))
@@ -228,21 +230,24 @@ var FlexSlide = new Class({
 		}
 		
 		// description stuff
-		if( $chk(this.elements.description) && this.elements.description.length <= 0 ) {
+		if (this.elements.description && this.elements.description.length <= 0) {
 			this.elements.item.each( function(el, i) {
 				var description = new Element('div', this.options.ui.descriptionItem)
 					.inject(this.descriptionWrap);
 				
 				var txt = el.get('title') || el.get('alt') || false;
-				if( !txt && el.getElement('img') )
+				if (!txt && el.getElement('img')) {
 					txt = el.getElement('img').get('alt');
+				}
 				
-				if( txt && txt != null ) {
+				if (txt && txt != null) {
 					var parts = txt.split('::');
-					if( parts.length === 2 )
+					if (parts.length === 2) {
 						txt = this.options.descriptionTemplate.substitute( {'title': parts[0], 'text': parts[1]} );
-					if( txt.charAt(0) === '#' ) 
+					}
+					if (txt.charAt(0) === '#') {
 						txt = $$(txt)[0].get('html');
+					}
 					description.set('html', txt);
 				}
 				
@@ -267,24 +272,27 @@ var FlexSlide = new Class({
 	},
 	
 	buildElement: function(item, wrapper) {
-		if( !$chk(this.options.ui[item]) )
+		if (!this.options.ui[item]) {
 			this.options.ui[item] = { 'class': 'ui-' + item.capitalize() };
-		if( !$chk(this.options.selections[item]) )
+		}
+		if (!this.options.selections[item]) {
 			this.options.selections[item] = '.' + item;
-		this.elements[item] = this.wrap.getElements( this.options.selections[item] );
-		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject( wrapper );
+		}
+		this.elements[item] = this.wrap.getElements(this.options.selections[item]);
+		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject(wrapper);
 		
-		if( this.elements[item].length > 0 ) {
-			this.elements[item].each( function(el, i) {
-				if( item == 'select' ) {
-					el.addEvent('click', this.show.bind(this, i) );
-					if( el.get('tag') !== 'img' ) {
-						el.set('html', this.options.selectTemplate.substitute({id: i+1, text: el.get('html')}) );
+		if (this.elements[item].length > 0) {
+			this.elements[item].each(function(el, i) {
+				if (item === 'select') {
+					el.addEvent('click', this.show.bind(this, i));
+					if (el.get('tag') !== 'img') {
+						el.set('html', this.options.selectTemplate.substitute({id: i+1, text: el.get('html')}));
 					}
 				}
-				if( !$chk(this.options.ui[item + 'Item']) )
+				if (!this.options.ui[item + 'Item']) {
 					this.options.ui[item + 'Item'] = { 'class': 'ui-' + item.capitalize() + 'Item' };
-				el.addClass( this.options.ui[item + 'Item']['class'] );
+				}
+				el.addClass(this.options.ui[item + 'Item']['class']);
 				//this[item + 'Wrap'].grab(el);
 				this.elements[item][i] = el.dispose();
 				//console.log('dispose', this.elements[item][i].get('class'));
@@ -293,15 +301,15 @@ var FlexSlide = new Class({
 	},
 	
 	builder: function(els, wrapper) {
-		$each( els, function(item, i) {
+		els.each(function(item, i) {
 			if (item === 'advSelect') {
 				els[i] = item = {'selectScroller' : ['select']};
 				this.options.useScroller = true;
 			}
-			if( $type(item) !== 'object' ) {
+			if (typeOf(item) !== 'object') {
 				this.buildElement(item, wrapper);
 			} else {
-				$each( item, function(el, i) {
+				Object.each(item, function(el, i) {
 					this.buildElement(i, wrapper);
 					this.builder(el, this[i + 'Wrap']);
 				}, this);
@@ -463,12 +471,9 @@ var FlexSlide = new Class({
 				Object.merge(itemPosition, itemPositionOverride);
 			}
 			
-			//var scrollSize = $(document.body).getScrollSize();
-			//itemSize = 'crop';
-			//this.options.itemPosition.position = 'left';
-
 			var size = this.itemWrap.getComputedSize(), elSize = el.getDimensions();
 			// if (itemSize === 'cropScroll' || itemSize === 'scaleScroll') {
+				// //var scrollSize = $(document.body).getScrollSize();
 				// size = this.itemWrap.getScrollSize();
 			// }
 			var ratiox = size.width / elSize.x, ratioy = size.height / elSize.y;
@@ -506,17 +511,17 @@ var FlexSlide = new Class({
 	},
 	
 	updateCounter: function(id) {
-		if( this.counterWrap ) {
+		if (this.counterWrap) {
 			this.counterWrap.set('html', this.options.counterTemplate.substitute({id: id+1, 'count': this.elements.item.length}) );
 		}
 	},
 	
 	process: function(id) {
-		if( $chk(this.elements.select) ) {
-			if( this.current >= 0 ) {
-				this.elements.select[this.current].removeClass( this.options.ui.activeClass );
+		if (this.elements.select) {
+			if (this.current >= 0) {
+				this.elements.select[this.current].removeClass(this.options.ui.activeClass);
 			}
-			this.elements.select[id].addClass( this.options.ui.activeClass );
+			this.elements.select[id].addClass(this.options.ui.activeClass);
 			
 			if (this.options.useScroller === true && this.options.scrollToSelected) {
 				this.scroll.toElement(this.elements.select[id]);
@@ -534,7 +539,7 @@ var FlexSlide = new Class({
 					if (this.previousWrap) this.previousWrap.fade(0);
 				}
 				if (this.nextWrap) this.nextWrap.fade(1);
-			}	else if(id === this.elements.item.length-1) {
+			}	else if (id === this.elements.item.length-1) {
 				if (this.previousWrap) this.previousWrap.fade(1);
 				if (this.nextWrap) this.nextWrap.fade(0);
 			} else {
