@@ -132,7 +132,6 @@ var FlexSlide = new Class({
 	},
 	
 	buildFinished: function() {
-		console.log('finished');
 		if (this.options.useScroller == true) {
 			if (this.options.scrollerMode === 'horizontal') {
 				this.selectWrap.setStyle('width', this.selectWrap.getChildren().getCombinedSize().x);
@@ -205,6 +204,7 @@ var FlexSlide = new Class({
 							});
 						} else {
 							el.inject(this.itemWrap);
+							el.setStyle('display', 'block'); //IE7 needs this
 							this.size = el.getDimensions();
 							this.itemWrap.setStyles(this.size);
 							el.dispose();
@@ -401,7 +401,7 @@ var FlexSlide = new Class({
 		}
 		this.elements.item[id].setStyle('display', 'block');
 		
-		//this.wrapFx.start(this.wrapFxConfig);
+		this.wrapFx.start(this.wrapFxConfig);
 		this.process(id);
 	},
 	
@@ -470,6 +470,17 @@ var FlexSlide = new Class({
 	
 	adjustElement: function(el) {
 		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
+		var elSize = el.getDimensions();
+		
+		if (this.options.size.height === 'auto' || this.options.size.width === 'auto') {
+			this.wrapFxConfig[0] = {}
+		}
+		if (this.options.size.height === 'auto') {
+			this.wrapFxConfig[0].height = elSize.height;
+		}
+		if (this.options.size.width === 'auto') {
+			this.wrapFxConfig[0].width = elSize.width;
+		}
 		
 		var itemSize = this.options.itemSizeOverride[el.get('tag')] || this.options.itemSize;
 		if (itemSize === 'none') {
@@ -484,7 +495,10 @@ var FlexSlide = new Class({
 				Object.merge(itemPosition, itemPositionOverride);
 			}
 			
-			var size = this.itemWrap.getComputedSize(), elSize = el.getDimensions();
+			var size = this.itemWrap.getComputedSize();
+			size.height = this.options.size.height === 'auto' ? elSize.height : size.height;
+			size.width  = this.options.size.width  === 'auto' ? elSize.width  : size.width;
+			
 			// if (itemSize === 'cropScroll' || itemSize === 'scaleScroll') {
 				// //var scrollSize = $(document.body).getScrollSize();
 				// size = this.itemWrap.getScrollSize();
@@ -501,7 +515,11 @@ var FlexSlide = new Class({
 			el.setStyle('width', elSize.x * ratio).setStyle('height', elSize.y * ratio);
 			
 			if (itemSize === 'scale') {
+				// for relative position calculation we need the "future" size, just for a short second
+				var savedStyle = this.itemWrap.get('style');
+				this.itemWrap.setStyles({'height': size.height, 'width': size.width});
 				var returnPos = el.calculatePosition(Object.merge({relativeTo: this.itemWrap, offset: {x: size.computedLeft*-1, y: size.computedTop*-1}}, itemPosition));
+				this.itemWrap.set('style', savedStyle);
 				if (returnPos.left !== 0) {
 					el.setStyle('padding-left', returnPos.left).setStyle('padding-right', returnPos.left);
 				}
