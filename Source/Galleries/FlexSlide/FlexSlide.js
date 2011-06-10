@@ -378,11 +378,11 @@ var FlexSlide = new Class({
 		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
 		var el = this.elements.item[i];
 		
-		var dim = el.getDimensions();
+		var keepStyles = el.getStyles('width', 'height', 'padding');
 		el.set('style', 'display: block;');
-		el.setStyles(dim);
-		// this.elements.item[i] = el;
-		this.adjustElement(el);
+		el.setStyles(keepStyles);
+		//this.elements.item[i] = el;
+		//this.adjustElement(el);
 	},
 	
 	prepareElement: function(el, fx) {
@@ -408,10 +408,10 @@ var FlexSlide = new Class({
 					onLoad: function() {
 						subImg.set('style', childs[0].get('style')).set('class', childs[0].get('class'));
 						childs[0].dispose();
-						el.inject(this.itemWrap);
-						subImg.inject(el);
 						el.setStyle('width', subImg.get('width').toInt()).setStyle('height', subImg.get('height').toInt());
 						subImg.erase('width').erase('height');
+						el.inject(this.itemWrap);
+						subImg.inject(el);
 						this.elements.item[i] = el;
 						this.adjustElement(el);
 						this.__in(i, fx);
@@ -465,10 +465,10 @@ var FlexSlide = new Class({
 			if (itemSize === 'scale') {
 				var returnPos = el.calculatePosition(Object.merge({relativeTo: this.itemWrap, offset: {x: size.computedLeft*-1, y: size.computedTop*-1}}, itemPosition));
 				if (returnPos.left !== 0) {
-					el.setStyle('margin-left', returnPos.left).setStyle('margin-right', returnPos.left);
+					el.setStyle('padding-left', returnPos.left).setStyle('padding-right', returnPos.left);
 				}
 				if (returnPos.top !== 0) {
-					el.setStyle('margin-top', returnPos.top).setStyle('margin-bottom', returnPos.top);
+					el.setStyle('padding-top', returnPos.top).setStyle('padding-bottom', returnPos.top);
 				}
 			} else if (itemSize === 'crop' && itemPosition.position === 'center') {
 				el.setStyle('top', (size.height - elSize.y*ratio)/2 + 'px');
