@@ -29,15 +29,15 @@ FlexSlide.implement('options', {
 		}
 	},
 	effects: {
-		slideLeftInPrepare:  function(id, el) { el.setStyle('left', this.options.size.x); },
+		slideLeftInPrepare:  function(id, el) { el.setStyle('left', this.size.width); },
 		slideLeftIn:         function(id, el) { this.fxConfig[id] = { 'left': 0 }; },
 		slideLeftOutPrepare: function(id, el) { el.setStyle('left', 0); },
-		slideLeftOut:        function(id, el) { this.fxConfig[id] = { 'left': this.options.size.x*-1 }; },
+		slideLeftOut:        function(id, el) { this.fxConfig[id] = { 'left': this.size.width*-1 }; },
 		
-		slideRightInPrepare:  function(id, el) { el.setStyle('right', this.options.size.x); },
+		slideRightInPrepare:  function(id, el) { el.setStyle('right', this.size.width); },
 		slideRightIn:         function(id, el) { this.fxConfig[id] = { 'right': 0 }; },
 		slideRightOutPrepare: function(id, el) { el.setStyle('right', 0); },
-		slideRightOut:        function(id, el) { this.fxConfig[id] = { 'right': this.options.size.x*-1 }; },
+		slideRightOut:        function(id, el) { this.fxConfig[id] = { 'right': this.size.width*-1 }; },
 		
 		slideLeftQuartInPrepare:  function(id, el) { this.options.effects.slideLeftInPrepare.call(this, id, el); },
 		slideLeftQuartIn:         function(id, el) { this.options.effects.slideLeftIn.call(this, id, el); },

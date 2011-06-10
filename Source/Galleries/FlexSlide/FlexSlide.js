@@ -50,7 +50,7 @@ var FlexSlide = new Class({
 		buildOnInit: true,
 		initFx: 'display',
 		container: null,
-		size: 'element', // { width: 500, height: 500 } ['none', 'element', 'element[x]', 'wrap'] element uses the show element
+		size: 'element', // [{ width: 500, height: 500 }, 'none', 'element', 'element[x]', 'wrap', 'autoHeight'] element uses the show element
 		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
 		itemSizeOverride: {
 			div: 'same'
@@ -59,8 +59,6 @@ var FlexSlide = new Class({
 		itemPositionOverride: {
 			div: { position: 'leftTop' }
 		},
-		containerSize: 'none', //['none', 'width', 'height']
-		containerPosition: { position: 'center' },
 		containerPosition: null, //{ position: 'center' }
 		
 		/* replace, use... */ 
@@ -157,21 +155,24 @@ var FlexSlide = new Class({
 			
 				// element
 				if (this.options.size === 'element') {
-					this.options.size = this.options.show;
+					this.size = this.options.show;
+				}
+				if (this.options.size.indexOf('element[') >= 0) {
+					this.size = this.options.size.substr(8).toInt();
 				}
 				
 				// element[x]
-				if (this.options.size >= 0 && this.options.size < this.elements.item.length ) {
-					var el = this.elements.item[this.options.size];
+				if (this.size >= 0 && this.size < this.elements.item.length) {
+					var el = this.elements.item[this.size];
 				
 					if (el.get('tag') === 'img') {
 						var img = Asset.image(el.get('src'), {
 							onLoad: function() {
-								this.options.size = {
+								this.size = {
 									width: img.get('width').toInt(),
 									height: img.get('height').toInt()
 								}
-								this.itemWrap.setStyles(this.options.size);
+								this.itemWrap.setStyles(this.size);
 								this.buildFinished();
 							}.bind(this)
 						});
@@ -180,18 +181,18 @@ var FlexSlide = new Class({
 						if (childs.length === 1 && childs[0].get('tag') === 'img') {
 							var subImg = Asset.image(childs[0].get('src'), {
 								onLoad: function() {
-									this.options.size = {
+									this.size = {
 										width: subImg.get('width').toInt(),
 										height: subImg.get('height').toInt()
 									}
-									this.itemWrap.setStyles(this.options.size);
+									this.itemWrap.setStyles(this.size);
 									this.buildFinished();
 								}.bind(this)
 							});
 						} else {
 							el.inject(this.itemWrap);
-							this.options.size = el.getDimensions();
-							this.itemWrap.setStyles(this.options.size);
+							this.size = el.getDimensions();
+							this.itemWrap.setStyles(this.size);
 							el.dispose();
 							this.buildFinished();
 						}
@@ -200,14 +201,14 @@ var FlexSlide = new Class({
 				
 				// container
 				if (this.options.size === 'wrap') {
-					this.options.size = this.wrap.getDimensions();
-					this.itemWrap.setStyles(this.options.size);
+					this.size = this.wrap.getDimensions();
+					this.itemWrap.setStyles(this.size);
 					this.buildFinished();
 				}
 				
 			}
 			
-		} else {
+		} else if (typeOf(this.options.size) === 'object' && this.options.size.width && this.options.size.height) {
 			this.itemWrap.setStyles(this.options.size);
 			this.buildFinished();
 		}
@@ -463,7 +464,7 @@ var FlexSlide = new Class({
 			return;
 		} else if (itemSize === 'same') {
 			el.erase('width').erase('height');
-			el.setStyles(this.options.size);
+			el.setStyles(this.size);
 		} else {
 		
 			var itemPosition = Object.clone(this.options.itemPosition);
