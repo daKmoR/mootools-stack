@@ -50,7 +50,7 @@ var FlexSlide = new Class({
 		buildOnInit: true,
 		initFx: 'display',
 		container: null,
-		size: 'none', // { x: 500, y: 500 } ['none', 'element', 'element[x]', 'wrap'] element uses the show element
+		size: 'none', // { width: 500, height: 500 } ['none', 'element', 'element[x]', 'wrap'] element uses the show element
 		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
 		itemSizeOverride: {
 			div: 'same'
@@ -104,7 +104,8 @@ var FlexSlide = new Class({
 		/* remove */
 		auto: false,
 		render: ['item', 'select', 'next', 'previous'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
-		size: { x: 500, y: 300 }
+		size: { width: 500, height: 300 },
+		size: 'element'
 	},
 	
 	current: -1,
@@ -122,17 +123,32 @@ var FlexSlide = new Class({
 			this.options.container = this.wrap.getParent();
 		}
 		
-		if( this.options.buildOnInit === true ) {
+		if (this.options.buildOnInit === true) {
 			this.build();
 		}
 		
-		if( this.options.show === 'random' ) {
+		if (this.options.show === 'random') {
 			this.options.show = $random(0, this.elements.item.length-1);
 		}
-		
-		if( this.options.buildOnInit === true && this.options.show >= 0 && this.options.show < this.elements.item.length ) {
-			this.show(this.options.show, this.options.initFx);
+	},
+	
+	buildFinished: function() {
+		if (this.options.useScroller == true) {
+			if (this.options.scrollerMode === 'horizontal') {
+				this.selectWrap.setStyle('width', this.selectWrap.getChildren().getCombinedSize().x);
+			}
+			if (this.options.scrollerMode === 'vertical') {
+				this.selectWrap.setStyle('height', this.selectWrap.getChildren().getCombinedSize().y);
+			}
+			this.scroller = new Scroller(this.selectWrap.getParent(), this.options.scrollerOptions).start();
+			this.scroll = new Fx.Scroll(this.selectScrollerWrap, this.options.scrollOptions);
 		}
+		
+		if (this.options.buildOnInit === true && this.options.show >= 0 && this.options.show < this.elements.item.length) {
+			this.show(this.options.show, this.options.initFx); 
+		}
+	
+		this.fireEvent('onBuild');
 	},
 	
 	guessSize: function() {
@@ -146,29 +162,52 @@ var FlexSlide = new Class({
 				
 				// element[x]
 				if (this.options.size >= 0 && this.options.size < this.elements.item.length ) {
-					var img = Asset.image(this.elements.item[this.options.size].get('src'), {
-						onLoad: function() {
-							this.itemWrap.grab(this.elements.item[this.options.size]);
-							
-							this.options.size = this.elements.item[this.options.size].getSize();
-							this.itemWrap.setStyle('width', this.options.size.x).setStyle('height', this.options.size.y);
-							
-							this.elements.item[this.options.size].dispose();
-							
-						}.bind(this)
-					});
+					var el = this.elements.item[this.options.size];
+				
+					if (el.get('tag') === 'img') {
+						var img = Asset.image(el.get('src'), {
+							onLoad: function() {
+								this.options.size = {
+									width: img.get('width').toInt(),
+									height: img.get('height').toInt()
+								}
+								this.itemWrap.setStyles(this.options.size);
+								this.buildFinished();
+							}.bind(this)
+						});
+					} else {
+						var childs = el.getElements('> *');
+						if (childs.length === 1 && childs[0].get('tag') === 'img') {
+							var subImg = Asset.image(childs[0].get('src'), {
+								onLoad: function() {
+									this.options.size = {
+										width: subImg.get('width').toInt(),
+										height: subImg.get('height').toInt()
+									}
+									this.itemWrap.setStyles(this.options.size);
+									this.buildFinished();
+								}.bind(this)
+							});
+						} else {
+							this.options.size = el.getDimensions();
+							this.itemWrap.setStyles(this.options.size);
+							this.buildFinished();
+						}
+					}
 				}
 				
 				// container
 				if (this.options.size === 'wrap') {
-					this.options.size = this.wrap.getSize();
-					this.itemWrap.setStyle('width', this.options.size.x).itemWrap.setStyle('height', this.options.size.y);
+					this.options.size = this.wrap.getDimensions();
+					this.itemWrap.setStyles(this.options.size);
+					this.buildFinished();
 				}
 				
 			}
 			
 		} else {
-			this.itemWrap.setStyle('width', this.options.size.x).setStyle('height', this.options.size.y);
+			this.itemWrap.setStyles(this.options.size);
+			this.buildFinished();
 		}
 	},
 	
@@ -218,24 +257,13 @@ var FlexSlide = new Class({
 		this.updateCounter(0);
 		this.wrap.addClass(this.options.ui.wrap['class']);
 		
-		this.guessSize();
-		
 		if (this.nextWrap)     { this.nextWrap.addEvent(    'click', this.next.bind(this, this.options.times)); }
 		if (this.previousWrap) { this.previousWrap.addEvent('click', this.previous.bind(this, this.options.times)); }
 		if (this.startWrap)    { this.startWrap.addEvent(   'click', this.start.bind(this) );	}
 		if (this.stopWrap)     { this.stopWrap.addEvent(    'click', this.stop.bind(this)  ); }
 		if (this.toggleWrap)   { this.toggleWrap.addEvent(  'click', this.toggle.bind(this));	}
 		
-		if( this.options.useScroller == true ) {
-			if( this.options.scrollerMode === 'horizontal' )
-				this.selectWrap.setStyle('width', this.selectWrap.getChildren().getCombinedSize().x);
-			if( this.options.scrollerMode === 'vertical' )
-				this.selectWrap.setStyle('height', this.selectWrap.getChildren().getCombinedSize().y);
-			this.scroller = new Scroller( this.selectWrap.getParent(), this.options.scrollerOptions).start();
-			this.scroll = new Fx.Scroll(this.selectScrollerWrap, this.options.scrollOptions);
-		}
-		
-		this.fireEvent('onBuild');
+		this.guessSize();
 	},
 	
 	buildElement: function(item, wrapper) {
@@ -427,7 +455,7 @@ var FlexSlide = new Class({
 			return;
 		} else if (itemSize === 'same') {
 			el.erase('width').erase('height');
-			el.setStyle('width', this.options.size.x).setStyle('height', this.options.size.y);
+			el.setStyles(this.options.size);
 		} else {
 		
 			var itemPosition = Object.clone(this.options.itemPosition);
