@@ -564,7 +564,7 @@ var FlexSlide = new Class({
 
 		if (this.options.mode === 'once') {
 			if (id === 0) {
-				if (this.current === 0) {
+				if (this.current === -1) {
 					if (this.previousWrap) this.previousWrap.fade('hide');
 				} else {
 					if (this.previousWrap) this.previousWrap.fade(0);
@@ -572,7 +572,11 @@ var FlexSlide = new Class({
 				if (this.nextWrap) this.nextWrap.fade(1);
 			}	else if (id === this.elements.item.length-1) {
 				if (this.previousWrap) this.previousWrap.fade(1);
-				if (this.nextWrap) this.nextWrap.fade(0);
+				if (this.current === -1) {
+					if (this.nextWrap) this.nextWrap.fade('hide');
+				} else {
+					if (this.nextWrap) this.nextWrap.fade(0);
+				}
 			} else {
 				if (this.previousWrap) this.previousWrap.fade(1);
 				if (this.nextWrap) this.nextWrap.fade(1);
