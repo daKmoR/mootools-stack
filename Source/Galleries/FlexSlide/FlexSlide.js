@@ -63,31 +63,13 @@ var FlexSlide = new Class({
 		},
 		containerSize: 'none', //['none', 'width', 'height']
 		containerPosition: { position: 'center' },
+		containerPosition: null,
 		
+		/* remove */
+		auto: false,
 		
 		/* replace, use... */ 
 		resetIframeOnChange: true,
-		
-		/* remove */
-		setSizeForContainer: false,
-		fixedSize: false, // {x: 640, y: 640}
-		resizeFactor: 0.95,
-		resizeLimit: false, // {x: 640, y: 640}
-		auto: false,
-		centerItem: true,
-		
-		autoItemSize: { mode: 'scale', x: true, y: true },
-		autoItemSizeSpecial: ['img', 'a'],
-		centerItemTags: ['img', 'a'],
-		autoContainerSize: { x: false, y: false },
-		positionContainer: false,
-		positionContainerOptions: {
-			ignoreOffsetParent: true,
-			ignoreAllScroll: true,
-			returnPos: true
-		},
-		
-		
 		useScroller: false,
 		scrollerMode: 'horizontal',
 		scrollerOptions: { area: 100, velocity: 0.1 },
@@ -100,26 +82,17 @@ var FlexSlide = new Class({
 			up: 'random', /* any availabele effect */
 			down: 'random', /* any availabele effect */
 			random: ['fade'],
-			globalOptions: { duration: 1000, transition: Fx.Transitions.linear },
+			globalOptions: { duration: 800, transition: Fx.Transitions.linear },
 			options: { display: { duration: 0 }	},
-			wrapFxOptions: { duration: 1000, transition: Fx.Transitions.Quart.easeInOut }
+			wrapFxOptions: { duration: 800, transition: Fx.Transitions.Quart.easeInOut }
 		},
 		effects: {
-			fade: function(current, next, currentEl, nextEl) {
-				this.fxConfig[current] = { 'opacity': 0 };
-				this.fxConfig[next]    = { 'opacity': 1 };
-			},
-			fadePrepare: function(current, next, currentEl, nextEl) {
-				currentEl.fade('show');
-				nextEl.fade('hide');
-			},
-			display: function(current, next, currentEl, nextEl) {
-				this.wrapFx.setOptions({ duration: 0 });
-				if (currentEl) {
-					currentEl.setStyle('display', 'none');
-				}
-				nextEl.setStyle('display', 'block');
-			}
+			fadeInPrepare:  function(id, el) { el.setStyle('opacity', 0); },
+			fadeIn:         function(id, el) { this.fxConfig[id] = { 'opacity': 1 }; },
+			fadeOutPrepare: function(id, el) { el.setStyle('opacity', 1); },
+			fadeOut:        function(id, el) {	this.fxConfig[id] = { 'opacity': 0 }; },
+			displayIn: function(id, el) { el.setStyle('display', 'block'); },
+			displayOut: function(id, el) { el.setStyle('display', 'none'); }
 		},
 		onShow: function(current, next) {
 			if( $defined(this.elements.description) ) {
@@ -154,7 +127,7 @@ var FlexSlide = new Class({
 		}
 		
 		if( this.options.buildOnInit === true && this.options.show >= 0 && this.options.show < this.elements.item.length ) {
-			this.show( this.options.show, this.options.initFx );
+			this.show(this.options.show, this.options.initFx);
 		}
 	},
 	
@@ -315,83 +288,76 @@ var FlexSlide = new Class({
 		}, this);
 	},
 	
-	show: function(id, fx) {
-		if (this.itemWrap) {
-			this._show(id, fx);
-		} else {
-			this.build();
-			this._show(id, fx);
+	// show: function(id, fx) {
+		// if (this.itemWrap) {
+			// this._show(id, fx);
+		// } else {
+			// this.build();
+			// this._show(id, fx);
+		// }
+	// },
+	
+	_in: function(id, fxGroup) {
+		if (id != this.current && id < this.elements.item.length && this.running === false) {
+			this.prepareElement(id, fxGroup);
 		}
 	},
 	
-	_show: function(id, fx) {
-		if( (id != this.current || this.current === -1) && this.running === false ) {
-			var fx = fx || ( (id > this.current) ? this.options.effect.up : this.options.effect.down);
-			if(fx === 'random') fx = this.options.effect.random.getRandom();
-			
-			var newOptions = Object.clone(this.options.effect.globalOptions);
-			Object.merge(newOptions, this.options.effect.options[fx]);
-			this.fx.setOptions(newOptions);
-			this.wrapFx.setOptions(this.options.effect.wrapFxOptions);
-			
-			//console.log('show', this.current + ' -> ' + id);
-			//this.resetElement(this.elements.item[id]);
-			
-			if (this.current >= 0) {
-				this.prepareCurrent(this.current);
-			}
-			this.prepareElement(id, fx);
-			
-			this.fxConfig = {};
-			this.wrapFxConfig = {};
-			if( this.options.autoContainerSize.x || this.options.autoContainerSize.y )
-				this.wrapFxConfig[0] = {};
-			if( this.options.autoContainerSize.x )
-				Object.merge(this.wrapFxConfig[0], {'width': this.elements.item[id].getSize().x} );
-			if( this.options.autoContainerSize.y )
-				Object.merge(this.wrapFxConfig[0], {'height': this.elements.item[id].getSize().y} );
-
-			if( this.options.positionContainer )
-				this.positionContainer(id);
-				
-			this.fireEvent('onShow', [this.current, id]);
-			
-			// this.wrapFx.start(this.wrapFxConfig).chain( function() {
-				// this.fx.start(this.fxConfig)
-			// }.bind(this) );
-			
-			
-		}
-	},
-	
-	transition: function(old, id, fx) {
-		//if (this.current < 0) return;
-		//console.log('trans', old + ' -> ' + id + ' [' + this.current + ']');
-		
+	__in: function(id, fxGroup) {
+		var fx = fxGroup + 'In';
 		if (this.options.effects[fx + 'Prepare']) {
-			this.options.effects[fx + 'Prepare'].call(this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
+			this.options.effects[fx + 'Prepare'].call(this, id, this.elements.item[id]);
 		}
+		this.options.effects[fx].call(this, id, this.elements.item[id]);
 		
-		// call the used effect
-		this.options.effects[fx].call(this, this.current, id, this.elements.item[this.current], this.elements.item[id]);
+		this.doFx(id, fxGroup);
+	},
+	
+	out: function(fxGroup, id) {
+		var id = id || this.current;
 		
-		this.elements.item[this.current].setStyle('display', 'block');
-		this.elements.item[id].setStyle('display', 'block');
-
+		if (id >= 0 && id < this.elements.item.length) {
+			var fx = fxGroup + 'Out';
+			this.prepareCurrent(id, fx);
+			if (this.options.effects[fx + 'Prepare']) {
+				this.options.effects[fx + 'Prepare'].call(this, id, this.elements.item[id]);
+			}
+			this.options.effects[fx].call(this, id, this.elements.item[id]);
+		}
+	},
+	
+	show: function(id, fxGroup) {
+		var fxGroup = fxGroup || (id > this.current ? this.options.effect.up : this.options.effect.down);
+		fxGroup = fxGroup === 'random' ? fxGroup = this.options.effect.random.getRandom() : fxGroup;
+	
+		if (id != this.current && id < this.elements.item.length && this.running === false) {
+			this.fxGroupConfig = {};
+			this.out(fxGroup);
+			this._in(id, fxGroup);
+			this.fireEvent('onShow', [this.current, id]);
+		}
+	},
+	
+	doFx: function(id, fxGroup) {
+		var newOptions = Object.merge(Object.clone(this.options.effect.globalOptions), this.options.effect.options[fxGroup]);
+		this.fx.setOptions(newOptions);
+		this.wrapFx.setOptions(this.options.effect.wrapFxOptions);
+	
 		this.running = true;
 		var oldcurrent = this.current;
 		this.fx.elements = this.fx.subject = this.elements.item;
 		
-		// console.log('el', this.elements.item[this.current].getElement('h2').get('text') + ' -> ' + this.elements.item[id].getElement('h2').get('text'));
-		//console.log('el-style', this.elements.item[this.current].getStyle('left') + ' -> ' + this.elements.item[id].getStyle('left'));
-		//console.log(this.fxConfig);
-		
 		this.fx.start(this.fxConfig).chain(function() {
 			this.running = false;
-			this.showEnd(oldcurrent);
+			//this.showEnd(oldcurrent);
 		}.bind(this));
 		
-		this.wrapFx.start(this.wrapFxConfig);
+		if (this.elements.item[this.current]) {
+			this.elements.item[this.current].setStyle('display', 'block');
+		}
+		this.elements.item[id].setStyle('display', 'block');
+		
+		//this.wrapFx.start(this.wrapFxConfig);
 		
 		this.process(id);
 	},
@@ -404,18 +370,9 @@ var FlexSlide = new Class({
 		}
 		
 		//this.elements.item[oldcurrent] = this.elements.item[oldcurrent].dispose();
-		
 		this.fireEvent('onShowEnd');
 	},
-	
-	resetElement: function(el) {
-		// if (!el.retrieve('FlexSlide:ElementStyle')) {
-			// el.setStyle('display', 'block');
-			// el.store('FlexSlide:ElementStyle', el.get('style'));
-		// }
-		// el.set('style', el.retrieve('FlexSlide:ElementStyle'));
-		//el.set('style', 'display: block;');
-	},
+
 	
 	prepareCurrent: function(el) {
 		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
@@ -441,12 +398,7 @@ var FlexSlide = new Class({
 					img.inject(this.itemWrap);
 					this.elements.item[i] = img;
 					this.adjustElement(img);
-					
-					if (this.current >= 0) {
-						this.transition(this.current, i, fx);
-					} else {
-						this.process(i);
-					}
+					this.__in(i, fx);
 				}.bind(this)
 			});
 		} else {
@@ -460,38 +412,19 @@ var FlexSlide = new Class({
 						subImg.inject(el);
 						el.setStyle('width', subImg.get('width').toInt()).setStyle('height', subImg.get('height').toInt());
 						subImg.erase('width').erase('height');
-						
 						this.elements.item[i] = el;
 						this.adjustElement(el);
-						if (this.current >= 0) {
-							this.transition(this.current, i, fx);
-						} else {
-							this.process(i);
-						}
+						this.__in(i, fx);
 					}.bind(this)
 				});
 			} else {
 				el.inject(this.itemWrap);
 				this.elements.item[i] = el;
 				this.adjustElement(el);
-				if (this.current >= 0) {
-					this.transition(this.current, i, fx);
-				} else {
-					this.process(i);
-				}
+				this.__in(i, fx);
 			}
 		}
 		
-	},
-	
-	disposeLast: function(el) {
-		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
-		
-		if (!el.retrieve('FlexSlide:ElementStyle')) {
-			el.setStyle('display', 'block');
-			el.store('FlexSlide:ElementStyle', el.get('style'));
-		}
-		el.set('style', el.retrieve('FlexSlide:ElementStyle') );
 	},
 	
 	adjustElement: function(el) {
@@ -593,9 +526,27 @@ var FlexSlide = new Class({
 		this.fireEvent('process', [id, this.current]);
 			
 		this.current = id;
-		//console.log('set cur', id);
 		if (this.options.auto) this.auto();
 	},
+	
+	resetElement: function(el) {
+		// if (!el.retrieve('FlexSlide:ElementStyle')) {
+			// el.setStyle('display', 'block');
+			// el.store('FlexSlide:ElementStyle', el.get('style'));
+		// }
+		// el.set('style', el.retrieve('FlexSlide:ElementStyle'));
+		//el.set('style', 'display: block;');
+	},
+
+	disposeLast: function(el) {
+		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
+		
+		if (!el.retrieve('FlexSlide:ElementStyle')) {
+			el.setStyle('display', 'block');
+			el.store('FlexSlide:ElementStyle', el.get('style'));
+		}
+		el.set('style', el.retrieve('FlexSlide:ElementStyle') );
+	},	
 	
 	// fixSizes: function() {
 		// var scale = this.options.resizeLimit;

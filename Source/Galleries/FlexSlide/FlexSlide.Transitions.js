@@ -29,30 +29,37 @@ FlexSlide.implement('options', {
 		}
 	},
 	effects: {
-		slideLeft: function(current, next, currentEl, nextEl) {
-			this.fxConfig[current] = { 'left': this.options.size.x*-1 };
-			this.fxConfig[next]    = { 'left': 0 };
-		},
-		slideLeftPrepare: function(current, next, currentEl, nextEl) {
-			currentEl.setStyle('left', 0);
-			nextEl.setStyle('left', this.options.size.x);
-		},
-		slideRight: function(current, next, currentEl, nextEl) {
-			this.fxConfig[current] = { 'right': this.options.size.x*-1 };
-			this.fxConfig[next]    = { 'right': 0 };
-		},
-		slideRightPrepare: function(current, next, currentEl, nextEl) {
-			currentEl.setStyle('right', 0);
-			nextEl.setStyle('right', this.options.size.x);
-		},
-		slideLeftQuart:         function(current, next, currentEl, nextEl) { this.options.effects.slideLeft.call(this, current, next, currentEl, nextEl); },
-		slideLeftQuartPrepare:  function(current, next, currentEl, nextEl) { this.options.effects.slideLeftPrepare.call(this, current, next, currentEl, nextEl); },
-		slideRightQuart:        function(current, next, currentEl, nextEl) { this.options.effects.slideRight.call(this, current, next, currentEl, nextEl); },
-		slideRightQuartPrepare: function(current, next, currentEl, nextEl) { this.options.effects.slideRightPrepare.call(this, current, next, currentEl, nextEl); },
-		slideLeftBounce:  function(current, next, currentEl, nextEl) { this.options.effects.slideLeft.call (this, current, next, currentEl, nextEl); },
-		slideLeftBouncePrepare:  function(current, next, currentEl, nextEl) { this.options.effects.slideLeftPrepare.call(this, current, next, currentEl, nextEl); },
-		slideRightBounce: function(current, next, currentEl, nextEl) { this.options.effects.slideRight.call(this, current, next, currentEl, nextEl); },
-		slideRightBouncePrepare:  function(current, next, currentEl, nextEl) { this.options.effects.slideRightPrepare.call(this, current, next, currentEl, nextEl); },
+		slideLeftInPrepare:  function(id, el) { el.setStyle('left', this.options.size.x); },
+		slideLeftIn:         function(id, el) { this.fxConfig[id] = { 'left': 0 }; },
+		slideLeftOutPrepare: function(id, el) { el.setStyle('left', 0); },
+		slideLeftOut:        function(id, el) { this.fxConfig[id] = { 'left': this.options.size.x*-1 }; },
+		
+		slideRightInPrepare:  function(id, el) { el.setStyle('right', this.options.size.x); },
+		slideRightIn:         function(id, el) { this.fxConfig[id] = { 'right': 0 }; },
+		slideRightOutPrepare: function(id, el) { el.setStyle('right', 0); },
+		slideRightOut:        function(id, el) { this.fxConfig[id] = { 'right': this.options.size.x*-1 }; },
+		
+		slideLeftQuartInPrepare:  function(id, el) { this.options.effects.slideLeftInPrepare.call(this, id, el); },
+		slideLeftQuartIn:         function(id, el) { this.options.effects.slideLeftIn.call(this, id, el); },
+		slideLeftQuartOutPrepare: function(id, el) { this.options.effects.slideLeftOutPrepare.call(this, id, el); },
+		slideLeftQuartOut:        function(id, el) { this.options.effects.slideLeftOut.call(this, id, el); },
+		
+		slideRightQuartInPrepare:  function(id, el) { this.options.effects.slideRightInPrepare.call(this, id, el); },
+		slideRightQuartIn:         function(id, el) { this.options.effects.slideRightIn.call(this, id, el); },
+		slideRightQuartOutPrepare: function(id, el) { this.options.effects.slideRightOutPrepare.call(this, id, el); },
+		slideRightQuartOut:        function(id, el) { this.options.effects.slideRightOut.call(this, id, el); },
+		
+		slideLeftBounceInPrepare:  function(id, el) { this.options.effects.slideLeftInPrepare.call(this, id, el); },
+		slideLeftBounceIn:         function(id, el) { this.options.effects.slideLeftIn.call(this, id, el); },
+		slideLeftBounceOutPrepare: function(id, el) { this.options.effects.slideLeftOutPrepare.call(this, id, el); },
+		slideLeftBounceOut:        function(id, el) { this.options.effects.slideLeftOut.call(this, id, el); },
+		
+		slideRightBounceInPrepare:  function(id, el) { this.options.effects.slideRightInPrepare.call(this, id, el); },
+		slideRightBounceIn:         function(id, el) { this.options.effects.slideRightIn.call(this, id, el); },
+		slideRightBounceOutPrepare: function(id, el) { this.options.effects.slideRightOutPrepare.call(this, id, el); },
+		slideRightBounceOut:        function(id, el) { this.options.effects.slideRightOut.call(this, id, el); },
+		
+		
 		slideTop: function(current, next, currentEl, nextEl) {
 			this.fxConfig[current] = { 'top': this.options.size.y*-1 };
 			this.fxConfig[next]    = { 'top': 0 };
