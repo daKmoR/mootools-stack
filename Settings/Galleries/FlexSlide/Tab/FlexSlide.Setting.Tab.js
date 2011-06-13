@@ -22,10 +22,7 @@ SettingsStore.FlexSlide.Tab = {
 		'select': '.tabTitle'
 	},
 	auto: false,
-	getSizeFromContainer: false,
-	getSizeFromElement: false,
-	autoContainerSize: { x: false, y: true },
-	centerItem: false,
+	size: { height: 'auto' },
 	render: ['select', 'item'],
 	effect: { up: 'slideLeftQuart', down: 'slideRightQuart' }
 };

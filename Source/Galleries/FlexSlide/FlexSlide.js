@@ -102,8 +102,6 @@ var FlexSlide = new Class({
 		/* remove */
 		auto: false,
 		render: ['item', 'select', 'next', 'previous'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
-		size: { width: 500, height: 300 },
-		size: 'element'
 	},
 	
 	current: -1,
@@ -157,7 +155,7 @@ var FlexSlide = new Class({
 				this.size.width = this.options.size.width;
 			}
 			if (typeOf(this.options.size.height) === 'number') {
-				this.size.width = this.options.size.height;
+				this.size.height = this.options.size.height;
 			}
 			
 			this.itemWrap.setStyles(this.size);
@@ -211,6 +209,8 @@ var FlexSlide = new Class({
 							this.buildFinished();
 						}
 					}
+				} else {
+					this.buildFinished();
 				}
 				
 				// container
@@ -482,6 +482,13 @@ var FlexSlide = new Class({
 			this.wrapFxConfig[0].width = elSize.width;
 		}
 		
+		if (this.options.containerPosition) {
+			var savedStyle = this.wrap.get('style');
+			this.wrap.set('style', '');
+			this.wrapFxConfig[1] = el.calculatePosition(this.options.containerPosition);
+			this.wrap.set('style', savedStyle);
+		}
+		
 		var itemSize = this.options.itemSizeOverride[el.get('tag')] || this.options.itemSize;
 		if (itemSize === 'none') {
 			return;
@@ -532,13 +539,6 @@ var FlexSlide = new Class({
 			}
 			
 		}
-	},
-	
-	positionContainer: function(id) {
-		this.wrapFxConfig[1] = this.wrapFxConfig[1] || {};
-
-		var newPos = this.elements.item[id].position(this.options.positionContainerOptions);
-		Object.merge(this.wrapFxConfig[1], newPos);
 	},
 	
 	updateCounter: function(id) {
