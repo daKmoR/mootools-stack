@@ -101,7 +101,7 @@ var FlexSlide = new Class({
 		
 		/* remove */
 		auto: false,
-		render: ['item', 'select', 'next', 'previous'], // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
+		render: ['item', 'select', 'next', 'previous'] // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
 	},
 	
 	current: -1,
@@ -175,13 +175,12 @@ var FlexSlide = new Class({
 				// element[x]
 				if (this.size >= 0 && this.size < this.elements.item.length) {
 					var el = this.elements.item[this.size];
-				
 					if (el.get('tag') === 'img') {
 						var img = Asset.image(el.get('src'), {
 							onLoad: function() {
 								this.size = {
-									width: img.get('width').toInt(),
-									height: img.get('height').toInt()
+									width: el.getStyle('width').toInt() === 'number' ? el.getStyle('width').toInt() : img.get('width').toInt(),
+									height: el.getStyle('height').toInt() === 'number' ? el.getStyle('height').toInt() : img.get('height').toInt()
 								}
 								this.itemWrap.setStyles(this.size);
 								this.buildFinished();
@@ -192,9 +191,10 @@ var FlexSlide = new Class({
 						if (childs.length === 1 && childs[0].get('tag') === 'img') {
 							var subImg = Asset.image(childs[0].get('src'), {
 								onLoad: function() {
+									subImg.set(childs[0].get('style', 'class'));
 									this.size = {
-										width: subImg.get('width').toInt(),
-										height: subImg.get('height').toInt()
+										width: childs[0].getStyle('width').toInt() === 'number' ? childs[0].getStyle('width').toInt() : subImg.get('width').toInt(),
+										height: childs[0].getStyle('height').toInt() === 'number' ? childs[0].getStyle('height').toInt() : subImg.get('height').toInt()
 									}
 									this.itemWrap.setStyles(this.size);
 									this.buildFinished();
@@ -430,11 +430,12 @@ var FlexSlide = new Class({
 		var  i = typeOf(el) === 'number' ? el : this.elements.item.indexOf(el);
 		var el = this.elements.item[i];
 		
-		el.set('style', '');
+		el.set('style', el.retrieve('FlexSlide::Style', el.get('style')));
 		if (el.get('tag') === 'img') {
 			var img = Asset.image(el.get('src'), {
 				onLoad: function() {
-					img.set('style', el.get('style')).set('class', el.get('class'));
+					img.set(el.get('style', 'class'));
+					img.store('FlexSlide::Style', el.retrieve('FlexSlide::Style'));
 					el.dispose();
 					img.inject(this.itemWrap);
 					this.elements.item[i] = img;
@@ -447,9 +448,12 @@ var FlexSlide = new Class({
 			if (childs.length === 1 && childs[0].get('tag') === 'img') {
 				var subImg = Asset.image(childs[0].get('src'), {
 					onLoad: function() {
-						subImg.set('style', childs[0].get('style')).set('class', childs[0].get('class'));
+						subImg.set(childs[0].get('style', 'class'));
+						el.setStyles({
+							width: childs[0].getStyle('width').toInt() === 'number' ? childs[0].getStyle('width').toInt() : subImg.get('width').toInt(),
+							height: childs[0].getStyle('height').toInt() === 'number' ? childs[0].getStyle('height').toInt() : subImg.get('height').toInt()
+						});
 						childs[0].dispose();
-						el.setStyle('width', subImg.get('width').toInt()).setStyle('height', subImg.get('height').toInt());
 						subImg.erase('width').erase('height');
 						el.inject(this.itemWrap);
 						subImg.inject(el);
