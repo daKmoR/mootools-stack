@@ -593,25 +593,6 @@ var FlexSlide = new Class({
 		if (this.options.auto) this.auto();
 	},
 	
-	resetElement: function(el) {
-		// if (!el.retrieve('FlexSlide:ElementStyle')) {
-			// el.setStyle('display', 'block');
-			// el.store('FlexSlide:ElementStyle', el.get('style'));
-		// }
-		// el.set('style', el.retrieve('FlexSlide:ElementStyle'));
-		//el.set('style', 'display: block;');
-	},
-
-	disposeLast: function(el) {
-		var el = typeOf(el) !== 'element' ? this.elements.item[el] : el;
-		
-		if (!el.retrieve('FlexSlide:ElementStyle')) {
-			el.setStyle('display', 'block');
-			el.store('FlexSlide:ElementStyle', el.get('style'));
-		}
-		el.set('style', el.retrieve('FlexSlide:ElementStyle') );
-	},	
-	
 	// fixSizes: function() {
 		// var scale = this.options.resizeLimit;
 		// if (!scale) {
