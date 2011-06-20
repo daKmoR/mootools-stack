@@ -51,3 +51,6 @@ sources:
   - "Source/Form/Select.js"
   - "Source/Form/Selects.js"
   - "Source/Element/Element.OuterClick.js"
+  - "Source/Behaviors/Behavior.FlexSlide.js"
+  - "Source/Behaviors/Behavior.DatePicker.js"
+  - "Source/Behaviors/Behavior.DatePickerGerman.js"
