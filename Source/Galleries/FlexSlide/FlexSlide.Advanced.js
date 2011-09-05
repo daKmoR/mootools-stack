@@ -38,33 +38,29 @@ FlexSlide.Advanced = new Class({
 	loading: {},
 	
 	build: function() {
-		if( this.options.dynamicLoading === true ) {
+		if (this.options.dynamicLoading === true) {
 			this.loader = new Element('div', this.options.ui.loader).fade('hide');
 			this.loader.set('tween', { duration: 100 });
 		}
 		
 		this.parent();
 		
-		if( this.options.wheelListener )
+		if (this.options.wheelListener) {
 			document.addEvent('mousewheel', this.wheelListener.bindWithEvent(this));
-		if( this.options.keyboardListener ) {
+		}
+		if (this.options.keyboardListener) {
 			document.addEvent('keydown', this.keyboardListener.bindWithEvent(this));		
 		}
 	},
 	
-	show: function(id, fx) {
-		if( this.itemWrap ) {
-			if( this.options.dynamicLoading === true && this.elements.item[id].get('tag') === 'a' ) {
-				this.dynamicLoading(id, fx);
-			} else {
-				this._show(id, fx);
-			}
-			if( this.options.dynamicLoading === true ) {
-				this.preLoading(id);
-			}
+	_in: function(id, fxGroup) {
+		if (this.options.dynamicLoading === true && this.elements.item[id].get('tag') === 'a') {
+			this.dynamicLoading(id, fxGroup);
 		} else {
-			this.build();
-			this.show(id, fx);
+			this.prepareElement(id, fxGroup);
+		}
+		if (this.options.dynamicLoading === true) {
+			this.preLoading(id);
 		}
 	},
 	
@@ -79,7 +75,7 @@ FlexSlide.Advanced = new Class({
 	},
 	
 	preLoad: function(id) {
-		if( this.loading[id] != true ) {
+		if (this.loading[id] != true) {
 			this.dynamicLoading(id, null, false);
 		}
 	},
@@ -88,12 +84,11 @@ FlexSlide.Advanced = new Class({
 		var show = show;
 		if( show == null ) 
 			show = true;
-			
+		
 		if( show && this.loaded[id] ) {
 			this.show(id, fx);
 			return true;
 		}
-		
 		if( this.elements.item[id] && this.elements.item[id].get('tag') === 'a' && this.options.dynamicLoading === true ) {
 			var href = this.elements.item[id].get('href');
 
@@ -117,7 +112,7 @@ FlexSlide.Advanced = new Class({
 							this.itemWrap.grab( image );
 							this.loaded[id] = true;
 							this.fireEvent('imageLoaded', image);
-							if( show ) this.show(id, fx);
+							if (show) this.prepareElement(id, fx);
 						}.bind(this)
 					});
 					break;
@@ -131,7 +126,7 @@ FlexSlide.Advanced = new Class({
 							this.elements.item[id] = this.fx.elements[id] = div;
 							this.itemWrap.grab(div);
 							this.fireEvent('loaded', div);
-							if( show ) this.show(id, fx);
+							if (show) this.prepareElement(id, fx);
 						}.bind(this)
 					}).send();
 					break;
@@ -141,7 +136,7 @@ FlexSlide.Advanced = new Class({
 					$$(href)[0].clone().setStyle('display', 'block').inject( div );
 					this.elements.item[id] = this.fx.elements[id] = div;
 					this.itemWrap.grab(div);
-					if( show ) this.show(id, fx);
+					if (show) this.prepareElement(id, fx);
 					break;
 				case 'youtube':
 					var youtubeId = '';

@@ -23,15 +23,8 @@ var FlexBox = new Class({
 		onOpenEnd: nil,
 		onClose: nil,
 		onCloseEnd: nil,*/
-		opacityZoom: 0.8,
-		centerZoom: false,
 		useOverlay: true,
-		margin: 40,
-		anchor: false,
-		wrap: false,
-		singleMode: true,
 		manualClose: false,
-		position: {},
 		active: true,
 		ui: {
 			wrap: { 'class': 'flexBoxWrap' },
@@ -40,14 +33,12 @@ var FlexBox = new Class({
 		keyboardListener: true,
 		flexSlide: {
 			render: [{ 'bottom': ['next', 'previous'] }, 'item', 'close'],
-			autoContainerSize: { x: true, y: true },
-			centerItem: false,
-			positionContainer: true,
-			getSizeFromElement: false,
+			size: { width: 'auto', height: 'auto' },
+			containerPosition: { position: 'center' },
 			auto: false,
 			dynamicLoading: true,
-			wheelListener: true,
-			keyboardListener: true,
+			wheelListener: false,
+			keyboardListener: false,
 			active: true,
 			ui: {
 				close: { 'class': 'ui-Close' }
@@ -59,14 +50,6 @@ var FlexBox = new Class({
 				options: {
 					zoom: { duration: 600, transition: Fx.Transitions.Quart.easeOut },
 					dezoom: { duration: 600, transition: Fx.Transitions.Quart.easeOut }
-				}
-			},
-			effects: {
-				fadeIn: function(current, next, currentEl, nextEl) {
-					$extend(this.wrapFxConfig[1], { 'opacity': [0, 1] });
-				},
-				fadeOut: function(current, next, currentEl, nextEl) {
-					$extend(this.wrapFxConfig[1], { 'opacity': [1, 0] });
 				}
 			}
 		},
@@ -83,25 +66,13 @@ var FlexBox = new Class({
 
 	initialize: function(anchors, options){
 		this.setOptions(options);
-		var anchors = $$(anchors);
-		
-		if( this.options.wrap || this.options.anchor ) {
-			this.options.singleMode = true;
-		}
-		
-		if ( !this.options.singleMode ) {
-			this.anchor = $(this.options.anchor);
-			this.anchor.addEvent('click', function(e) {
-				e.stop();
-				this.open(this.anchor);
-			}.bind(this) );
-		} else {
+		if ($$(anchors).length > 0) {
 			this.attach(anchors);
 		}
-
 	},
 	
 	attach: function(anchors) {
+		var anchors = typeOf(anchors) === 'element' ? [anchors] : anchors;
 		var that = this;
 		anchors.each(function(anchor) {
 			anchor.addEvent('click', function(e) {
@@ -113,22 +84,21 @@ var FlexBox = new Class({
 	},
 
 	open: function(id) {
-		if( this.isOpen ) return false;
+		if (this.isOpen) return false;
 		var id = typeOf(id) === 'element' ? this.anchors.indexOf(id) : id;
 		
-		if( $defined(this.flexSlide) ) {
-			if( this.options.useOverlay ) {
+		if (this.flexSlide != undefined) {
+			if (this.options.useOverlay) {
 				this.overlay.show();
 			}
-			this.flexSlide.setOptions( this.options.openOptions );
+			this.flexSlide.setOptions(this.options.openOptions);
 			
 			this.openEndEvent = this.openEnd.pass(null, this);
-			this.flexSlide.addEvent('onShowEnd', this.openEndEvent );
+			this.flexSlide.addEvent('onShowEnd', this.openEndEvent);
 			
 			this.flexSlide.wrap.setStyle('display', 'block');
 			
-			this.flexSlide.current = -1;
-			this.flexSlide.show( id );
+			this.flexSlide._in(id, 'fade');
 			
 			this.fireEvent('onOpen');
 		} else {
@@ -140,7 +110,7 @@ var FlexBox = new Class({
 	
 	openEnd: function() {
 		this.fireEvent('onOpenEnd');
-		this.flexSlide.setOptions( this.options.flexSlide );
+		this.flexSlide.setOptions(this.options.flexSlide);
 		this.flexSlide.removeEvent('onShowEnd', this.openEndEvent );
 		
 		this.isOpen = true;
@@ -149,23 +119,23 @@ var FlexBox = new Class({
 	},
 	
 	build: function() {
-		if( this.options.useOverlay ) {
-			this.overlay = new Overlay({ onClick: this.close.bind(this) });
+		if (this.options.useOverlay) {
+			this.overlay = new Overlay({onClick: this.close.bind(this)});
 			this.overlay.build();
 		}
 	
 		this.wrap = this.options.wrap || new Element('div', this.options.ui.wrap).inject(document.body);
 		
-		this.animPadding = this.wrap.getStyle('padding').toInt();
+		//this.animPadding = this.wrap.getStyle('padding').toInt();
 		this.wrap.setStyle('padding', 0);
 		
 		this.anchors.each(function(el) {
-			this.wrap.grab( el.clone().addClass('item') );
+			this.wrap.grab(el.clone().addClass('item').erase('data-behavior'));
 		}, this);
 		
-		this.flexSlide = new FlexSlide.Advanced( this.wrap, $merge(this.options.flexSlide, {
+		this.flexSlide = new FlexSlide.Advanced(this.wrap, Object.merge(this.options.flexSlide, {
 			buildOnInit: false
-		}) );
+		}));
 		this.flexSlide.build();
 		this.flexSlide.addEvent('onImageLoaded', function(image) {
 			this.fireEvent('imageLoaded', image);
@@ -175,23 +145,22 @@ var FlexBox = new Class({
 			this.fireEvent('loaded', div);
 		}.bind(this) );
 		
-		this.wrap.position( $merge(this.flexSlide.options.positionContainerOptions, {returnPos: false}) );
+		//this.wrap.position(Object.merge(this.flexSlide.options.positionContainerOptions, {returnPos: false}));
 		
-		if( this.options.keyboardListener ) {
+		if (this.options.keyboardListener) {
 			document.addEvent('keydown', this.keyboardListener.bindWithEvent(this));
 		}
 		
-		if( this.flexSlide.closeWrap ) {
+		if (this.flexSlide.closeWrap) {
 			this.flexSlide.closeWrap.addEvent('click', this.close.bind(this) );
 		}
-		
 	},
 	
 	close: function() {
 		this.fireEvent('onClose');
 		this.flexSlide.running = true;
 		
-		if( !this.options.manualClose ) {
+		if (!this.options.manualClose) {
 			this._close();
 		}
 	},
@@ -201,13 +170,7 @@ var FlexBox = new Class({
 		this.flexSlide.addEvent('onShowEnd', this.closeEndEvent );
 		
 		this.flexSlide.setOptions(this.options.closeOptions);
-		
-		var tmp = this.flexSlide.current;
-		this.flexSlide.current = -1;
-
-		this.flexSlide.running = false;
-		this.flexSlide.show(tmp);
-		this.flexSlide.running = true;
+		this.flexSlide.out('fade');
 		
 		if(this.options.useOverlay) {
 			this.overlay.hide();
@@ -249,7 +212,7 @@ var FlexBox = new Class({
 			// });
 			// this.wrap.setStyle('display', 'block');
 			
-			// this.flexSlide.setOptions( $merge(this.options.flexSlide, {
+			// this.flexSlide.setOptions( Object.merge(this.options.flexSlide, {
 				// positionContainer: this.options.centerZoom,
 				// opacityZoom: this.options.opacityZoom,
 				// margin: this.options.margin,
@@ -258,7 +221,6 @@ var FlexBox = new Class({
 					// zoom: function(current, next, currentEl, nextEl) {
 						
 						// var to = this.options.fixedSize || nextEl.getSize();
-						// console.log( to );
 						// this.fxConfig[next] = {
 							// 'width': [currentEl.getSize().x, to.x],
 							// 'height': [currentEl.getSize().y, to.y]
@@ -292,7 +254,7 @@ var FlexBox = new Class({
 		// var animPadding = this.animPadding;
 		// var fxOptions = this.options.flexSlide.effect.options.dezoom;
 		
-		// this.flexSlide.setOptions( $merge(this.options.flexSlide, {
+		// this.flexSlide.setOptions( Object.merge(this.options.flexSlide, {
 			// autoContainerSize: { x: false, y: false },
 			// positionContainer: false,
 			// opacityZoom: this.options.opacityZoom,

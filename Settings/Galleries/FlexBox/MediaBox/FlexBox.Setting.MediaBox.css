@@ -12,5 +12,7 @@
 	
 	div.mediaBox .ui-Bottom { position: absolute; background: #fff; width: 100%; left: 0; height: 45px; }
 
-	div.mediaBox { background: #fff; padding: 10px; font-family: Helvetica, Arial, sans-serif; }
+	div.mediaBox { background: #fff; padding: 10px; font-family: Helvetica, Arial, sans-serif; position: absolute; }
 	div.mediaBox .ui-Item { margin: 10px; }
+	
+	.ui-Close, .ui-Next, .ui-Previous { cursor: pointer; }

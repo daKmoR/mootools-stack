@@ -67,46 +67,71 @@ Object.extend({
 var Flexo = new Class({
 	Implements: [Settings, Events],
 	options: {
+		copyToElement: false,
 
 	},
 	
 	initialize: function(wrap, options) {
 		if( !(this.wrap = $(wrap)) ) return;
 		this.setOptions(options);
-		
+
 		this.initPlugins();
 		
-		this.wrap.getElements('a').addEvent('click', function(e) {
-			e.stop();
-		});
+		// this.wrap.getElements('a').addEvent('click', function(e) {
+			// e.stop();
+		// });
 		
-		this.wrap.addEvent('mouseup', function() {
+		// this.wrap.addEvent('mouseup', function(e) {
+			// this.activate();
+			// //console.log( this.wrap.getSelectedText() );
+			
+			// //this.wrap.selectRange(1, 100);
+			// var tmp = this.getElement();
+			// console.log(tmp);
+			
+			// //this.wrapSelection('<strong>|</strong>');
+			
+			// e.stop();
+		// }.bind(this) );
+		
+		// this.wrap.addEvent('keyup', function() {
+			// this.checkCarrotPosition();
+		// }.bind(this) );
+		
+		var button = new Element('span', { style: 'display: block; position: absolute; width: 10px; height: 10px; background: orange;' });
+		button.addEvent('click', function() {
 			this.activate();
-			//console.log( this.wrap.getSelectedText() );
 			
-			//this.wrap.selectRange(1, 100);
-			var tmp = this.getElement();
-			console.log(tmp);
+			this.wrap.focus();
 			
-			//this.wrapSelection('<strong>|</strong>');
-		}.bind(this) );
+		}.bind(this));
 		
-		this.wrap.addEvent('keyup', function() {
-			this.checkCarrotPosition();
-		}.bind(this) );
+		button.inject(this.wrap, 'after');
 		
-		
-		$('in').addEvent('mouseup', function() {
-			//console.log( $('in').getSelectedText() );
-		});
-		
-		
-		$('useMe').addEvent('mouseenter', function() {
-			//console.log( 'mouse ' + this.wrap.getCaretPosition() );
+		this.wrap.addEvent('blur', function() {
+			//console.log(this.wrap.get('text'));
 			
-			this.plugins.Bold.activate();
+			this.deactivate();
 			
-		}.bind(this) );
+			$$('[name="tx_easyedit_easyeditmenu[page][title]"]')[0].set('value', this.wrap.get('text'));
+			
+			//$$('form')[0].toQueryString();
+			$$('form')[0].send();
+			
+		}.bind(this));
+		
+		
+		// $('in').addEvent('mouseup', function() {
+			// //console.log( $('in').getSelectedText() );
+		// });
+		
+		
+		// $('useMe').addEvent('mouseenter', function() {
+			// //console.log( 'mouse ' + this.wrap.getCaretPosition() );
+			
+			// this.plugins.Bold.activate();
+			
+		// }.bind(this) );
 		
 	},
 	
@@ -116,6 +141,7 @@ var Flexo = new Class({
 	
 	deactivate: function() {
 		this.wrap.set('contentEditable', false);
+		
 	},
 	
 	toElement: function() {
@@ -221,7 +247,7 @@ Flexo.Bold = new Class({
 	
 	activate: function() {
 		if (this.options.mode === 'tag') {
-			this.editor.updateSelection( new Element(this.options.tag) );
+			this.editor.updateSelection(new Element(this.options.tag));
 		}
 		if (this.options.mode === 'style') {
 			this.editor.getElement().setStyles(this.options.styles);

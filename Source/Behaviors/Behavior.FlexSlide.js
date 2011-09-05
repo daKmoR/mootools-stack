@@ -3,7 +3,7 @@
 name: Behavior.FlexSlide
 description: Adds a slide interface (FlexSlide instance)
 provides: [Behavior.FlexSlide]
-requires: [Behavior/Behavior, /FlexSlide]
+requires: [Behavior/Behavior, /FlexSlide.Advanced]
 script: Behavior.FlexSlide.js
 
 ...
@@ -12,13 +12,7 @@ script: Behavior.FlexSlide.js
 Behavior.addGlobalFilters({
 
 	FlexSlide: function(element, api) {
-		var myFlexSlide = new FlexSlide(element, {
-			smooth: true,
-			smoothSize: true,
-			rearrangeDOM: false
-		});
-		element.store('FlexSlide', myFlexSlide);
-		return myFlexSlide;
+		var myFlexSlide = new FlexSlide.Advanced(element);
 	}
 
 });

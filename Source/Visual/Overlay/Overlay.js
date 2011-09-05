@@ -1,38 +1,30 @@
 /*
 ---
-
 name: Overlay
-
 description: creates a semi-transparent layer that fades in/out
-
 license: MIT-style license.
-
 requires: [Core/Fx.Tween]
-
 provides: Overlay
 
 ...
 */ 
 
-/* 
-$require('Visual/Overlay/Resources/css/Overlay.css');
-*/
 var Overlay = new Class({
 
 	Implements: [Options, Events],
 	options: {
-		overlay: { 'class': 'ui-Overlay' },
+		overlay: { 'class': 'ui-Overlay', 'style': 'position: absolute; left: 0; top: 0; width: 100%; background: #000;' },
 		opacity: 0.7,
 		container: null,
 		onBuild: function(overlay) { overlay.fade('hide'); },
-		onShow: function(overlay) { overlay.fade( this.options.opacity ); },
-		onHide: function(overlay) { overlay.fade(0); },
-		onClick: $empty
+		onShow: function(overlay)  { overlay.fade( this.options.opacity ); },
+		onHide: function(overlay)  { overlay.fade(0); },
+		onClick: function() {}
 	},
 
 	initialize: function(options){
 		this.setOptions(options);
-		this.options.container = !$chk(this.options.container) ? $(document.body) : $(this.options.container);
+		this.options.container = !this.options.container ? $(document.body) : $(this.options.container);
 	},
 	
 	build: function() {

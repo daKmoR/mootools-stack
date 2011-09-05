@@ -44,12 +44,12 @@ var FlexSlide = new Class({
 		ui: {
 			wrap: { 'class': 'ui-Wrap' },
 			selectItem: { 'class': 'ui-SelectItem' },
-			descriptionItem: { 'class': 'ui-DescriptionItem' }
+			descriptionItem: { 'class': 'ui-DescriptionItem' },
+			itemItem: { 'class': 'ui-ItemItem' }
 		},
 		show: 0,
 		buildOnInit: true,
 		initFx: 'display',
-		container: null,
 		size: 'element', // [{width: 500, height: 500}, 'none', 'element', 'element[x]', 'wrap', 'auto', {width: 300, height: 'auto'}] element uses the show element
 		itemSize: 'scale', // ['none', 'scale', 'crop', 'same']
 		itemSizeOverride: {
@@ -59,9 +59,9 @@ var FlexSlide = new Class({
 		itemPositionOverride: {
 			div: { position: 'leftTop' }
 		},
+		container: null,
 		containerPosition: null, //{ position: 'center' }
-		
-		/* replace, use... */ 
+		mode: 'repeat', //['repeat', 'once']
 		resetIframeOnChange: true,
 		useScroller: false,
 		scrollerMode: 'horizontal',
@@ -94,14 +94,10 @@ var FlexSlide = new Class({
 		},
 		onShowOut: function(id, el) {
 			if (this.elements.description && this.elements.description[id]) {
-				this.elements.description[id].fade('hide').setStyle('display', 'block').fade(0);
+				this.elements.description[id].fade('show').setStyle('display', 'block').fade(0);
 			}
-		},
+		}
 		/*onShow, onBuild, onSelectChange(currentEl, nextEl) */
-		
-		/* remove */
-		auto: false,
-		render: ['item', 'select', 'next', 'previous'] // special elements are: ['item', 'counter', 'next', 'previous', 'select', 'advSelect', 'selectScroller', 'start', 'stop', 'toggle']
 	},
 	
 	current: -1,
@@ -129,6 +125,51 @@ var FlexSlide = new Class({
 		}
 	},
 	
+	// starting with dynamic attaching of Elements; not finished; usage this.attach(document.id('addMe'));
+	attach: function(el) {
+		var el = el.clone();
+		el.addClass(this.options.ui['itemItem']['class']);
+		this['itemWrap'].grab(el);
+		var newId = this.elements.item.push(el) - 1;
+		this.fx.elements = this.fx.subject = this.elements.item;
+		this.updateCounter(this.current);
+		
+		// select stuff
+		if (this.selectWrap) {
+			var select = new Element('div', this.options.ui.selectItem)
+				.addEvent('click', this.show.bind(this, newId))
+				.inject(this.selectWrap);
+				
+			var text = el.get('alt') || el.get('title') || '';
+			select.set('html', this.options.selectTemplate.substitute({id: newId+1, text: text}));
+			this.elements.select.push(select);
+		}
+		
+		// description
+		if (this.descriptionWrap) {
+			var description = new Element('div', this.options.ui.descriptionItem)
+				.inject(this.descriptionWrap);
+			
+			var txt = el.get('title') || el.get('alt') || false;
+			if (!txt && el.getElement('img')) {
+				txt = el.getElement('img').get('alt');
+			}
+			
+			if (txt && txt != null) {
+				var parts = txt.split('::');
+				if (parts.length === 2) {
+					txt = this.options.descriptionTemplate.substitute( {'title': parts[0], 'text': parts[1]} );
+				}
+				if (txt.charAt(0) === '#') {
+					txt = $$(txt)[0].get('html');
+				}
+				description.set('html', txt);
+			}
+			
+			this.elements.description.push(description);
+		}
+	},
+	
 	buildFinished: function() {
 		if (this.options.useScroller == true) {
 			if (this.options.scrollerMode === 'horizontal') {
@@ -149,7 +190,6 @@ var FlexSlide = new Class({
 	},
 	
 	guessSize: function() {
-	
 		if (typeOf(this.options.size) === 'object' && (typeOf(this.options.size.width) === 'number' || typeOf(this.options.size.height) === 'number')) {
 			if (typeOf(this.options.size.width) === 'number') {
 				this.size.width = this.options.size.width;
@@ -157,7 +197,6 @@ var FlexSlide = new Class({
 			if (typeOf(this.options.size.height) === 'number') {
 				this.size.height = this.options.size.height;
 			}
-			
 			this.itemWrap.setStyles(this.size);
 		}
 	
@@ -292,7 +331,7 @@ var FlexSlide = new Class({
 		if (!this.options.selections[item]) {
 			this.options.selections[item] = '.' + item;
 		}
-		this.elements[item] = this.wrap.getElements(this.options.selections[item]);
+		this.elements[item] = wrapper.getElements(this.options.selections[item]);
 		this[item + 'Wrap'] = new Element('div', this.options.ui[item]).inject(wrapper);
 		
 		if (this.elements[item].length > 0) {
@@ -330,15 +369,6 @@ var FlexSlide = new Class({
 		}, this);
 	},
 	
-	// show: function(id, fx) {
-		// if (this.itemWrap) {
-			// this._show(id, fx);
-		// } else {
-			// this.build();
-			// this._show(id, fx);
-		// }
-	// },
-	
 	_in: function(id, fxGroup) {
 		if (id != this.current && id < this.elements.item.length && this.running === false) {
 			this.prepareElement(id, fxGroup);
@@ -356,8 +386,9 @@ var FlexSlide = new Class({
 		this.fireEvent('showIn', [id, this.elements.item[id]]);
 	},
 	
-	out: function(fxGroup, id) {
+	out: function(fxGroup, doFx, id) {
 		var id = id || this.current;
+		var doFx = (doFx != undefined) ? doFx : true;
 		
 		if (id >= 0 && id < this.elements.item.length) {
 			var fx = fxGroup + 'Out';
@@ -366,6 +397,9 @@ var FlexSlide = new Class({
 				this.options.effects[fx + 'Prepare'].call(this, id, this.elements.item[id]);
 			}
 			this.options.effects[fx].call(this, id, this.elements.item[id]);
+			if (doFx) {
+				this.doFx(id, fxGroup);
+			}
 			this.fireEvent('showOut', [id, this.elements.item[id]]);
 		}
 	},
@@ -376,7 +410,7 @@ var FlexSlide = new Class({
 	
 		if (id != this.current && id < this.elements.item.length && this.running === false) {
 			this.fxConfig = {};
-			this.out(fxGroup);
+			this.out(fxGroup, false);
 			this._in(id, fxGroup);
 			this.fireEvent('show', [this.current, id]);
 		}
