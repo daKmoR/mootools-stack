@@ -522,8 +522,15 @@ var FlexSlide = new Class({
 		
 		if (this.options.containerPosition) {
 			var savedStyle = this.wrap.get('style');
-			this.wrap.set('style', '');
+			this.wrap.set('style', 'display: none;');
+			
 			this.wrapFxConfig[1] = el.calculatePosition(this.options.containerPosition);
+			// fix calculation :/
+			if ($(document.body).getScrollSize().y !== $(document.body).getSize().y) {
+				this.wrapFxConfig[1].top += $(document.body).getScrollSize().y;
+				this.wrapFxConfig[1].top -= el.getSize().y;
+			}
+			
 			this.wrap.set('style', savedStyle);
 		}
 		
