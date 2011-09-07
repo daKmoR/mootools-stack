@@ -1,11 +1,11 @@
 	
 	div.mediaBox .ui-Controls { bottom: 5px; position: absolute; left: 0; }
 		div.mediaBox .ui-Counter { float: left; color: #aaa; font-family: "Trebuchet MS"; font-weight: bold; }
-		div.mediaBox .ui-Next, div.mediaBox .ui-Previous { background: url(images/controls.png) no-repeat left -19px; width: 55px; height: 70px; position: absolute; top: 48%; }
-		div.mediaBox .ui-Next { right: -50px; }
-			div.mediaBox .ui-Next:hover { background-position: left -129px; right: -55px; }
-		div.mediaBox .ui-Previous { background-position: right -19px; left: -50px }
-			div.mediaBox .ui-Previous:hover { background-position: right -129px; left: -55px }
+		div.mediaBox .ui-Next, div.mediaBox .ui-Previous { background: url(images/controls.gif) no-repeat left top; width: 16px; height: 20px; position: absolute; top: 50%; }
+		div.mediaBox .ui-Next { right: -20px; }
+			div.mediaBox .ui-Next:hover { background-position: left bottom; }
+		div.mediaBox .ui-Previous { background-position: right top; left: -20px }
+			div.mediaBox .ui-Previous:hover { background-position: right bottom; }
 	
 	div.mediaBox .ui-Close { height: 22px; width: 66px; background: url(images/close.gif) no-repeat; position: absolute; right: 10px; top: 10px; }
 	

@@ -1,12 +1,12 @@
 .ui-Item, .ui-Description { position: relative; overflow: hidden; }
 	.ui-ItemItem, .ui-DescriptionItem { position: absolute; display: none; }
 	a.ui-ItemItem > img { width: 100%; height: 100%; }
-	div.ui-ItemItem { overflow: auto; min-width: 200px; min-height: 200px; }
+	div.ui-ItemItem { overflow: hidden; min-width: 100px; min-height: 100px; }
 	
 	.ui-Select .ui-SelectItem { display: block; cursor: pointer; }
 	.ui-Next { cursor: pointer; }
 	.ui-Previous { cursor: pointer; }
 	.ui-Loader { background: #fff url('images/loader.gif') no-repeat center center; height: 100%; width: 100%; display: block; }
-	.ui-RequestItem, .ui-InlineItem { min-width: 200px; }
+	.ui-RequestItem, .ui-InlineItem { min-width: 400px; }
 	.ui-IframeItem { width: 560px; height: 349px; }
 	.ui-SelectScroller { overflow: hidden; }

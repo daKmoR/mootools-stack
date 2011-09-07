@@ -17,19 +17,30 @@ Behavior.addGlobalFilters({
 				ui: { wrap: { 'class': 'flexBoxWrap mediaBox' } },
 				manualClose: true,
 				flexSlide: {
-					render: ['item', {'bottom': [{'description': [{'controls': ['previous', 'counter', 'next']}]}, 'close']}],
+					render: ['previous', 'item', 'next', {'bottom': [{'description': [{'controls': ['counter']}]}, 'close']}],
 					counterTemplate: 'Media {id} of {count}'
 				},
 				onOpen: function() {
 					this.flexSlide.bottomWrap.fade('hide');
+					this.flexSlide.nextWrap.fade('hide');
+					this.flexSlide.previousWrap.fade('hide');
 				},
 				onOpenEnd: function() {
 					if (this.flexSlide.bottomWrap != undefined) {
 						this.flexSlide.bottomWrap.fade(1);
 					}
+					if (this.flexSlide.nextWrap != undefined) {
+						this.flexSlide.nextWrap.fade(1);
+					}
+					if (this.flexSlide.previousWrap != undefined) {
+						this.flexSlide.previousWrap.fade(1);
+					}
+					
 				},
 				onClose: function() {
 					if (!this.flexSlide.running) {
+						this.flexSlide.nextWrap.fade(0);
+						this.flexSlide.previousWrap.fade(0);
 						this.flexSlide.bottomWrap.fade(0).get('tween').chain(function() {
 							this._close();
 						}.bind(this));

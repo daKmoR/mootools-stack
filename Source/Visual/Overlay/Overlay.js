@@ -13,7 +13,7 @@ var Overlay = new Class({
 
 	Implements: [Options, Events],
 	options: {
-		overlay: { 'class': 'ui-Overlay', 'style': 'position: absolute; left: 0; top: 0; width: 100%; background: #000;' },
+		overlay: { 'class': 'ui-Overlay', 'style': 'position: fixed; left: 0; top: 0; width: 100%; background: #000;' },
 		opacity: 0.7,
 		container: null,
 		onBuild: function(overlay) { overlay.fade('hide'); },
