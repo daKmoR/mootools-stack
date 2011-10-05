@@ -50,8 +50,12 @@ Behavior.addGlobalFilters({
 					if (this.flexSlide.elements.description != undefined) {
 						this.flexSlide.elements.description.set('style', '');
 					}
+				},
+				onLoaded: function(div) {
+					if (myBehavior) {
+						myBehavior.apply(div);
+					}
 				}
-				
 			})
 		);
 		

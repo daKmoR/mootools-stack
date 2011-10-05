@@ -29,7 +29,7 @@ var Select = new Class({
 			currentClass: 'ui-Current'
 		},
 		single: {	statusTemplate: '{element}'	},
-		multiple: {	statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' } },
+		multiple: {	statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' }, resetToZeroSelected: true },
 		mode: 'single',
 		defaultStatus: '',
 		caseSensitive: false,
@@ -43,17 +43,26 @@ var Select = new Class({
 	
 	initialize: function(select, options) {
 		if (!(this.select = $(select))) return;
-		if (this.select.get('multiple') === true) {
-			this.options.mode = 'multiple';
-		}
-		if (this.select.get('title') !== '') {
-			this.options.defaultStatus = this.select.get('title');
-		}
-		
+		this.options.mode = (this.select.get('multiple') === true) ? 'multiple' : this.options.mode;
+		this.options.defaultStatus = this.select.get('title') || this.options.defaultStatus;
 		this.setOptions(options);
+		
+		this.form = this.options.form || this.select.getParent('form');
+		if (!this.form) return;
 		
 		this.build();
 		this.synch('fromSelect');
+		
+		this.form.addEvent('reset', function(e) {
+			// wait to bubble up (so the browser function can reset all form elements) and then sync
+			(function() {
+				if (this.options.mode === 'multiple' && this.options.multiple.resetToZeroSelected) {
+					this.elements.option.invoke('set', 'selected', false);
+				}
+				this.synch('fromSelect');
+				this.setStatus();
+			}).delay(10, this);
+		}.bind(this));
 		
 		this.wrap.addEvent('outerClick', function() {
 			this.close();
@@ -190,6 +199,8 @@ var Select = new Class({
 			this.elements.option.each(function(el, i) {
 				if (el.get('selected') === true) {
 					this.elements.optionCopy[i].addClass(this.options.ui.selectedClass);
+				} else {
+					this.elements.optionCopy[i].removeClass(this.options.ui.selectedClass);
 				}
 			}, this);
 		}
@@ -233,7 +244,7 @@ var Select = new Class({
 			this.statusWrap.removeClass(this.options.ui.defaultStatusClass);
 		} else {
 			this.statusWrap.addClass(this.options.ui.defaultStatusClass);
-			text = this.options.defaultStatus
+			text = this.options.defaultStatus;
 		}
 		this.statusWrap.set('value', text);
 	},

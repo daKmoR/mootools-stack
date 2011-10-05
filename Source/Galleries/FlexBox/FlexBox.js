@@ -145,7 +145,7 @@ var FlexBox = new Class({
 			this.fireEvent('loaded', div);
 		}.bind(this) );
 		
-		//this.wrap.position(Object.merge(this.flexSlide.options.positionContainerOptions, {returnPos: false}));
+		this.wrap.position(this.flexSlide.options.containerPosition);
 		
 		if (this.options.keyboardListener) {
 			document.addEvent('keydown', this.keyboardListener.bindWithEvent(this));

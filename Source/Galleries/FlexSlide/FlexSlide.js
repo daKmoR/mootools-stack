@@ -205,21 +205,25 @@ var FlexSlide = new Class({
 			
 				// element
 				if (this.options.size === 'element' || this.options.size.width === 'auto' || this.options.size.height === 'auto') {
-					this.size = this.options.show;
+					var elementX = this.options.show;
 				}
 				if (typeOf(this.options.size) === 'string' && this.options.size.indexOf('element[') >= 0) {
-					this.size = this.options.size.substr(8).toInt();
+					elementX = this.options.size.substr(8).toInt();
 				}
 				
 				// element[x]
-				if (this.size >= 0 && this.size < this.elements.item.length) {
-					var el = this.elements.item[this.size];
+				if (elementX >= 0 && elementX < this.elements.item.length) {
+					var el = this.elements.item[elementX];
 					if (el.get('tag') === 'img') {
 						var img = Asset.image(el.get('src'), {
 							onLoad: function() {
-								this.size = {
+								var tmpSize = {
 									width: el.getStyle('width').toInt() === 'number' ? el.getStyle('width').toInt() : img.get('width').toInt(),
 									height: el.getStyle('height').toInt() === 'number' ? el.getStyle('height').toInt() : img.get('height').toInt()
+								}
+								this.size = {
+									width: (this.options.size.width === 'auto') ? tmpSize.width : this.size.width,
+									height: (this.options.size.height === 'auto') ? tmpSize.height : this.size.height
 								}
 								this.itemWrap.setStyles(this.size);
 								this.buildFinished();
@@ -231,9 +235,13 @@ var FlexSlide = new Class({
 							var subImg = Asset.image(childs[0].get('src'), {
 								onLoad: function() {
 									subImg.set(childs[0].get('style', 'class'));
-									this.size = {
+									var tmpSize = {
 										width: childs[0].getStyle('width').toInt() === 'number' ? childs[0].getStyle('width').toInt() : subImg.get('width').toInt(),
 										height: childs[0].getStyle('height').toInt() === 'number' ? childs[0].getStyle('height').toInt() : subImg.get('height').toInt()
+									}
+									this.size = {
+										width: (this.options.size.width === 'auto') ? tmpSize.width : this.size.width,
+										height: (this.options.size.height === 'auto') ? tmpSize.height : this.size.height
 									}
 									this.itemWrap.setStyles(this.size);
 									this.buildFinished();
@@ -242,7 +250,11 @@ var FlexSlide = new Class({
 						} else {
 							el.inject(this.itemWrap);
 							el.setStyle('display', 'block'); //IE7 needs this
-							this.size = el.getDimensions();
+							var tmpSize = el.getDimensions();
+							this.size = {
+								width: (this.options.size.width === 'auto') ? tmpSize.width : this.size.width,
+								height: (this.options.size.height === 'auto') ? tmpSize.height : this.size.height
+							}
 							this.itemWrap.setStyles(this.size);
 							el.dispose();
 							this.buildFinished();
@@ -254,7 +266,11 @@ var FlexSlide = new Class({
 				
 				// container
 				if (this.options.size === 'wrap') {
-					this.size = this.wrap.getDimensions();
+					var tmpSize = this.wrap.getDimensions();
+					this.size = {
+						width: (this.options.size.width === 'auto') ? tmpSize.width : this.size.width,
+						height: (this.options.size.height === 'auto') ? tmpSize.height : this.size.height
+					}
 					this.itemWrap.setStyles(this.size);
 					this.buildFinished();
 				}
@@ -527,19 +543,14 @@ var FlexSlide = new Class({
 			this.wrapFxConfig[0].width = elSize.width;
 		}
 		
-		if (this.options.containerPosition) {
-			var savedStyle = this.wrap.get('style');
-			this.wrap.set('style', '');
-			this.wrap.setStyles(elSize);
-			this.wrapFxConfig[1] = this.wrap.calculatePosition(this.options.containerPosition);
-			this.wrap.set('style', savedStyle);
-		}
-		
 		var itemSize = this.options.itemSizeOverride[el.get('tag')] || this.options.itemSize;
 		if (itemSize === 'none') {
 			return;
 		} else if (itemSize === 'same') {
 			el.erase('width').erase('height');
+			if (this.options.size.height === 'auto') {
+				this.size.height = elSize.height;
+			}
 			el.setStyles(this.size);
 		} else {
 		
@@ -584,6 +595,15 @@ var FlexSlide = new Class({
 				el.setStyle('left', (size.width - elSize.x*ratio)/2 + 'px');
 			}
 			
+		}
+		
+		elSize = el.getDimensions();
+		if (this.options.containerPosition) {
+			var savedStyle = this.wrap.get('style');
+			this.wrap.set('style', '');
+			this.wrap.setStyles(elSize);
+			this.wrapFxConfig[1] = this.wrap.calculatePosition(this.options.containerPosition);
+			this.wrap.set('style', savedStyle);
 		}
 	},
 	

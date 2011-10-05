@@ -12,18 +12,15 @@ script: Behavior.SearchSelect.js
 Behavior.addGlobalFilter('SearchSelect', {
 
 	setup: function(element, api) {
-	
 		
 		var mySearchSelect = new Select(element, {
-		
 			multiple: {	
 				statusElementsTruncate: { 
 					length: api.getAs(Number, 'status-elements-truncate-length')
-				} 
-			},
-				
-		
+				}
+			}
 		});
+		
 	}
 
 });

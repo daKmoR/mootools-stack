@@ -16,9 +16,13 @@ var Overlay = new Class({
 		overlay: { 'class': 'ui-Overlay', 'style': 'position: fixed; left: 0; top: 0; width: 100%; background: #000;' },
 		opacity: 0.7,
 		container: null,
-		onBuild: function(overlay) { overlay.fade('hide'); },
-		onShow: function(overlay)  { overlay.fade( this.options.opacity ); },
-		onHide: function(overlay)  { overlay.fade(0); },
+		onBuild: function(overlay) { overlay.setStyles({ opacity: 0, display: 'block'}); },
+		onShow: function(overlay)  { overlay.setStyle('display', 'block'); this.fx.start(this.options.opacity); },
+		onHide: function(overlay)  { 
+			this.fx.start(0).chain(function() {
+				overlay.setStyle('display', 'none'); 
+			});
+		},
 		onClick: function() {}
 	},
 
@@ -29,6 +33,7 @@ var Overlay = new Class({
 	
 	build: function() {
 		this.overlay = new Element('div', this.options.overlay).inject(this.options.container);
+		this.fx = new Fx.Tween(this.overlay, {property: 'opacity'});
 		
 		this.overlay.addEvent('click', function(){
 			this.fireEvent('click');
