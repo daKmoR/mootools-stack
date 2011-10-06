@@ -20,29 +20,20 @@ name: Delegator.Tweening
 		handler: function(event, link, api) {
 			var property = api.getAs(String, 'property');
 			
-			var toZeroElements = link.getElements(api.getAs(String, 'to-zero'));
-			toZeroElements = toZeroElements.length === 0 ? link.getParent().getElements(api.getAs(String, 'to-zero')) : toZeroElements;
-			toZeroElements = toZeroElements.length === 0 ? $$(api.getAs(String, 'to-zero')) : toZeroElements;
-			toZeroElements.each(function(el) {
+			link.getElements(api.getAs(String, 'to-zero')).each(function(el) {
 				el.store('Tweening:properties', el.getDimensions());
 				el.setStyles({'display': 'block', 'overflow': 'hidden'});
 				el.tween(property, 0);
 			});
 			
-			var toOriginalElements = link.getElements(api.getAs(String, 'to-original'));
-			toOriginalElements = toOriginalElements.length === 0 ? link.getParent().getElements(api.getAs(String, 'to-original')) : toOriginalElements;
-			toOriginalElements = toOriginalElements.length === 0 ? $$(api.getAs(String, 'to-original')) : toOriginalElements;
-			toOriginalElements.each(function(el) {
+			link.getElements(api.getAs(String, 'to-original')).each(function(el) {
 				var properties = el.retrieve('Tweening:properties', el.getDimensions());
 				el.setStyle(property, 0);
 				el.setStyles({'display': 'block', 'overflow': 'hidden'});
 				el.tween(property, properties[property]);
 			});
 			
-			var toggleElements = link.getElements(api.getAs(String, 'toggle'));
-			toggleElements = toggleElements.length === 0 ? link.getParent().getElements(api.getAs(String, 'toggle')) : toggleElements;
-			toggleElements = toggleElements.length === 0 ? $$(api.getAs(String, 'toggle')) : toggleElements;
-			toggleElements.each(function(el) {
+			link.getElements(api.getAs(String, 'toggle')).each(function(el) {
 				var properties = el.retrieve('Tweening:properties');
 				if (!properties) {
 					properties = el.getDimensions();
@@ -59,31 +50,25 @@ name: Delegator.Tweening
 				}
 				el.setStyle(property, tmp);
 				
-				if (el.getStyle('display') === 'none') {
+				if (el.getStyle('display') === 'none' || el.getStyle('visibility') === 'hidden') {
 					el.setStyle(property, 0);
 				}
 				if (isNaN(el.getStyle(property).toInt())) {
 					el.setStyle(property, properties[property]);
 				}
-				el.setStyles({'display': 'block', 'overflow': 'hidden'});
+				el.setStyles({'display': 'block', 'overflow': 'hidden', 'visibility': 'visible'});
 				if (el.getStyle(property).toInt() > 0) {
 					if (property !== 'opacity') {
 						el.tween(property, 0);
 					} else {
 						el.tween(property, 0).get('tween').chain(function() {
-							el.setStyle('display', 'none');
+							el.setStyle('visibility', 'hidden');
 						});
 					}
 				} else {
 					el.tween(property, properties[property]);
 				}
 				link.toggleClass(api.get('toggleClass'));
-				
-				// fancy hack to support overtext within display: none; elements
-				el.getElements('input, textarea').each(function(input) {
-					input.focus();
-					input.blur();
-				});
 			});
 			
 		}

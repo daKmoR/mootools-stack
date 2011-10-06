@@ -17,7 +17,7 @@ name: Delegator.Styling
 		},
 		
 		handler: function(event, link, api) {
-			$$(api.getAs(String, 'target')).each(function(el) {
+			link.getElements(api.getAs(String, 'target')).each(function(el) {
 				el.setStyle(api.getAs(String, 'property'), api.getAs(String, 'value'));
 			});
 		}

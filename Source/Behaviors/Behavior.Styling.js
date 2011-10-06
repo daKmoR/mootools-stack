@@ -19,7 +19,7 @@ Behavior.addGlobalFilter('Styling', {
 	setup: function(element, api) {
 		var dimensions = element.getDimensions();
 		var newValue = dimensions[api.get('property')] + api.getAs(Number, 'target-add-extra');
-		$$(api.getAs(String, 'target')).invoke('setStyle', api.get('target-property'), newValue);
+		element.getElements(api.getAs(String, 'target')).invoke('setStyle', api.get('target-property'), newValue);
 	}
 
 });
