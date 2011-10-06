@@ -52,9 +52,7 @@ Behavior.addGlobalFilters({
 					}
 				},
 				onLoaded: function(div) {
-					if (myBehavior) {
-						myBehavior.apply(div);
-					}
+					api.applyFilters(div);
 				}
 			})
 		);
