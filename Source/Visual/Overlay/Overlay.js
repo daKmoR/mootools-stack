@@ -16,13 +16,9 @@ var Overlay = new Class({
 		overlay: { 'class': 'ui-Overlay', 'style': 'position: fixed; left: 0; top: 0; width: 100%; background: #000;' },
 		opacity: 0.7,
 		container: null,
-		onBuild: function(overlay) { overlay.setStyles({ opacity: 0, display: 'block'}); },
-		onShow: function(overlay)  { overlay.setStyle('display', 'block'); this.fx.start(this.options.opacity); },
-		onHide: function(overlay)  { 
-			this.fx.start(0).chain(function() {
-				overlay.setStyle('display', 'none'); 
-			});
-		},
+		onBuild: function(overlay) { overlay.fade('hide'); },
+		onShow: function(overlay)  { overlay.fade(this.options.opacity); },
+		onHide: function(overlay)  { overlay.fade(0); },
 		onClick: function() {}
 	},
 
@@ -33,24 +29,23 @@ var Overlay = new Class({
 	
 	build: function() {
 		this.overlay = new Element('div', this.options.overlay).inject(this.options.container);
-		this.fx = new Fx.Tween(this.overlay, {property: 'opacity'});
 		
 		this.overlay.addEvent('click', function(){
 			this.fireEvent('click');
 		}.bind(this));
 		
 		this.position();
-		if( this.options.container == document.body ){
-			window.addEvent('resize', this.position.bind(this) );
+		if (this.options.container == document.body){
+			window.addEvent('resize', this.position.bind(this));
 		}
 		this.fireEvent('build', this.overlay);
 	},
 	
 	position: function(){
-		if( this.options.container == document.body ){
+		if (this.options.container == document.body){
 			this.overlay.setStyle('height', window.getScrollSize().y); 
 		} else {
-			if( this.options.container.getStyle('position') === 'static' ) {
+			if (this.options.container.getStyle('position') === 'static') {
 				this.options.container.setStyle('position', 'relative');
 			}
 			this.overlay.setStyle('height', this.options.container.getSize().y); 
@@ -58,7 +53,7 @@ var Overlay = new Class({
 	},
 	
 	show: function() {
-		if( this.overlay ) {
+		if (this.overlay) {
 			this.fireEvent('show', this.overlay);
 		} else {
 			this.build();
