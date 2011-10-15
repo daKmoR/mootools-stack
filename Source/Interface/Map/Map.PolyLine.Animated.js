@@ -33,8 +33,8 @@ Map.PolyLine.Animated = new Class({
 	},
 	
 	addVirtualPoint: function(point) {
-		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
-		this.points.push([point['Ma'], point['Na']]);
+		var point = typeOf(point) === 'array' ? point : [point['Ma'], point['Na']];
+		this.points.push(point);
 	},
 	
 	setLastPoint: function(point) {
