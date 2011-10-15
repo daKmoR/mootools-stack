@@ -27,7 +27,7 @@ Map.PolyLine = new Class({
 	
 	subObjectMapping: {
 		'this.polyLineObj': {
-			functions: ['getPath', 'setOptions'],
+			functions: ['setOptions'],
 			properties: ['map'],
 			eventOptions: { instance: 'google.maps.event', addFunction: 'addListener', addObjectAsParam: true },
 			events: ['click', 'dblclick', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'rightclick']
@@ -35,53 +35,77 @@ Map.PolyLine = new Class({
 	},
 		
 	polyLineObj: null,
+	startPoint: false,
 	
-	initialize: function (path, map, options) {
+	initialize: function (map, path, options) {
 		this.setOptions(options);
-		
-		this.options.path = typeOf(path) === 'array' ? path.toLatLng() : path;
 		this.options.map = map;
+		
+		if (path) {
+			this.init(path, map);
+		}
+	},
+	
+	init: function(path) {
+		this.options.path = typeOf(path) === 'array' ? path.toLatLng() : path;
 		
 		this.polyLineObj = new google.maps.Polyline(this.options);
 		this.mapToSubObject();
 	},
 	
 	// Adds one element to the end of the array and returns the new length of the array.
-	addLine: function(point) {
+	addPoint: function(point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
-		return this.getPath().push(point);
+		
+		if (!this.startPoint) {
+			this.startPoint = point;
+			return 1;
+		}
+		if (!this.polyLineObj && this.startPoint) {
+			this.init([this.startPoint, point], this.options);
+		}
+		return this.polyLineObj.getPath().push(point);
 	},
 
 	// Inserts an element at the specified index.
-	insertLineAt: function(index, point) {
+	insertPointAt: function(index, point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
-		this.getPath().insertAt(index, point);
+		this.polyLineObj.getPath().insertAt(index, point);
 	},
 
 	// Removes the last element of the array and returns that element.
-	removeLastLine: function() {
-		return this.getPath().pop();
+	removeLastPoint: function() {
+		return this.polyLineObj.getPath().pop();
+	},
+	
+	setLastPoint: function(point) {
+		this.setPointAt(this.getLength()-1, point);
+	},
+	
+	getLastPoint: function() {
+		return this.getPointAt(this.getLength()-1);
 	},
 
 	// Returns the number of elements in this array.
 	getLength: function() {
-		return this.getPath().getLength();
+		return this.polyLineObj.getPath().getLength();
 	},
 
 	// Removes an element from the specified index.
-	removetLineAt: function(index) {
-		this.getPath().removeAt(index); 
+	removePointAt: function(index) {
+		this.polyLineObj.getPath().removeAt(index); 
 	},
 
 	// Sets an element at the specified index.
-	setLineAt: function(index, point) {
+	setPointAt: function(index, point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
-		this.getPath().setAt(index, point);
+		this.polyLineObj.getPath().setAt(index, point);
 	},
 
 	// Get an element at the specified index.
-	getLineAt: function(index) {
-		return this.getPath().getAt(index);
+	getPointAt: function(index) {
+		var point = this.polyLineObj.getPath().getAt(index);
+		return [point['Ma'], point['Na']];
 	},
 
 	// Clears the polyLine path.
@@ -115,14 +139,34 @@ Map.PolyLine = new Class({
 	setPath: function(path) {
 		var path = typeOf(path) === 'array' ? path.toLatLng() : path;
 		this.polyLineObj.setPath(path);
+	},
+	
+	getPath: function() {
+		var arrayPath = [], path = this.polyLineObj.getPath().getArray();
+		Object.each(path, function(point) {
+			arrayPath.push([point['Ma'], point['Na']]);
+		});
+		return arrayPath;
 	}
 
 });
 
 Map.implement({
 	
-	createPolyLine: function(path, options) {
-		return new Map.PolyLine(path, this.mapObj, options);
+	polyLines: [],
+	
+	createPolyLine: function(options, path) {
+		var polyLine = new Map.PolyLine(this.mapObj, path, options);
+		this.polyLines.push(polyLine);
+		return polyLine;
+	},
+	
+	getPolyLines: function() {
+		return this.polyLines;
+	},
+	
+	setPolyLines: function(polyLines) {
+		this.polyLines = polyLines;
 	}
 
 });

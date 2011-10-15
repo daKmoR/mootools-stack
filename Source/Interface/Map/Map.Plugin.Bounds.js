@@ -12,7 +12,7 @@ authors:
 
 requires: [Map, Map.Marker, Map.InfoWindow, Map.Rectangle]
 
-provides: [Map]
+provides: [Map.Plugin.Bounds]
 
 ...
 */
@@ -69,7 +69,7 @@ Map.implement({
 						this.plugins.bounds.rectangle.show();
 					}
 				
-					el.addClass('goolgeButtonActive');
+					el.addClass('googleButtonActive');
 					this.plugins.bounds.active = true;
 				} else {
 					if (this.plugins.bounds.marker1 && this.plugins.bounds.marker2 && this.plugins.bounds.rectangle && this.plugins.bounds.infoWindow) {
@@ -79,7 +79,7 @@ Map.implement({
 						this.plugins.bounds.infoWindow.close();
 					}
 				
-					el.removeClass('goolgeButtonActive');
+					el.removeClass('googleButtonActive');
 					this.plugins.bounds.active = false;
 				}
 			}
