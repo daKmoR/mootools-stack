@@ -41,7 +41,7 @@ Behavior.addGlobalFilters({
 					if (!this.flexSlide.running) {
 						this.flexSlide.nextWrap.fade(0);
 						this.flexSlide.previousWrap.fade(0);
-						this.flexSlide.bottomWrap.fade(0).get('tween').chain(function() {
+						this.flexSlide.bottomWrap.tween('opacity', 0).get('tween').chain(function() {
 							this._close();
 						}.bind(this));
 					}
