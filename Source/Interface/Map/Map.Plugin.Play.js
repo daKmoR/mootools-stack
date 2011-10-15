@@ -26,14 +26,21 @@ Map.implement({
 			html: 'play',
 			active: false,
 			onClick: function(el) {
+				var animatedElements = this.getPolyLinesAnimated();
 				if (!this.plugins.play.active) {
 				
-					
+					if (!this.plugins.play.started) {
+						animatedElements.invoke('start');
+						this.plugins.play.started = true;
+					} else {
+						animatedElements.invoke('resume');
+					}
 				
 					el.set('text', 'pause');
 					el.addClass('googleButtonActive');
 					this.plugins.play.active = true;
 				} else {
+					animatedElements.invoke('pause');
 				
 					el.set('text', 'play');
 					el.removeClass('googleButtonActive');

@@ -42,39 +42,13 @@ Fx.Point = new Class({
 Behavior.addGlobalFilter('PolyLine', {
 
 	defaults: {
-		target: '!div [data-behavior="Map"]'
+		target: '!div [data-behavior="Map"]',
+		animated: true
 	},	
 
 	setup: function(element, api) {
 		var map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map');
-		var polyLine = map.createPolyLine();
-		
-		(function() {
-			//polyLine.setLastPoint([1,1]);
-			
-			polyLine.hide();
-			var path = polyLine.getPath();
-			var anim = map.createPolyLine();
-			
-			
-			var fx = new Fx.Point(anim, { duration: 2000, transition: Fx.Transitions.linear });
-			
-			anim.addPoint(path[0]);
-			anim.addPoint(path[0]);
-			
-			// fx.start(path[1]).chain(function() {
-				// fx.start(path[2]);
-				// console.log('done');
-			// });
-			
-			fx.start(path[3]).chain(function() {
-				anim.addPoint(path[3]);
-				this.start(path[4]);
-			});
-			
-		}).delay(500);
-		
-		return polyLine;
+		return api.getAs(Boolean, 'animated') ? map.createPolyLineAnimated() : map.createPolyLine();
 	}
 
 });

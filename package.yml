@@ -46,6 +46,7 @@ sources:
   - "Source/Interface/Map/Map.Circle.js"
   - "Source/Interface/Map/Map.Rectangle.js"
   - "Source/Interface/Map/Map.PolyLine.js"
+  - "Source/Interface/Map/Map.PolyLine.Animated.js"
   - "Source/Interface/Map/Map.Geocoder.js"
   - "Source/Interface/Map/Map.InfoMarker.js"
   - "Source/Interface/Map/Map.Plugin.Bounds.js"

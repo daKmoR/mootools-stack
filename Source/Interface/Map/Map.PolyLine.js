@@ -157,7 +157,7 @@ Map.implement({
 	
 	createPolyLine: function(options, path) {
 		var polyLine = new Map.PolyLine(this.mapObj, path, options);
-		this.polyLines.push(polyLine);
+		this.addPolyLine(polyLine);
 		return polyLine;
 	},
 	
@@ -167,6 +167,10 @@ Map.implement({
 	
 	setPolyLines: function(polyLines) {
 		this.polyLines = polyLines;
-	}
+	},
+	
+	addPolyLine: function(polyLine) {
+		return this.polyLines.push(polyLine);
+	}	
 
 });
