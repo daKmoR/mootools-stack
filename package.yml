@@ -68,6 +68,7 @@ sources:
   - "Source/Behaviors/Behavior.PolyLine.js"
   - "Source/Behaviors/Behavior.Point.js"
   - "Source/Behaviors/Behavior.Marker.js"
+  - "Source/Behaviors/Behavior.InfoMarker.js"
   - "Source/Delegators/Delegator.Tweening.js"
   - "Source/Delegators/Delegator.Styling.js"
   - "Source/Delegators/Delegator.Print.js"
