@@ -28,7 +28,7 @@ Map.Marker = new Class({
 	
 	subObjectMapping: {
 		'this.markerObj': {
-			functions: ['getPosition', 'setOptions'],
+			functions: ['setOptions'],
 			properties: ['animation', 'clickable', 'cursor', 'draggable', 'flat', 'icon', 'map', 'shadow', 'shape', 'title', 'visible', 'zIndex'],
 			eventOptions: { instance: 'google.maps.event', addFunction: 'addListener', addObjectAsParam: true },
 			events: ['animation_changed', 'click', 'clickable_changed', 'cursor_changed', 'dblclick', 'drag', 'dragend', 'draggable_changed', 'dragstart', 'flat_changed', 'icon_changed', 'mousedown', 'mouseout', 'mouseover', 'mouseup', 'position_changed', 'rightclick', 'shadow_changed', 'shape_changed', 'title_changed', 'visible_changed', 'zindex_changed']
@@ -99,6 +99,11 @@ Map.Marker = new Class({
 	setPosition: function(point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
 		this.markerObj.setPosition(point);
+	},
+	
+	getPosition: function() {
+		var point = this.markerObj.getPosition();
+		return [point['Ma'], point['Na']];
 	}
 
 });

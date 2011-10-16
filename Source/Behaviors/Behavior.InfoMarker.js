@@ -20,7 +20,7 @@ Behavior.addGlobalFilter('InfoMarker', {
 	setup: function(element, api) {
 		var map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map');
 		var infoMarker = map.createInfoMarker(api.getAs(Array, 'position'));
-		infoMarker.setContent(element.get('html'));
+		infoMarker.setContent(element);
 		return infoMarker;
 	}
 

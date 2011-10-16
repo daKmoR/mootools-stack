@@ -36,7 +36,7 @@ Map.InfoWindow = new Class({
 			functions: ['close', 'getPosition', 'setOptions'],
 			properties: ['content', 'zIndex'],
 			eventOptions: { instance: 'google.maps.event', addFunction: 'addListener', addObjectAsParam: true },
-			events: ['closeclick', 'content_changed', 'domready', 'position_changed', 'zindex_changed']
+			events: ['closeclick', 'domready', 'position_changed', 'zindex_changed']
 		},
 		'this.getRequest()': {
 			events: ['success']
@@ -54,6 +54,7 @@ Map.InfoWindow = new Class({
 		this.infoWindowObj = new google.maps.InfoWindow(this.options);
 		
 		this.mapToSubObject();
+		this.mapManualEvents();		
 	},
 	
 	initOptions: function() {
@@ -87,6 +88,12 @@ Map.InfoWindow = new Class({
 	getRequest: function(options) {
 		var options = Object.merge(this.options, options);
 		return this.request ? this.request.setOptions(options) : this.request = new Request.HTML(options);
-	}
+	},
+	
+	mapManualEvents: function() {
+		google.maps.event.addListener(this.infoWindowObj, 'content_changed', function() {
+			this.fireEvent('content_changed', this.getContent());
+		}.bind(this));
+	}	
 
 });

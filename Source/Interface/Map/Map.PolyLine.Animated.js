@@ -62,6 +62,8 @@ Map.PolyLine.Animated = new Class({
 				this.start(i+1);
 			}
 		}.bind(this));
+		
+		this.fireEvent('pointChange', this.points[i]);
 	},
 	
 	pause: function() {

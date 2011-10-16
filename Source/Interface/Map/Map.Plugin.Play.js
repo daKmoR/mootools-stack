@@ -30,6 +30,19 @@ Map.implement({
 				if (!this.plugins.play.active) {
 				
 					if (!this.plugins.play.started) {
+						animatedElements.each(function(animatedElement) {
+							animatedElement.addEvent('onPointChange', function(lat, lng) {
+								this.markers.each(function(marker) {
+									if (marker.getPosition().invoke('round', 6).equalTo([lat, lng])) {
+										marker.addEvent('onCloseclick', function() {
+											animatedElement.resume();
+										});
+										marker.open();
+										animatedElement.pause();
+									}
+								});
+							}.bind(this));
+						}, this);
 						animatedElements.invoke('start');
 						this.plugins.play.started = true;
 					} else {

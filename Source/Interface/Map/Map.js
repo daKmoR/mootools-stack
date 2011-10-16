@@ -59,6 +59,18 @@ Array.implement({
 			return new google.maps.Point(this[0], this[1]);
 		}
 		return this;
+	},
+	
+	equalTo: function(arr){
+		if (this.length !== arr.length) {
+			return false;
+		}
+		for (var i = this.length - 1; i >= 0; i--) {
+			if (this[i] !== arr[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 });
