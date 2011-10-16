@@ -37,6 +37,10 @@ Map.implement({
 										marker.addEvent('onCloseclick', function() {
 											animatedElement.resume();
 										});
+										marker.addEvent('onOpen', function(content) {
+											var flexSlide = content.getElement('[data-behavior="FlexSlide"]').getBehaviorResult('FlexSlide');
+											flexSlide.start();
+										});
 										marker.open();
 										animatedElement.pause();
 									}

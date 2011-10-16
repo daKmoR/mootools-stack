@@ -266,11 +266,7 @@ var FlexSlide = new Class({
 				
 				// container
 				if (this.options.size === 'wrap') {
-					var tmpSize = this.wrap.getDimensions();
-					this.size = {
-						width: (this.options.size.width === 'auto') ? tmpSize.width : this.size.width,
-						height: (this.options.size.height === 'auto') ? tmpSize.height : this.size.height
-					}
+					this.size = this.wrap.getDimensions();
 					this.itemWrap.setStyles(this.size);
 					this.buildFinished();
 				}

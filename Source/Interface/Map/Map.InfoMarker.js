@@ -30,7 +30,7 @@ Map.InfoMarker = new Class({
 		'this.infoWindow': {
 			functions: ['close', 'setOptions'],
 			properties: ['content'],
-			events: ['closeclick', 'content_changed', 'domready']
+			events: ['closeclick', 'content_changed', 'domready', 'open']
 		},
 		'this.marker': {
 			functions: ['getPosition', 'setOptions'],

@@ -83,6 +83,7 @@ Map.InfoWindow = new Class({
 			this.setContent(this.options.content);
 			this.getRequest({url: this.options.url}).send();
 		}
+		this.fireEvent('open', this.getContent());
 	},
 	
 	getRequest: function(options) {

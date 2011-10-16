@@ -104,7 +104,7 @@ var Gallery = new Class({
 	
 	start: function() {
 		this.options.auto = true;
-		this.next();
+		this.auto();
 		if (this.toggleWrap) {
 			this.toggleWrap.removeClass(this.options.ui.stopClass);
 		}

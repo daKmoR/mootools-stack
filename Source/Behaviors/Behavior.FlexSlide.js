@@ -11,8 +11,16 @@ script: Behavior.FlexSlide.js
 
 Behavior.addGlobalFilters({
 
+	defaults: {
+		auto: true,
+		size: 'element'
+	},
+
 	FlexSlide: function(element, api) {
-		var myFlexSlide = new FlexSlide(element);
+		return new FlexSlide(element, {
+			auto: api.getAs(Boolean, 'auto'),
+			size: api.getAs(String, 'size'),
+		});
 	}
 
 });
