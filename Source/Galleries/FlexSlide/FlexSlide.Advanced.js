@@ -166,19 +166,20 @@ FlexSlide.Advanced = new Class({
 	},
 	
 	keyboardListener: function(event){
-		if(!this.options.active) return;
+		if (!this.options.active) return;
 		//if(event.key != 'f5') event.preventDefault();
 		switch (event.key) {
 			case 'p': case 'left': this.previous(); break;	
-			case 'n': case 'right': this.next();
+			case 'n': case 'right': this.next(); break;
+			case 'space': this.stop();
 		}
 	},
 
 	wheelListener: function(event){
-		if(!this.options.active) return;
+		if (!this.options.active) return;
 		event.preventDefault();
-		if(event.wheel > 0) this.previous();
-		if(event.wheel < 0) this.next();
+		if (event.wheel > 0) this.previous();
+		if (event.wheel < 0) this.next();
 	},	
 	
 	// fixSizes: function() {
