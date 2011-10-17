@@ -33,7 +33,7 @@ var Gallery = new Class({
 	},
 
 	auto: function() {
-		$clear(this.autotimer);
+		clearTimeout(this.autotimer);
 		this.autotimer = this.next.delay(this.options.duration, this);
 	},
 	
@@ -42,23 +42,28 @@ var Gallery = new Class({
 		var current = current || this.current;
 		step = this.options.step*times;
 		
-		if (this.options.mode === 'reverse') step *= -1;
+		if (this.options.mode === 'reverse') {
+			step *= -1;
+		}
 			
 		if (this.options.mode === 'random') {
-			do 
-				next = $random(0, this.elements.item.length-1);
-			while (next == current)
+			do {
+				next = Number.random(0, this.elements.item.length-1);
+			} while (next == current)
 		} else {
-			if (current + step < this.elements.item.length) 
+			if (current + step < this.elements.item.length) {
 				next = current + step;
-			else
+			} else {
 				next = current + step - this.elements.item.length;
-			if (current + step < 0) 
+			}
+			if (current + step < 0) {
 				next = this.elements.item.length + current + step;
+			}
 		}
 		
-		if(this.elements.item[next])
+		if (this.elements.item[next]) {
 			return next;
+		}
 		
 		return -1;
 	},
@@ -90,7 +95,7 @@ var Gallery = new Class({
 	
 	stop: function() {
 		this.options.auto = false;
-		$clear(this.autotimer);
+		clearTimeout(this.autotimer);
 		if (this.toggleWrap) {
 			this.toggleWrap.addClass(this.options.ui.stopClass);
 		}
