@@ -42,22 +42,22 @@ var Gallery = new Class({
 		var current = current || this.current;
 		step = this.options.step*times;
 		
-		if ( this.options.mode === 'reverse' ) step *= -1;
+		if (this.options.mode === 'reverse') step *= -1;
 			
-		if ( this.options.mode === 'random' ) {
+		if (this.options.mode === 'random') {
 			do 
 				next = $random(0, this.elements.item.length-1);
-			while ( next == current )
+			while (next == current)
 		} else {
-			if ( current + step < this.elements.item.length ) 
+			if (current + step < this.elements.item.length) 
 				next = current + step;
 			else
 				next = current + step - this.elements.item.length;
-			if ( current + step < 0 ) 
+			if (current + step < 0) 
 				next = this.elements.item.length + current + step;
 		}
 		
-		if( this.elements.item[next] )
+		if(this.elements.item[next])
 			return next;
 		
 		return -1;
@@ -77,7 +77,7 @@ var Gallery = new Class({
 	
 	process: function(id) {
 		this.current = id;
-		if( this.options.auto ) this.auto();
+		if(this.options.auto) this.auto();
 	},
 	
 	toggle: function() {
