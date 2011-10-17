@@ -115,7 +115,7 @@ Map.implement({
 	createMarker: function(position, options) {
 		var options = Object.merge(this.options.markerOptions, options);
 		var marker = new Map.Marker(position, this.mapObj, options);
-		this.markers.push(marker);
+		this.addMarker(marker);
 		return marker;
 	},
 	
@@ -125,6 +125,10 @@ Map.implement({
 	
 	setMarkers: function(markers) {
 		this.markers = markers;
+	},
+	
+	addMarker: function(marker) {
+		return this.markers.push(marker);
 	},
 	
 	zoomToMarkers: function(markers, useOnlyVisible) {

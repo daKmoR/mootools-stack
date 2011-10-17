@@ -104,7 +104,7 @@ Map.implement({
 	createFullScreenMarker: function(position, options) {
 		var options = Object.merge(this.options.markerOptions, options);
 		var fullScreen = new Map.FullScreenMarker(position, this.mapObj, options);
-		this.markers.push(fullScreen);
+		this.addMarker(fullScreen);
 		return fullScreen;
 	}
 
