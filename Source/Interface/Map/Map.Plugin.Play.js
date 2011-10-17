@@ -38,8 +38,8 @@ Map.implement({
 											animatedElement.resume();
 										});
 										marker.addEvent('onOpen', function(content) {
-											var flexSlide = content.getElement('[data-behavior="FlexSlide"]').getBehaviorResult('FlexSlide');
-											flexSlide.start();
+											var slide = content.getElement('[data-behavior="Slide"]').getBehaviorResult('Slide');
+											slide.start();
 										});
 										marker.open();
 										animatedElement.pause();
