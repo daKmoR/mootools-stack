@@ -40,8 +40,6 @@ var FlexSlide = new Class({
 	
 	Extends: Gallery,
 	
-	Implements: [Settings, Events],
-	
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
 		render: ['item'], // special elements are: ['item', 'select', 'advSelect', 'description', 'counter', 'next', 'previous',  'selectScroller', 'start', 'stop', 'toggle']
@@ -106,7 +104,6 @@ var FlexSlide = new Class({
 	
 	current: -1,
 	running: false,
-	autotimer: null,
 	size: {},
 	elements: {},
 	fxConfig: {},
@@ -114,7 +111,7 @@ var FlexSlide = new Class({
 	
 	initialize: function(wrap, options) {
 		if (!(this.wrap = $(wrap))) return;
-		this.setOptions(options);
+		this.parent(options);
 		
 		if (this.options.container == undefined) {
 			this.options.container = this.wrap.getParent();

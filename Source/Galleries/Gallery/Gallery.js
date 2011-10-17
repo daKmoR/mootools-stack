@@ -16,6 +16,8 @@ provides: [Gallery]
 
 var Gallery = new Class({
 
+	Implements: [Options, Events],
+
 	options: {
 		auto: true,
 		duration: 5000,
@@ -30,6 +32,14 @@ var Gallery = new Class({
 			up: 'random', /* any availabele effect */
 			down: 'random' /* any availabele effect */
 		}
+	},
+	
+	autotimer: null,
+	doAuto: false,
+	
+	initialize: function(options) {
+		this.setOptions(options);
+		this.doAuto = !!this.options.auto;
 	},
 
 	auto: function() {
@@ -108,13 +118,13 @@ var Gallery = new Class({
 		this.fireEvent('process', [id, this.current]);	
 		
 		this.current = id;
-		if (this.options.auto) {
+		if (this.doAuto === true) {
 			this.auto();
 		}
 	},
 	
 	toggle: function() {
-		if (this.options.auto) {
+		if (this.doAuto === true) {
 			this.stop();
 		} else {
 			this.start();
@@ -122,7 +132,7 @@ var Gallery = new Class({
 	},
 	
 	stop: function() {
-		this.options.auto = false;
+		this.doAuto = false;
 		clearTimeout(this.autotimer);
 		if (this.toggleWrap) {
 			this.toggleWrap.addClass(this.options.ui.stopClass);
@@ -136,7 +146,7 @@ var Gallery = new Class({
 	},
 	
 	start: function() {
-		this.options.auto = true;
+		this.doAuto = true;
 		this.auto();
 		if (this.toggleWrap) {
 			this.toggleWrap.removeClass(this.options.ui.stopClass);

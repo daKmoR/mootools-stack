@@ -15,8 +15,9 @@ provides: FlexSlide.Advanced
 */
 
 FlexSlide.Advanced = new Class({
+
 	Extends: FlexSlide,
-	Implements: [Settings, Events],
+	
 	options: {
 		ui: {
 			requestItem: { 'class': 'ui-RequestItem' },
