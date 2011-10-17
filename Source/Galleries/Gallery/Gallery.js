@@ -50,17 +50,15 @@ var Gallery = new Class({
 	getNextId: function(times, current) {
 		var times = times || this.options.times, next = 0;
 		var current = current || this.current;
-		step = this.options.step*times;
+		step = this.options.mode !== 'reverse' ? this.options.step * times : this.options.step * -times;
 		
-		if (this.options.mode === 'reverse') {
-			step *= -1;
-		}
-			
 		if (this.options.mode === 'random') {
 			do {
 				next = Number.random(0, this.elements.item.length-1);
 			} while (next == current)
-		} else {
+		} 
+		
+		if (this.options.mode === 'repeat' || this.options.mode === 'reverse') {
 			if (current + step < this.elements.item.length) {
 				next = current + step;
 			} else {
@@ -71,11 +69,23 @@ var Gallery = new Class({
 			}
 		}
 		
+		if (this.options.mode === 'once') {
+			if (current + step < this.elements.item.length && current + step > 0) {
+				next = current + step;
+			} else {
+				next = current;
+				if (current + step >= this.elements.item.length) {
+					this.fireEvent('finished', this.elements.item[next]);
+					this.stop();
+				}
+			}
+		}
+		
 		if (this.elements.item[next]) {
 			return next;
 		}
 		
-		return -1;
+		return false;
 	},
 	
 	next: function(times, fx) {
@@ -105,9 +115,6 @@ var Gallery = new Class({
 					if (this.nextWrap) this.nextWrap.fade('hide');
 				} else {
 					if (this.nextWrap) this.nextWrap.fade(0);
-					this.fireEvent('last', this.elements.item[id]);
-					this.fireEvent('finished', this.elements.item[id], this.options.duration);
-					this.stop();
 				}
 			} else {
 				if (this.previousWrap) this.previousWrap.fade(1);
