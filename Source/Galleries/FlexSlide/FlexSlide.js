@@ -37,7 +37,11 @@ Array.implement({
 });
 
 var FlexSlide = new Class({
-	Implements: [Settings, Events, Gallery],
+	
+	Extends: Gallery,
+	
+	Implements: [Settings, Events],
+	
 	options: {
 		selections: {}, /* item: '.myOtherItemClass' you can define your own css classes here */
 		render: ['item'], // special elements are: ['item', 'select', 'advSelect', 'description', 'counter', 'next', 'previous',  'selectScroller', 'start', 'stop', 'toggle']
@@ -623,32 +627,7 @@ var FlexSlide = new Class({
 		}
 		
 		this.updateCounter(id);
-
-		if (this.options.mode === 'once') {
-			if (id === 0) {
-				if (this.current === -1) {
-					if (this.previousWrap) this.previousWrap.fade('hide');
-				} else {
-					if (this.previousWrap) this.previousWrap.fade(0);
-				}
-				if (this.nextWrap) this.nextWrap.fade(1);
-			}	else if (id === this.elements.item.length-1) {
-				if (this.previousWrap) this.previousWrap.fade(1);
-				if (this.current === -1) {
-					if (this.nextWrap) this.nextWrap.fade('hide');
-				} else {
-					if (this.nextWrap) this.nextWrap.fade(0);
-				}
-			} else {
-				if (this.previousWrap) this.previousWrap.fade(1);
-				if (this.nextWrap) this.nextWrap.fade(1);
-			}
-		}
-
-		this.fireEvent('process', [id, this.current]);
-			
-		this.current = id;
-		if (this.options.auto) this.auto();
+		this.parent(id);
 	},
 	
 	// fixSizes: function() {
