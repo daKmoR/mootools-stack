@@ -52,6 +52,7 @@ Map.PolyLine.Animated = new Class({
 	},
 	
 	start: function(i) {
+		if (this.getLength() === this.points.length) return;
 		if (!this.polyLineObj || (this.polyLineObj && this.getLength() == 0)) {
 			this.addPoint(this.points[0], true);
 		}
@@ -98,6 +99,9 @@ Map.PolyLine.Animated = new Class({
 	
 	resume: function() {
 		this.fx.resume();
+		if (!this.fx.isRunning()) {
+			this.start();
+		}
 	}
 
 });
