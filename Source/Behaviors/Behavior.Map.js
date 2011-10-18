@@ -9,13 +9,17 @@ script: Behavior.Map.js
 ...
 */
 
-Behavior.addGlobalFilters({
+Behavior.addGlobalFilter('Map', {
 
-	Map: function(element, api) {
-		return new Map(element, [48.1695, 16.3299], {
-			zoom: 12
+	defaults: {
+		position: [48.1695, 16.3299],
+		zoom: 12
+	},
+
+	setup: function(element, api) {
+		return new Map(element, api.getAs(Array, 'position'), {
+			zoom: api.getAs(Number, 'zoom')
 		});
-		
 	}
 
 });

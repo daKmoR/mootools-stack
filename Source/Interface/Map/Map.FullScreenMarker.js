@@ -75,8 +75,8 @@ Map.FullScreenMarker = new Class({
 		this.marker.hide();
 	},
 
-	show: function(alsoOpenFullScreenWindow, animation) {
-		this.marker.show(animation);
+	show: function(alsoOpenFullScreenWindow, animation, duration) {
+		this.marker.show(animation, duration);
 		if (alsoOpenFullScreenWindow === true) {
 			this.open();
 		}

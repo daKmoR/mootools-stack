@@ -26,6 +26,11 @@ Map.PolyLine.Animated = new Class({
 	
 	points: [],
 	
+	initialize: function (map, path, options) {
+		this.parent(map, path, options);
+		this.fx = new Fx.Point(this, { duration: 500, transition: Fx.Transitions.linear });
+	},	
+	
 	// Adds one element to the end of the array and returns the new length of the array.
 	addPoint: function(point, show) {
 		var show = show === 'undefined' ? this.options.showNewPoints : !!show;
@@ -45,14 +50,9 @@ Map.PolyLine.Animated = new Class({
 		return this.getPointAt(this.getLength()-1);
 	},
 	
-	initAnimation: function() {
-		this.fx = new Fx.Point(this, { duration: 500, transition: Fx.Transitions.linear });
-		this.addPoint(this.points[0], true);
-	},
-	
 	start: function(i) {
-		if (!this.fx) {
-			this.initAnimation();
+		if (!this.polyLineObj) {
+			this.addPoint(this.points[0], true);
 		}
 		var i = i || 0;
 		

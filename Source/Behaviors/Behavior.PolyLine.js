@@ -20,6 +20,7 @@ Fx.Point = new Class({
 
 	set: function(now){
 		this.subject.setLastPoint([now[0], now[1]]);
+		this.fireEvent('setPoint', [now[0], now[1]]);
 		return this;
 	},
 	
@@ -47,8 +48,17 @@ Behavior.addGlobalFilter('PolyLine', {
 	},	
 
 	setup: function(element, api) {
+		var animated = api.getAs(Boolean, 'animated');
 		var map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map');
-		return api.getAs(Boolean, 'animated') ? map.createPolyLineAnimated() : map.createPolyLine();
+		var polyLine = animated === true ? map.createPolyLineAnimated() : map.createPolyLine();
+		
+		if (animated === true) {
+			polyLine.fx.addEvent('setPoint', function(lat, lng) {
+				var point = [lat, lng];
+				map.panTo(point);
+			});
+		}
+		return polyLine;
 	}
 
 });
