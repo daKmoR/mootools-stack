@@ -36,6 +36,10 @@ Fx.Point = new Class({
 			var from = this.subject.getLastPoint();
 		}
 		return this.parent(from, to);
+	},
+	
+	hasStarted: function(){
+		return (this.frame < this.frames) && !this.isRunning();
 	}
 
 });

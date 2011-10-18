@@ -40,7 +40,6 @@ Map.PolyLine = new Class({
 	initialize: function (map, path, options) {
 		this.setOptions(options);
 		this.options.map = map;
-		
 		if (path) {
 			this.init(path, map);
 		}
@@ -48,7 +47,6 @@ Map.PolyLine = new Class({
 	
 	init: function(path) {
 		this.options.path = typeOf(path) === 'array' ? path.toLatLng() : path;
-		
 		this.polyLineObj = new google.maps.Polyline(this.options);
 		this.mapToSubObject();
 	},
@@ -56,7 +54,6 @@ Map.PolyLine = new Class({
 	// Adds one element to the end of the array and returns the new length of the array.
 	addPoint: function(point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point, count = 0;
-		
 		if (!this.startPoint) {
 			this.startPoint = point;
 		} else {
@@ -92,7 +89,7 @@ Map.PolyLine = new Class({
 
 	// Returns the number of elements in this array.
 	getLength: function() {
-		return this.polyLineObj.getPath().getLength();
+		return this.polyLineObj ? this.polyLineObj.getPath().getLength() : this.startPoint ? 1 : 0;
 	},
 
 	// Removes an element from the specified index.
@@ -103,7 +100,7 @@ Map.PolyLine = new Class({
 	// Sets an element at the specified index.
 	setPointAt: function(index, point) {
 		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
-		this.polyLineObj.getPath().setAt(index, point);
+		return this.polyLineObj ? this.polyLineObj.getPath().setAt(index, point) : false;
 	},
 
 	// Get an element at the specified index.
@@ -142,7 +139,11 @@ Map.PolyLine = new Class({
 	
 	setPath: function(path) {
 		var path = typeOf(path) === 'array' ? path.toLatLng() : path;
-		this.polyLineObj.setPath(path);
+		if (this.polyLineObj) {
+			this.polyLineObj.setPath(path);
+		} else {
+			this.init(path);
+		} 
 	},
 	
 	getPath: function() {
