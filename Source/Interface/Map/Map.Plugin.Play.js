@@ -70,7 +70,7 @@ Map.implement({
 				animatedElements.each(function(animatedElement) {
 					animatedElement.addEvent('onPointChange', function(lat, lng) {
 						this.markers.each(function(marker) {
-							if (marker.getPosition().invoke('round', 6).equalTo([lat, lng])) {
+							if (marker.getPosition().invoke('round', 6).equalTo([lat, lng].invoke('round', 6))) {
 								var close = function() {
 									(function() { animatedElement.resume(); }).delay(500);
 								};

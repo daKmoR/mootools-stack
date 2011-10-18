@@ -18,6 +18,7 @@ provides: [Map.PolyLine.Animated]
 */
 
 Map.PolyLine.Animated = new Class({
+
 	Extends: Map.PolyLine,
 
 	options: {
@@ -60,6 +61,8 @@ Map.PolyLine.Animated = new Class({
 		this.fx.start(this.points[i+1]).chain(function() {
 			if (i+1 < this.points.length-1) {
 				this.start(i+1);
+			} else {
+				this.fireEvent('pointChange', this.points[i+1]);
 			}
 		}.bind(this));
 		

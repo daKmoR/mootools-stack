@@ -55,16 +55,20 @@ Map.PolyLine = new Class({
 	
 	// Adds one element to the end of the array and returns the new length of the array.
 	addPoint: function(point) {
-		var point = typeOf(point) === 'array' ? point.toLatLng() : point;
+		var point = typeOf(point) === 'array' ? point.toLatLng() : point, count = 0;
 		
 		if (!this.startPoint) {
 			this.startPoint = point;
-			return 1;
+		} else {
+			if (!this.polyLineObj) {
+				this.init([this.startPoint, point], this.options);
+				count = 2;
+			} else {
+				count = this.polyLineObj.getPath().push(point);
+			}
+			this.fireEvent('addPoint', this.getLastPoint());
 		}
-		if (!this.polyLineObj && this.startPoint) {
-			this.init([this.startPoint, point], this.options);
-		}
-		return this.polyLineObj.getPath().push(point);
+		return count;
 	},
 
 	// Inserts an element at the specified index.
