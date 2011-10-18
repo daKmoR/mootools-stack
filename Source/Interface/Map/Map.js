@@ -110,11 +110,14 @@ var Map = new Class({
 		// load registered Plugins
 		this.plugins = Object.merge(this.plugins, this.options.plugins);
 		Object.each(this.plugins, function(plugin) {
+			if (plugin.init) {
+				plugin.init.apply(this);
+			}
 			if (plugin.html && plugin.onClick) {
 				this.addControl(plugin.html, plugin.onClick, plugin.options);
 			}
-			if (plugin.el) {
-				this.addControlElement(plugin.el, plugin.options);
+			if (plugin.element) {
+				this.addControlElement(plugin.element, plugin.options);
 			}
 		}, this);
 	},

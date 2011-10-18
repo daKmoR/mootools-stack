@@ -128,6 +128,7 @@ Map.implement({
 	},
 	
 	addMarker: function(marker) {
+		this.fireEvent('markerAdded', marker);
 		return this.markers.push(marker);
 	},
 	

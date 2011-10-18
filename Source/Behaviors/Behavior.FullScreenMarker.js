@@ -20,7 +20,10 @@ Behavior.addGlobalFilter('FullScreenMarker', {
 	setup: function(element, api) {
 		var map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map');
 		var fullScreenMarker = map.createFullScreenMarker(api.getAs(Array, 'position'));
-		fullScreenMarker.wrap.grab(element);
+		// fullScreenMarker.addEvent('content_changed', function(content) {
+			// api.applyFilter(content);
+		// });
+		fullScreenMarker.setContent(element.getElement('*'));
 		return fullScreenMarker;
 	}
 

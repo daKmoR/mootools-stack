@@ -21,7 +21,7 @@ Map.implement({
 
 	plugins: {
 		bounds: {
-			el: null,
+			element: null,
 			options: {},
 			html: 'bounds',
 			active: false,

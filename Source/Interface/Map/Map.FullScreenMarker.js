@@ -44,6 +44,7 @@ Map.FullScreenMarker = new Class({
 		
 		this.marker = new Map.Marker(position, map, this.options);
 		
+		
 		this.mapToSubObject();
 		
 		if (this.options.isOpen === true) {
@@ -55,6 +56,11 @@ Map.FullScreenMarker = new Class({
 		}.bind(this));
 		
 		this.build();
+	},
+	
+	setContent: function(element) {
+		this.wrap.grab(element);
+		this.fireEvent('content_changed', this.wrap, 1);
 	},
 	
 	build: function() {
