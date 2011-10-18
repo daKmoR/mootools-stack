@@ -70,7 +70,7 @@ Map.InfoMarker = new Class({
 
 	show: function(alsoOpenInfoWindow) {
 		this.marker.show();
-		if (alsoOpenInfoWindow) {
+		if (alsoOpenInfoWindow === true) {
 			this.open();
 		}
 	},

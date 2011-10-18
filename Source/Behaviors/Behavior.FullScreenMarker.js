@@ -15,11 +15,14 @@ Behavior.addGlobalFilter('FullScreenMarker', {
 	
 	defaults: {
 		target: '!div [data-behavior="Map"]',
+		visible: true
 	},	
 
 	setup: function(element, api) {
 		var map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map');
-		var fullScreenMarker = map.createFullScreenMarker(api.getAs(Array, 'position'));
+		var fullScreenMarker = map.createFullScreenMarker(api.getAs(Array, 'position'), {
+			visible: api.getAs(Boolean, 'visible')
+		});
 		// fullScreenMarker.addEvent('content_changed', function(content) {
 			// api.applyFilter(content);
 		// });

@@ -77,7 +77,11 @@ Map.Marker = new Class({
 		this.setVisible(false);
 	},
 
-	show: function() {
+	show: function(animation, duration) {
+		var duration = duration || 1500,
+			animation = animation === 'drop' ? google.maps.Animation.DROP : animation === 'bounce' ? google.maps.Animation.BOUNCE : null;
+		this.setAnimation(animation);
+		(function() { this.setAnimation(null); }).delay(duration, this);
 		this.setVisible(true);
 	},
 
@@ -111,6 +115,10 @@ Map.Marker = new Class({
 Map.implement({
 
 	markers: [],
+	
+	options: {
+		markerOptions: {}
+	},
 	
 	createMarker: function(position, options) {
 		var options = Object.merge(this.options.markerOptions, options);

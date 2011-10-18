@@ -80,7 +80,6 @@ var Map = new Class({
 
 	options: {
 		// use all Options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
-		// markerOptions: {}
 		mapTypeId: 'roadmap',
 		zoom: 6,
 		plugins: {}

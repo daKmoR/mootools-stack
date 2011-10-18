@@ -75,11 +75,10 @@ Map.implement({
 									(function() { animatedElement.resume(); }).delay(500);
 								};
 								marker.addEvent('closeclick:once', close);
+								marker.wrap.getElement('[data-behavior="Slide"]').getBehaviorResult('Slide').addEvent('finished:once', close);
 								
-								var slide = marker.wrap.getElement('[data-behavior="Slide"]').getBehaviorResult('Slide');
-								slide.addEvent('finished:once', close);
-								
-								marker.open();
+								marker.show(false, 'bounce');
+								(function() { marker.open(); }).delay(1500);
 								animatedElement.pause();
 							}
 						});
