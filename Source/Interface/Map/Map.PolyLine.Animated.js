@@ -24,7 +24,7 @@ Map.PolyLine.Animated = new Class({
 	options: {
 		showNewPoints: false,
 		duration: null,
-		speed: 200 // in m/s
+		speed: 400 // in m/s
 	},
 	
 	points: [],

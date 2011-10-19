@@ -30,7 +30,9 @@ Map.implement({
 					marker.addEvent('open', function(content) {
 						var slide = content.getElement('[data-behavior="Slide"]').getBehaviorResult('Slide');
 						slide.options.active = true;
-						slide.start();
+						if (content.getElement('[data-autostart="true"]')) {
+							slide.start();
+						}
 					});
 					
 					marker.addEvent('content_changed', function(content) {
