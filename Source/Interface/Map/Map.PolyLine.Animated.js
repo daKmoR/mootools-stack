@@ -22,7 +22,9 @@ Map.PolyLine.Animated = new Class({
 	Extends: Map.PolyLine,
 
 	options: {
-		showNewPoints: false
+		showNewPoints: false,
+		duration: null,
+		speed: 200 // in m/s
 	},
 	
 	points: [],
@@ -51,6 +53,11 @@ Map.PolyLine.Animated = new Class({
 		var i = i >= 0 ? i : this.getLength()-1 >= 0 ? this.getLength()-1 : 0;
 		
 		this.addPoint(this.points[i], true);
+		var distance = this.points[i].distanceTo(this.points[i+1]);
+		var duration = this.options.duration || distance.round(0) / this.options.speed * 1000;
+		this.fx.setOptions({
+			duration: duration
+		});
 		this.fx.start(this.points[i+1]).chain(function() {
 			if (i+1 < this.points.length-1) {
 				this.start(i+1);

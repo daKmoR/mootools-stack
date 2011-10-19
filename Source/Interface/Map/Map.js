@@ -87,7 +87,9 @@ var Map = new Class({
 		// use all Options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
 		mapTypeId: 'roadmap', // ['hybrid', 'roadmap', 'satellite', 'terrain']
 		zoom: 6,
-		plugins: {}
+		plugins: {},
+		maxZoom: 21,
+		minZoom: 0
 	},
 
 	subObjectMapping: {
@@ -145,6 +147,14 @@ var Map = new Class({
 	
 	getMap: function() {
 		return this.mapObj;
+	},
+	
+	getMaxZoom: function() {
+		return this.options.maxZoom;
+	},
+	
+	getMinZoom: function() {
+		return this.options.minZoom;
 	},
 	
 	/*------------------------- CUSTOM MAPPING METHODS -------------------------*/
