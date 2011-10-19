@@ -127,7 +127,7 @@ Map.InfoMarker = new Class({
 Map.implement({
 	
 	createInfoMarker: function(position, options) {
-		var options = Object.merge(this.options.markerOptions, options);
+		var options = Object.merge(Object.clone(this.options.markerOptions), options);
 		var infoMarker = new Map.InfoMarker(position, this.mapObj, options);
 		this.addMarker(infoMarker);
 		return infoMarker;

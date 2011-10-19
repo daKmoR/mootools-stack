@@ -121,7 +121,7 @@ Map.implement({
 	},
 	
 	createMarker: function(position, options) {
-		var options = Object.merge(this.options.markerOptions, options);
+		var options = Object.merge(Object.clone(this.options.markerOptions), options);
 		var marker = new Map.Marker(position, this.mapObj, options);
 		this.addMarker(marker);
 		return marker;

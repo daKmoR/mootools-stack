@@ -14,13 +14,14 @@ Behavior.addGlobalFilter('Map', {
 	defaults: {
 		position: [48.1695, 16.3299],
 		zoom: 12,
-		maptypeid: 'roadmap' // ['hybrid', 'roadmap', 'satellite', 'terrain']
+		type: 'roadmap' // ['hybrid', 'roadmap', 'satellite', 'terrain']
 	},
 
 	setup: function(element, api) {
 		return new Map(element, api.getAs(Array, 'position'), {
 			zoom: api.getAs(Number, 'zoom'), 
-			mapTypeId: api.getAs(String, 'maptypeid')
+			mapTypeId: api.getAs(String, 'type'),
+			markerOptions: api.getAs(String, 'icon') ? { icon: { url: api.getAs(String, 'icon') } } : {}
 		});
 	}
 
