@@ -43,14 +43,6 @@ Map.PolyLine.Animated = new Class({
 		this.points.push(point);
 	},
 	
-	setLastPoint: function(point) {
-		this.setPointAt(this.getLength()-1, point);
-	},
-	
-	getLastPoint: function() {
-		return this.getPointAt(this.getLength()-1);
-	},
-	
 	start: function(i) {
 		if (this.getLength() === this.points.length) return;
 		if (!this.polyLineObj || (this.polyLineObj && this.getLength() == 0)) {

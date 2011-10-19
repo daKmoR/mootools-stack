@@ -61,6 +61,11 @@ Array.implement({
 		return this;
 	},
 	
+	distanceTo: function(toPoint) {
+		var fromPoint = this.toLatLng(), toPoint = toPoint.toLatLng();
+		return google.maps.geometry.spherical.computeDistanceBetween(fromPoint, toPoint);
+	},
+	
 	equalTo: function(arr){
 		if (this.length !== arr.length) {
 			return false;
@@ -80,7 +85,7 @@ var Map = new Class({
 
 	options: {
 		// use all Options from http://code.google.com/apis/maps/documentation/javascript/reference.html#MapOptions
-		mapTypeId: 'roadmap',
+		mapTypeId: 'roadmap', // ['hybrid', 'roadmap', 'satellite', 'terrain']
 		zoom: 6,
 		plugins: {}
 	},

@@ -48,13 +48,17 @@ Behavior.addGlobalFilter('PolyLine', {
 
 	defaults: {
 		target: '!div [data-behavior="Map"]',
-		animated: true
+		animated: true,
+		color: '#000'
 	},	
 
 	setup: function(element, api) {
-		var animated = api.getAs(Boolean, 'animated');
-		var map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map');
-		var polyLine = animated === true ? map.createPolyLineAnimated() : map.createPolyLine();
+		var animated = api.getAs(Boolean, 'animated'),
+			map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map'),
+			options = {
+				'strokeColor': api.getAs(String, 'color')
+			};
+		var polyLine = animated === true ? map.createPolyLineAnimated(options) : map.createPolyLine(options);
 		
 		if (animated === true) {
 			polyLine.fx.addEvent('setPoint', function(lat, lng) {

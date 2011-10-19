@@ -13,12 +13,14 @@ Behavior.addGlobalFilter('Map', {
 
 	defaults: {
 		position: [48.1695, 16.3299],
-		zoom: 12
+		zoom: 12,
+		maptypeid: 'roadmap' // ['hybrid', 'roadmap', 'satellite', 'terrain']
 	},
 
 	setup: function(element, api) {
 		return new Map(element, api.getAs(Array, 'position'), {
-			zoom: api.getAs(Number, 'zoom')
+			zoom: api.getAs(Number, 'zoom'), 
+			mapTypeId: api.getAs(String, 'maptypeid')
 		});
 	}
 

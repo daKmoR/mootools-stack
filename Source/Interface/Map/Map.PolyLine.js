@@ -67,6 +67,16 @@ Map.PolyLine = new Class({
 		}
 		return count;
 	},
+	
+	getEncodedPath: function(path) {
+		var path = path || this.polyLineObj.getPath();
+		return google.maps.geometry.encoding.encodePath(path);
+	},
+	
+	setEncodedPath: function(path) {
+		var path = path || this.polyLineObj.getPath();
+		this.setPath(google.maps.geometry.encoding.decodePath(path));
+	},
 
 	// Inserts an element at the specified index.
 	insertPointAt: function(index, point) {
@@ -113,6 +123,19 @@ Map.PolyLine = new Class({
 	clearPath: function() {
 		this.setPath([]);
 	},
+	
+	optimize: function(grain, givenPath) {
+		var path = givenPath || this.getPath(),
+			points = [path[0]],
+			grain = grain || 50;
+		path.each(function(pathPoint) {
+			if (points.getLast().distanceTo(pathPoint) > grain) {
+				points.push(pathPoint);
+			}
+		});
+		//console.log(this.getPath().length + ' vs ' + points.length);
+		return givenPath ? points : this.setPath(points);
+	},	
 	
 	hide: function() {
 		this.setMap(null);
