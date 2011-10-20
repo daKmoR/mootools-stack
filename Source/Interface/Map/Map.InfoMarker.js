@@ -85,7 +85,7 @@ Map.InfoMarker = new Class({
 	// MVC object is usually a marker.
 	open: function(MVCObject) {
 		var MVCObject = MVCObject || this.marker.markerObj;
-		this.infoWindow.open(this.map, MVCObject);
+		this.infoWindow.open(this.map.mapObj, MVCObject);
 	},
 	
 	setPosition: function(point) {
@@ -128,7 +128,7 @@ Map.implement({
 	
 	createInfoMarker: function(position, options) {
 		var options = Object.merge(Object.clone(this.options.markerOptions), options);
-		var infoMarker = new Map.InfoMarker(position, this.mapObj, options);
+		var infoMarker = new Map.InfoMarker(position, this, options);
 		this.addMarker(infoMarker);
 		return infoMarker;
 	}

@@ -34,11 +34,11 @@ Behavior.addGlobalFilter('Marker', {
 				break;
 			case 'Info': 
 				var marker = map.createInfoMarker(api.getAs(Array, 'position'), options);
-				marker.setContent(element.getElement('*'));
+				marker.setContent(element);
 				break;
 			case 'FullScreen':
 				var marker = map.createFullScreenMarker(api.getAs(Array, 'position'), options);
-				marker.setContent(element.getElement('*'));
+				marker.setContent(element);
 				break;
 		}
 		

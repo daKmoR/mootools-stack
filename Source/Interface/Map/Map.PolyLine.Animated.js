@@ -59,7 +59,7 @@ Map.PolyLine.Animated = new Class({
 	options: {
 		showNewPoints: false,
 		useMarker: true,
-		markerOptions: { icon: { url: 'fileadmin/mapIcons/_jogging.png' } },
+		markerOptions: {},
 		duration: null,
 		speed: 400 // in m/s
 	},
@@ -69,7 +69,7 @@ Map.PolyLine.Animated = new Class({
 	initialize: function (map, path, options) {
 		this.parent(map, path, options);
 		this.fx = new Fx.Point(this, { transition: Fx.Transitions.linear });
-		this.marker = new Map.Marker([0,0], this.map.mapObj, this.options.markerOptions);
+		this.marker = new Map.Marker([0,0], this.map, this.options.markerOptions);
 		if (this.options.useMarker) {
 			this.fx.addEvent('setPoint', function(lat, lng) {
 				this.marker.setPosition([lat, lng]);

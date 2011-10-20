@@ -30,7 +30,7 @@ Map.implement({
 					marker.addEvent('open', function(content) {
 						var slide = content.getElement('[data-behavior="Slide"]').getBehaviorResult('Slide');
 						slide.options.active = true;
-						if (content.getElement('[data-autostart="true"]')) {
+						if (true || content.getElement('[data-autostart="true"]')) {
 							slide.start();
 						}
 					});
@@ -41,8 +41,13 @@ Map.implement({
 							slide.options.active = false;
 							(function() { slide.show(0); }).delay(500);
 							marker.close();
-						});
-					});
+							var newIcon = content.getElement('[data-polyline-marker-icon]').get('data-polyline-marker-icon');
+							if (newIcon !== '') {
+								var animatedElements = this.getPolyLinesAnimated();
+								animatedElements[0].marker.setIcon(newIcon);
+							}
+						}.bind(this));
+					}.bind(this));
 				});
 			},
 			onClick: function(element) {

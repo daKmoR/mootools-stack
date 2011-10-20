@@ -40,10 +40,11 @@ Map.Marker = new Class({
 	initialize: function (position, map, options) {
 		this.setOptions(options);
 		this.initOptions();
+		this.map = map;
+		this.options.map = map.mapObj;
 		
 		// we can't use position or map with options, as it is needed as a reference and not as a copy like setOptions would create it
 		this.options.position = typeOf(position) === 'array' ? position.toLatLng() : position;
-		this.options.map = map;
 		
 		this.markerObj = new google.maps.Marker(this.options);
 		this.mapToSubObject();
@@ -122,7 +123,7 @@ Map.implement({
 	
 	createMarker: function(position, options) {
 		var options = Object.merge(Object.clone(this.options.markerOptions), options);
-		var marker = new Map.Marker(position, this.mapObj, options);
+		var marker = new Map.Marker(position, this, options);
 		this.addMarker(marker);
 		return marker;
 	},
