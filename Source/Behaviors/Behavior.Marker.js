@@ -16,13 +16,15 @@ Behavior.addGlobalFilter('Marker', {
 	defaults: {
 		target: '!div [data-behavior="Map"]',
 		type: 'Marker',
-		visible: true
+		visible: true,
+		title: '',
 	},	
 
 	setup: function(element, api) {
 		var map = element.getElement(api.getAs(String, 'target')).getBehaviorResult('Map'),
 			options = {
 				visible: api.getAs(Boolean, 'visible'),
+				title: api.getAs(String, 'title'),
 				icon: api.getAs(String, 'icon') ? { url: api.getAs(String, 'icon') } : {}
 			}
 			
