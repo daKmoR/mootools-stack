@@ -17,6 +17,41 @@ provides: [Map.PolyLine.Animated]
 ...
 */
 
+Fx.Point = new Class({
+
+	Extends: Fx,
+
+	initialize: function(element, options){
+		this.subject = element;
+		this.parent(options);
+	},
+
+	set: function(now){
+		this.subject.setLastPoint([now[0], now[1]]);
+		this.fireEvent('setPoint', [now[0], now[1]]);
+		return this;
+	},
+	
+	compute: function(from, to, delta){
+		var now = {};
+		for (var p in from) now[p] = this.parent(from[p], to[p], delta);
+		return now;
+	},
+	
+	start: function(from, to){
+		if (arguments.length == 1){
+			var to = from;
+			var from = this.subject.getLastPoint();
+		}
+		return this.parent(from, to);
+	},
+	
+	hasStarted: function(){
+		return (this.frame < this.frames) && !this.isRunning();
+	}
+
+});
+
 Map.PolyLine.Animated = new Class({
 
 	Extends: Map.PolyLine,
