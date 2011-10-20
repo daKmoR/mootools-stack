@@ -39,7 +39,8 @@ Map.PolyLine = new Class({
 	
 	initialize: function (map, path, options) {
 		this.setOptions(options);
-		this.options.map = map;
+		this.map = map;
+		this.options.map = map.mapObj;
 		if (path) {
 			this.init(path, map);
 		}
@@ -184,7 +185,7 @@ Map.implement({
 	polyLines: [],
 	
 	createPolyLine: function(options, path) {
-		var polyLine = new Map.PolyLine(this.mapObj, path, options);
+		var polyLine = new Map.PolyLine(this, path, options);
 		this.addPolyLine(polyLine);
 		return polyLine;
 	},
