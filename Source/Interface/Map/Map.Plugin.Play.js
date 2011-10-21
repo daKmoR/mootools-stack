@@ -33,6 +33,9 @@ Map.implement({
 						if (true || content.getElement('[data-autostart="true"]')) {
 							slide.start();
 						}
+						if (content.getElement('audio')) {
+							content.getElement('audio').play();
+						}
 					});
 					
 					marker.addEvent('content_changed', function(content) {
@@ -45,6 +48,9 @@ Map.implement({
 							if (newIcon !== '') {
 								var animatedElements = this.getPolyLinesAnimated();
 								animatedElements[0].marker.setIcon(newIcon);
+							}
+							if (content.getElement('audio')) {
+								content.getElement('audio').pause();
 							}
 						}.bind(this));
 					}.bind(this));
