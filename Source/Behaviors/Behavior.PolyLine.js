@@ -3,7 +3,7 @@
 name: Behavior.PolyLine
 description: Adds a slide interface (PolyLine instance)
 provides: [Behavior.PolyLine]
-requires: [Behavior/Behavior, /Map.PolyLine, /Map.PolyLine.Animated]
+requires: [Behavior/Behavior, /Map.PolyLine, /Map.PolyLine.Animated, /Map.PolyLine.Advanced]
 script: Behavior.PolyLine.js
 
 ...
@@ -13,7 +13,7 @@ Behavior.addGlobalFilter('PolyLine', {
 
 	defaults: {
 		target: '!div [data-behavior="Map"]',
-		animated: false,
+		type: 'PolyLineAdvanced',
 		color: '#000',
 		opacity: 0.7,
 		weight: 2
@@ -28,14 +28,27 @@ Behavior.addGlobalFilter('PolyLine', {
 				'strokeWeight': api.getAs(Number, 'weight'),
 				'markerOptions': api.getAs(String, 'icon') ? { icon: { url: api.getAs(String, 'icon') } } : {}
 			};
-		var polyLine = animated === true ? map.createPolyLineAnimated(options) : map.createPolyLine(options);
-		
-		if (animated === true) {
-			polyLine.fx.addEvent('setPoint', function(lat, lng) {
-				var point = [lat, lng];
-				map.panTo(point);
-			});
+			
+		switch(api.getAs(String, 'type')) {
+			case 'PolyLine': 
+				var polyLine = map.createPolyLine(options);
+				break;
+			case 'PolyLineAdvanced': 
+				var polyLine = map.createPolyLineAdvanced(options);
+				break;
+			case 'PolyLineAnimated':
+				var polyLine = map.createPolyLineAnimated(options);
+				polyLine.fx.addEvent('setPoint', function(lat, lng) {
+					var point = [lat, lng];
+					map.panTo(point);
+				});
+				break;
 		}
+		
+		if (api.getAs(String, 'encodedpath')) {
+			polyLine.setEncodedPath(api.getAs(String, 'encodedpath'));
+		}
+		
 		return polyLine;
 	}
 
