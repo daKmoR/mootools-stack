@@ -74,9 +74,13 @@ Map.PolyLine = new Class({
 		return google.maps.geometry.encoding.encodePath(path);
 	},
 	
+	decodePath: function(path) {
+		return this.getPath(google.maps.geometry.encoding.decodePath(path));
+	},
+	
 	setEncodedPath: function(path) {
 		var path = path || this.polyLineObj.getPath();
-		this.setPath(google.maps.geometry.encoding.decodePath(path));
+		this.setPath(this.decodePath(path));
 	},
 
 	// Inserts an element at the specified index.
@@ -117,7 +121,7 @@ Map.PolyLine = new Class({
 	// Get an element at the specified index.
 	getPointAt: function(index) {
 		var point = this.polyLineObj.getPath().getAt(index);
-		return [point['Ma'], point['Na']];
+		return [point.lat(), point.lng()];
 	},
 
 	// Clears the polyLine path.
@@ -170,10 +174,10 @@ Map.PolyLine = new Class({
 		} 
 	},
 	
-	getPath: function() {
-		var arrayPath = [], path = this.polyLineObj.getPath().getArray();
+	getPath: function(path) {
+		var arrayPath = [], path = path || this.polyLineObj.getPath().getArray();
 		Object.each(path, function(point) {
-			arrayPath.push([point['Ma'], point['Na']]);
+			arrayPath.push([point.lat(), point.lng()]);
 		});
 		return arrayPath;
 	}

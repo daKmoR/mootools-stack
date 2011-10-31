@@ -108,7 +108,7 @@ Map.Marker = new Class({
 	
 	getPosition: function() {
 		var point = this.markerObj.getPosition();
-		return [point['Ma'], point['Na']];
+		return [point.lat(), point.lng()];
 	}
 
 });

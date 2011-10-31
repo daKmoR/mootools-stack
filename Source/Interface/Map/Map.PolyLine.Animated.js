@@ -84,8 +84,18 @@ Map.PolyLine.Animated = new Class({
 	},
 	
 	addVirtualPoint: function(point) {
-		var point = typeOf(point) === 'array' ? point : [point['Ma'], point['Na']];
+		var point = typeOf(point) === 'array' ? point : [point.lat(), point.lng()];
 		this.points.push(point);
+	},
+	
+	setEncodedPath: function(path, show) {
+		var show = show === 'undefined' ? this.options.showNewPoints : !!show;
+		return show ? this.parent(path) : this.setVirtualEncodedPath(path);
+	},
+	
+	setVirtualEncodedPath: function(path) {
+		this.points = this.decodePath(path);
+		console.log(this.points);
 	},
 	
 	start: function(i) {
