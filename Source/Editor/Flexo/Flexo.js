@@ -67,81 +67,109 @@ Object.extend({
 var Flexo = new Class({
 	Implements: [Settings, Events],
 	options: {
-		copyToElement: false,
-
+		submitOnEnterElements: ['a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span'],
+		submitOnEnter: false,
+		buttonOnElements: ['a'],
+		button: false
 	},
+	
+	createButton: false,
+	submitOnEnter: false,
 	
 	initialize: function(wrap, options) {
 		if( !(this.wrap = $(wrap)) ) return;
+		
 		this.setOptions(options);
+		if (this.options.buttonOnElements.contains(this.wrap.get('tag')) === true || this.options.button === true) {
+			this.createButton = true;
+		}
+		if (this.options.submitOnEnterElements.contains(this.wrap.get('tag')) === true || this.options.submitOnEnter === true) {
+			this.submitOnEnter = true;
+		}
 
 		this.initPlugins();
-		
-		// this.wrap.getElements('a').addEvent('click', function(e) {
-			// e.stop();
-		// });
-		
-		// this.wrap.addEvent('mouseup', function(e) {
-			// this.activate();
-			// //console.log( this.wrap.getSelectedText() );
-			
-			// //this.wrap.selectRange(1, 100);
-			// var tmp = this.getElement();
-			// console.log(tmp);
-			
-			// //this.wrapSelection('<strong>|</strong>');
-			
-			// e.stop();
-		// }.bind(this) );
 		
 		// this.wrap.addEvent('keyup', function() {
 			// this.checkCarrotPosition();
 		// }.bind(this) );
 		
-		var button = new Element('span', { style: 'display: block; position: absolute; width: 10px; height: 10px; background: orange;' });
-		button.addEvent('click', function() {
-			this.activate();
-			
-			this.wrap.focus();
-			
-		}.bind(this));
-		
-		button.inject(this.wrap, 'after');
+		if (this.createButton === true) {
+			this.createEditButton();
+		} else {
+			this.wrap.addEvent('dblclick', function() {
+				this.activate();
+			}.bind(this));
+		}
 		
 		this.wrap.addEvent('blur', function() {
-			//console.log(this.wrap.get('text'));
-			
 			this.deactivate();
-			
-			$$('[name="tx_easyedit_easyeditmenu[page][title]"]')[0].set('value', this.wrap.get('text'));
-			
-			//$$('form')[0].toQueryString();
-			$$('form')[0].send();
-			
+		}.bind(this));
+
+		this.wrap.addEvent('keydown', function(event) {
+			if (event.key == 'esc') {
+				this.deactivate(true);
+			}
 		}.bind(this));
 		
+		if (this.submitOnEnter === true) {
+			this.wrap.addEvent('keydown', function(event) {
+				if (event.key == 'enter') {
+					this.deactivate();
+				}
+			}.bind(this));
+		}
+	},
+	
+	createEditButton: function() {
+		this.editButton = new Element('span[class="editIcon"]');
+		this.editButton.addEvent('click', function() {
+			this.activate();
+			this.editButton.fade(0);
+		}.bind(this));
+		this.editButton.inject(this.wrap, 'after');
+		this.editButton.position({
+			relativeTo: this.wrap,
+			position: 'upperRight',
+			offset: { x: 16 },
+			edge: 'upperRight'
+		});
 		
-		// $('in').addEvent('mouseup', function() {
-			// //console.log( $('in').getSelectedText() );
-		// });
-		
-		
-		// $('useMe').addEvent('mouseenter', function() {
-			// //console.log( 'mouse ' + this.wrap.getCaretPosition() );
-			
-			// this.plugins.Bold.activate();
-			
-		// }.bind(this) );
-		
+		this.editButton.addEvents({
+			'mouseenter': function() {
+				this.editButton.fade(1);
+			}.bind(this),
+			'mouseleave': function() {
+				this.editButton.fade(0);
+			}.bind(this)
+		});
+
+		this.wrap.addEvents({
+			'mouseenter': function() {
+				this.editButton.fade(1);
+			}.bind(this),
+			'mouseleave': function() {
+				this.editButton.fade(0);
+			}.bind(this)
+		});
 	},
 	
 	activate: function() {
 		this.wrap.set('contentEditable', true);
+		this.originalContent = this.wrap.get('html');
+		this.wrap.focus();
 	},
 	
-	deactivate: function() {
+	deactivate: function(dropChanges) {
+		var dropChanges = dropChanges === true ? true : false;
+		if (dropChanges === true) {
+			this.wrap.set('html', this.originalContent);
+		}
+		if (this.wrap.get('html') !== this.originalContent) {
+			this.wrap.fireEvent('change');
+			console.log('changed');
+		}
 		this.wrap.set('contentEditable', false);
-		
+		this.wrap.blur();
 	},
 	
 	toElement: function() {
@@ -175,11 +203,7 @@ var Flexo = new Class({
 		var range = this.getRange(), element;
 		
 		if (range.setStart) {
-			
 			element = range.commonAncestorContainer;
-			
-			// console.log(element);
-		
 			// if (!range.collapsed) {
 				// if (range.startContainer == range.endContainer) {
 					// if (range.startOffset - range.endOffset < 2) {
@@ -189,23 +213,18 @@ var Flexo = new Class({
 					// }
 				// }
 			// }
-			
-			if (element && element.nodeType == 3)
+			if (element && element.nodeType == 3) {
 				return element.parentNode;
-			
+			}
 			return element;
 		}
-		
 		return range.item ? range.item(0) : range.parentElement();
 	},
 	
 	checkCarrotPosition: function() {
-		console.log(this.getElement());
-		
 		Object.each(this.plugins, function(plugin) {
 			plugin.checkCarrotPosition();
 		}, this);
-		
 	},
 	
 	plugins: {},
@@ -257,7 +276,7 @@ Flexo.Bold = new Class({
 		}
 	},
 	
-	deaktivate: function() {
+	deactivate: function() {
 		
 	},
 	
