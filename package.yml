@@ -67,6 +67,8 @@ sources:
   - "Source/Behaviors/Behavior.PolyLine.js"
   - "Source/Behaviors/Behavior.Point.js"
   - "Source/Behaviors/Behavior.Marker.js"
+  - "Source/Behaviors/Behavior.Flexo.js"
+  - "Source/Behaviors/Behavior.Sync.js"
   - "Source/Delegators/Delegator.Tweening.js"
   - "Source/Delegators/Delegator.Styling.js"
   - "Source/Delegators/Delegator.Print.js"
