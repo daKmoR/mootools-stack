@@ -21,7 +21,11 @@ Behavior.addGlobalFilter('Slide', {
 		var options = {
 			auto: api.getAs(Boolean, 'auto'),
 			size: api.getAs(String, 'size'),
-			keyboardListener: true
+			keyboardListener: true,
+			mode: 'once',
+			auto: false,
+			dynamicLoading: false,
+			active: false
 		};
 		if (api.getAs(Boolean, 'advanced')) {
 			var slide = new FlexSlide.Advanced(element, options);

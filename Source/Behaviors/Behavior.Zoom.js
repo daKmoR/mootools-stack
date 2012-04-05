@@ -12,10 +12,7 @@ script: Behavior.Zoom.js
 Behavior.addGlobalFilter('Zoom', {
 
 	setup: function(element, api) {
-		var to = Cookie.read('Behavior::Zoom')
-		if (to) {
-			Page.zoom(to);
-		}
+		Page.applySavedZoom();
 	}
 
 });

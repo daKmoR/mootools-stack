@@ -17,9 +17,7 @@ name: Delegator.Zoom
 		},
 		
 		handler: function(event, link, api) {
-			var to = api.getAs(Number, 'to');
-			Cookie.write('Behavior::Zoom', to);
-			Page.zoom(to);
+			Page.setZoom(api.getAs(Number, 'to'));
 		}
 		
 	});

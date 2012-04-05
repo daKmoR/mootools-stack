@@ -50,7 +50,6 @@ sources:
   - "Source/Interface/Map/Map.FullScreenMarker.js"
   - "Source/Interface/Map/Map.Plugin.Bounds.js"
   - "Source/Interface/Map/Map.Plugin.Play.js"
-  - "Source/Form/DatePicker.js"
   - "Source/Form/Select.js"
   - "Source/Form/Selects.js"
   - "Source/Element/Element.OuterClick.js"
@@ -73,3 +72,11 @@ sources:
   - "Source/Delegators/Delegator.Styling.js"
   - "Source/Delegators/Delegator.Print.js"
   - "Source/Delegators/Delegator.Zoom.js"
+  - "Source/Form/DatePicker/Picker.js"
+  - "Source/Form/DatePicker/Picker.Attach.js"
+  - "Source/Form/DatePicker/Picker.Date.js"
+  - "Source/Form/DatePicker/Picker.Date.Range.js"
+  - "Source/Form/DatePicker/Locale.en-US.DatePicker.js"
+  - "Source/Form/DatePicker/Locale.de-DE.DatePicker.js"
+	
+	

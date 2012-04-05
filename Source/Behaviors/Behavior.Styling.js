@@ -12,14 +12,20 @@ script: Behavior.Styling.js
 Behavior.addGlobalFilter('Styling', {
 
 	require: ['target'],
+	
 	defaults: {
 		property: 'height',
-		'target-property': 'height'
+		'from-property': 'height',
+		value: ''
 	},
+	
 	setup: function(element, api) {
-		var dimensions = element.getDimensions();
-		var newValue = dimensions[api.get('property')] + api.getAs(Number, 'target-add-extra');
-		element.getElements(api.getAs(String, 'target')).invoke('setStyle', api.get('target-property'), newValue);
+		var newValue = api.get('value');
+		if (!newValue) {
+			var dimensions = element.getDimensions();
+			newValue = dimensions[api.getAs(String, 'from-property')] + api.getAs(Number, 'target-add-extra');
+		}
+		element.getElements(api.getAs(String, 'target')).invoke('setStyle', api.getAs(String, 'property'), newValue);
 	}
 
 });

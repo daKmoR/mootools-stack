@@ -28,7 +28,7 @@ var Select = new Class({
 			defaultStatusClass: 'ui-DefaultStatus',
 			currentClass: 'ui-Current'
 		},
-		single: {	statusTemplate: '{element}'	},
+		single: {	statusTemplate: '{element}', statusElementsTruncate: { length: 22, trail: '...' }	},
 		multiple: {	statusTemplate: '({count}) {elements}', statusElementsTruncate: { length: 22, trail: '...' }, resetToZeroSelected: true },
 		mode: 'single',
 		defaultStatus: '',
@@ -234,7 +234,8 @@ var Select = new Class({
 	setStatus: function(text) {
 		var text = text || '';
 		if (this.selectedEls.length === 1 && text === '') {
-			text = this.options.single.statusTemplate.substitute({element: this.selectedEls[0].get('text'), count: this.selectedEls.length});
+			truncatedText = this.selectedEls[0].get('text').truncate(this.options.single.statusElementsTruncate.length, this.options.single.statusElementsTruncate.trail);
+			text = this.options.single.statusTemplate.substitute({element: truncatedText, count: this.selectedEls.length});
 		}
 		if (this.selectedEls.length > 1 && text === '') {
 			elements = this.selectedEls.invoke('get', 'text').join(', ').truncate(this.options.multiple.statusElementsTruncate.length, this.options.multiple.statusElementsTruncate.trail);

@@ -30,10 +30,11 @@ Map.implement({
 					marker.addEvent('open', function(content) {
 						var slide = content.getElement('[data-behavior="Slide"]').getBehaviorResult('Slide');
 						slide.options.active = true;
-						if (true || content.getElement('[data-autostart="true"]')) {
+						if (content.getElement('[data-autostart="true"]')) {
 							slide.start();
 						}
 						if (content.getElement('audio')) {
+							content.getElement('audio').currentTime  = 0;
 							content.getElement('audio').play();
 						}
 					});
@@ -57,6 +58,8 @@ Map.implement({
 				});
 			},
 			onClick: function(element) {
+				var animatedElements = this.getPolyLines();
+				//animatedElements[0].showEditMarkers();
 				var animatedElements = this.getPolyLinesAnimated();
 				if (!this.plugins.play.active) {
 				

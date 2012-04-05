@@ -18,6 +18,11 @@ Behavior.addGlobalFilter('SearchSelect', {
 				statusElementsTruncate: { 
 					length: api.getAs(Number, 'status-elements-truncate-length')
 				}
+			},
+			single: {
+				statusElementsTruncate: { 
+					length: api.getAs(Number, 'status-elements-truncate-length')
+				}
 			}
 		});
 		

@@ -65,7 +65,7 @@ Map.FullScreenMarker = new Class({
 	
 	build: function() {
 		this.wrap = new Element('div[class="fullScreenWrap"]');
-		this.wrap.set('style', 'position: fixed; width: 100%; height: 100%; left: 0; top: 0; background: #fff;');
+		this.wrap.set('style', 'position: fixed; width: 100%; height: 100%; left: 0; top: 0;');
 		this.wrap.setStyle('opacity', 0);
 		this.wrap.setStyle('visibility', 'hidden');
 		this.wrap.inject(document.body);
