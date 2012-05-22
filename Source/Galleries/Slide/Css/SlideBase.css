@@ -1,3 +1,0 @@
-.slideWrap { position: relative; }
-	.slideElements { position: relative; overflow: hidden; }
-	.slideElements > * { position: absolute; display: none; z-index: 0; }
