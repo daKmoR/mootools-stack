@@ -1,46 +1,55 @@
 /*
 ---
 description: Provides functionality for links that load content into a target element via ajax.
-provides: [Delegator.Tweening]
+provides: [Delegator.Tween]
 requires: [Behavior/Delegator, Core/Request.HTML, More/Spinner]
-script: Delegator.Tweening.js
-name: Delegator.Tweening
+script: Delegator.Tween.js
+name: Delegator.Tween
 ...
 */
 
 (function(){
 
-	Delegator.register('click', 'Tweening', {
-	
+	Delegator.register('click', 'Tween', {
+
 		defaults: {
 			property: 'height',
-			toggleClass: 'tweeningToggle'
+			toggleClass: 'tweenToggle',
+			setsize: false
 		},
-		
+
 		handler: function(event, link, api) {
 			var property = api.getAs(String, 'property');
-			
 			link.getElements(api.getAs(String, 'to-zero')).each(function(el) {
-				el.store('Tweening:properties', el.getDimensions());
+				var properties = el.getDimensions();
+				if (api.getAs(Boolean, 'setsize') === true) {
+					el.setStyle('width', properties['width']);
+					el.setStyle('height', properties['height']);
+				}
+				if (api.getAs(String, 'styleproperty') !== '') {
+					el.setStyle(api.getAs(String, 'styleproperty'), api.getAs(String, 'stylevalue'));
+				}
+
+				el.store('Tween:properties', properties);
 				el.setStyles({'display': 'block', 'overflow': 'hidden'});
 				el.tween(property, 0);
 			});
-			
+
 			link.getElements(api.getAs(String, 'to-original')).each(function(el) {
-				var properties = el.retrieve('Tweening:properties', el.getDimensions());
+				var properties = el.retrieve('Tween:properties', el.getDimensions());
 				el.setStyle(property, 0);
 				el.setStyles({'display': 'block', 'overflow': 'hidden'});
 				el.tween(property, properties[property]);
 			});
-			
+
 			link.getElements(api.getAs(String, 'toggle')).each(function(el) {
-				var properties = el.retrieve('Tweening:properties');
+				var properties = el.retrieve('Tween:properties');
 				if (!properties) {
 					properties = el.getDimensions();
 					if (!properties[property]) {
 						properties[property] = el.getStyle(property);
 					}
-					el.store('Tweening:properties', properties);
+					el.store('Tween:properties', properties);
 				}
 				var tmp = el.getStyle(property);
 				el.setStyle(property, 'auto');
@@ -49,7 +58,7 @@ name: Delegator.Tweening
 					properties = newDimensions;
 				}
 				el.setStyle(property, tmp);
-				
+
 				if (el.getStyle('display') === 'none' || el.getStyle('visibility') === 'hidden') {
 					el.setStyle(property, 0);
 				}
@@ -70,9 +79,9 @@ name: Delegator.Tweening
 				}
 				link.toggleClass(api.get('toggleClass'));
 			});
-			
+
 		}
-		
+
 	});
 
 })();
