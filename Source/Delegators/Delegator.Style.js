@@ -10,25 +10,33 @@ name: Delegator.Style
 
 (function(){
 
-	Delegator.register('click', 'Style', {
+	var triggers = {};
 
-		require: ['target', 'property', 'value'],
+	['Style', 'Style1', 'Style2', 'Style3'].each(function(action) {
 
-		defaults: {
-			setsize: false
-		},
+		triggers[ action] = {
 
-		handler: function(event, link, api) {
-			link.getElements(api.getAs(String, 'target')).each(function(el) {
-				if (api.getAs(Boolean, 'setsize') === true) {
-					var properties = el.getDimensions();
-					el.setStyle('width', properties['width']);
-					el.setStyle('height', properties['height']);
-				}
-				el.setStyle(api.getAs(String, 'property'), api.getAs(String, 'value'));
-			});
-		}
+			require: ['target', 'property', 'value'],
+
+			defaults: {
+				setsize: false
+			},
+
+			handler: function(event, link, api) {
+				link.getElements(api.getAs(String, 'target')).each(function(el) {
+					if (api.getAs(Boolean, 'setsize') === true) {
+						var properties = el.getDimensions();
+						el.setStyle('width', properties['width']);
+						el.setStyle('height', properties['height']);
+					}
+					el.setStyle(api.getAs(String, 'property'), api.getAs(String, 'value'));
+				});
+			}
+
+		};
 
 	});
+
+	Delegator.register('click', triggers);
 
 })();

@@ -15,6 +15,7 @@ name: Delegator.Tween
 		defaults: {
 			property: 'height',
 			toggleClass: 'tweenToggle',
+			invert: false,
 			setsize: false
 		},
 
@@ -22,6 +23,13 @@ name: Delegator.Tween
 			var property = api.getAs(String, 'property');
 			link.getElements(api.getAs(String, 'to-zero')).each(function(el) {
 				var properties = el.getDimensions();
+				el.store('Tween:properties', properties);
+				el.setStyles({'display': 'block', 'overflow': 'hidden'});
+				el.tween(property, 0);
+			});
+
+			link.getElements(api.getAs(String, 'to-original')).each(function(el) {
+				var properties = el.retrieve('Tween:properties', el.getDimensions());
 				if (api.getAs(Boolean, 'setsize') === true) {
 					el.setStyle('width', properties['width']);
 					el.setStyle('height', properties['height']);
@@ -30,16 +38,14 @@ name: Delegator.Tween
 					el.setStyle(api.getAs(String, 'styleproperty'), api.getAs(String, 'stylevalue'));
 				}
 
-				el.store('Tween:properties', properties);
-				el.setStyles({'display': 'block', 'overflow': 'hidden'});
-				el.tween(property, 0);
-			});
+				var propertyValue = api.getAs(String, 'from-property') ? el.getStyle(api.getAs(String, 'from-property')).toInt() : properties[property];
+				if (api.getAs(Boolean, 'invert') === true) {
+					propertyValue = propertyValue * (-1);
+				}
 
-			link.getElements(api.getAs(String, 'to-original')).each(function(el) {
-				var properties = el.retrieve('Tween:properties', el.getDimensions());
 				el.setStyle(property, 0);
 				el.setStyles({'display': 'block', 'overflow': 'hidden'});
-				el.tween(property, properties[property]);
+				el.tween(property, propertyValue);
 			});
 
 			link.getElements(api.getAs(String, 'toggle')).each(function(el) {
