@@ -23,7 +23,7 @@ sources:
   - "Source/Behaviors/Behavior.DatePicker.js"
   - "Source/Behaviors/Behavior.ImageFullDownload.js"
   - "Source/Behaviors/Behavior.SearchSelect.js"
-  - "Source/Behaviors/Behavior.Styling.js"
+  - "Source/Behaviors/Behavior.Style.js"
   - "Source/Behaviors/Behavior.DropMenu.js"
   - "Source/Behaviors/Behavior.Nudging.js"
   - "Source/Behaviors/Behavior.Zoom.js"
