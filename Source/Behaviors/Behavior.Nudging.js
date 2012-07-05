@@ -11,10 +11,24 @@ script: Behavior.Nudging.js
 
 Behavior.addGlobalFilter('Nudging', {
 
+	defaults: {
+		property: 'padding-left',
+		value: 10,
+		duration: 200
+	},
+
 	setup: function(element, api) {
+		var resetValue = api.getAs(Number, 'resetValue') || element.getStyle('padding-left');
+		element.set('tween', {
+			duration: api.getAs(Number, 'duration')
+		});
 		element.addEvents({
-			'mouseenter': function() { this.tween('padding-left', 20); },
-			'mouseleave': function() { this.tween('padding-left', 0); }
+			'mouseenter': function() {
+				element.tween(api.getAs(String, 'property'), api.getAs(Number, 'value'));
+			}.bind(this),
+			'mouseleave': function() {
+				element.tween(api.getAs(String, 'property'), resetValue);
+			}.bind(this)
 		});
 	}
 
