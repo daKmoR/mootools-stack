@@ -2,17 +2,13 @@
 ---
 
 name: Flexo
-
-description: simple inline editor 
-
+description: simple inline editor
 license: MIT-style license.
-
-requires: [Core/Element.Dimensions, Core/Element.Style, Core/Fx.Tween, Core/Fx.Morph, Core/Fx.Transitions, More/Fx.Elements, More/Scroller, More/Element.Position, More/Element.Forms, Class.Settings]
-
+requires: [Core/Element.Style, More/Element.Forms]
 provides: Flexo
 
 ...
-*/ 
+*/
 
 Element.implement({
 
@@ -22,17 +18,20 @@ Element.implement({
 			function() { return document.getSelection(); },
 			function() {
 				var selection = document.selection && document.selection.createRange();
-				if(selection.text) { return selection.text; }
+				if (selection.text) {
+					return selection.text;
+				}
 				return false;
 			}
 		) || false;
 	}
-	
+
 });
 
 Object.extend({
 
 	equals: function(obj1, obj2) {
+		var property;
 		obj2 = obj2 || this;
 		for(property in obj2) {
 			if(typeof(obj1[property])=='undefined') {return false;}
@@ -65,143 +64,99 @@ Object.extend({
 });
 
 var Flexo = new Class({
-	Implements: [Settings, Events],
+	Implements: [Options, Events],
 	options: {
 		submitOnEnterElements: ['a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span'],
-		submitOnEnter: false,
-		buttonOnElements: ['a'],
-		button: false
+		submitOnEnter: false
 	},
-	
-	createButton: false,
+
 	submitOnEnter: false,
-	
-	initialize: function(wrap, options) {
-		if( !(this.wrap = $(wrap)) ) return;
-		
+
+	initialize: function(element, options) {
+		if (!(this.element = document.id(element))) return false;
 		this.setOptions(options);
-		if (this.options.buttonOnElements.contains(this.wrap.get('tag')) === true || this.options.button === true) {
-			this.createButton = true;
-		}
-		if (this.options.submitOnEnterElements.contains(this.wrap.get('tag')) === true || this.options.submitOnEnter === true) {
+		if (this.options.submitOnEnterElements.contains(this.element.get('tag')) === true || this.options.submitOnEnter === true) {
 			this.submitOnEnter = true;
 		}
 
 		this.initPlugins();
-		
-		// this.wrap.addEvent('keyup', function() {
+
+		// this.element.addEvent('keyup', function() {
 			// this.checkCarrotPosition();
 		// }.bind(this) );
-		
-		if (this.createButton === true) {
-			this.createEditButton();
-		} else {
-			this.wrap.addEvent('dblclick', function() {
-				this.activate();
-			}.bind(this));
-		}
-		
-		this.wrap.addEvent('blur', function() {
+
+		this.element.addEvent('click', function() {
+			this.activate();
+		}.bind(this));
+
+		this.element.addEvent('blur', function() {
 			this.deactivate();
 		}.bind(this));
 
-		this.wrap.addEvent('keydown', function(event) {
+		this.element.addEvent('keydown', function(event) {
 			if (event.key == 'esc') {
-				this.deactivate(true);
+				this.deactivateAndIgnoreChanges();
+			}
+			if (this.submitOnEnter === true && event.key == 'enter') {
+				this.deactivate();
 			}
 		}.bind(this));
-		
-		if (this.submitOnEnter === true) {
-			this.wrap.addEvent('keydown', function(event) {
-				if (event.key == 'enter') {
-					this.deactivate();
-				}
-			}.bind(this));
-		}
 	},
-	
-	createEditButton: function() {
-		this.editButton = new Element('span[class="editIcon"]');
-		this.editButton.addEvent('click', function() {
-			this.activate();
-			this.editButton.fade(0);
-		}.bind(this));
-		this.editButton.inject(this.wrap, 'after');
-		this.editButton.position({
-			relativeTo: this.wrap,
-			position: 'upperRight',
-			offset: { x: 16 },
-			edge: 'upperRight'
-		});
-		
-		this.editButton.addEvents({
-			'mouseenter': function() {
-				this.editButton.fade(1);
-			}.bind(this),
-			'mouseleave': function() {
-				this.editButton.fade(0);
-			}.bind(this)
-		});
 
-		this.wrap.addEvents({
-			'mouseenter': function() {
-				this.editButton.fade(1);
-			}.bind(this),
-			'mouseleave': function() {
-				this.editButton.fade(0);
-			}.bind(this)
-		});
-	},
-	
 	activate: function() {
-		this.wrap.set('contentEditable', true);
-		this.originalContent = this.wrap.get('html');
-		this.wrap.focus();
+		this.element.set('contentEditable', true);
+		this.originalContent = this.element.get('html');
+		this.element.focus();
 	},
-	
-	deactivate: function(dropChanges) {
-		var dropChanges = dropChanges === true ? true : false;
+
+	deactivate: function() {
+		this._deactivate(false);
+	},
+
+	deactivateAndIgnoreChanges: function() {
+		this._deactivate(true);
+	},
+
+	_deactivate: function(dropChanges) {
 		if (dropChanges === true) {
-			this.wrap.set('html', this.originalContent);
+			this.element.set('html', this.originalContent);
 		}
-		if (this.wrap.get('html') !== this.originalContent) {
-			this.wrap.fireEvent('change');
-			console.log('changed');
+		if (dropChanges === false && this.element.get('html') !== this.originalContent) {
+			this.element.fireEvent('change');
 		}
-		this.wrap.set('contentEditable', false);
-		this.wrap.blur();
+		this.element.set('contentEditable', false);
+		this.element.blur();
 	},
-	
+
 	toElement: function() {
-		return this.wrap;
+		return this.element;
 	},
-	
+
 	getSelection: function() {
 		if (window.getSelection) {
 			return window.getSelection();
 		}
 		return window.getDocument().getSelection();
 	},
-	
+
 	getRange: function() {
 		var	range = this.getSelection().getRangeAt(0);
-		
 		if (!range) {
 			range = window.document.createRange ? window.document.createRange() : window.document.body.createTextRange();
 		}
 		return range;
 	},
-	
+
 	updateSelection: function(element) {
 		var range = this.getRange(), text = range.toString();
 		// range.deleteContents();
 		// range.insertNode( new Element('strong', { html: text }) );
-		range.surroundContents( element );
+		range.surroundContents(element);
 	},
-	
+
 	getElement: function() {
 		var range = this.getRange(), element;
-		
+
 		if (range.setStart) {
 			element = range.commonAncestorContainer;
 			// if (!range.collapsed) {
@@ -220,27 +175,27 @@ var Flexo = new Class({
 		}
 		return range.item ? range.item(0) : range.parentElement();
 	},
-	
+
 	checkCarrotPosition: function() {
 		Object.each(this.plugins, function(plugin) {
 			plugin.checkCarrotPosition();
 		}, this);
 	},
-	
+
 	plugins: {},
-	
+
 	addPlugin: function(plugin) {
-		
+
 	},
-	
+
 	initPlugins: function() {
 		this.plugins.Bold = new Flexo.Bold(this);
 	}
-	
+
 });
 
 Flexo.Bold = new Class({
-	Implements: [Settings, Events],
+	Implements: [Options, Events],
 	options: {
 		tag: 'strong',
 		styles: {
@@ -248,22 +203,19 @@ Flexo.Bold = new Class({
 		},
 		mode: 'spanStyle'
 	},
-	
+
 	editor: null,
-	
+
 	initialize: function(editor, options) {
 		this.editor = editor;
 		this.setOptions(options);
 	},
-	
+
 	checkCarrotPosition: function() {
 		var element = this.editor.getElement();
-		if (this.isTag(element) || this.sameStyles(element)) {
-			return true;
-		}
-		return false;
+		return this.isTag(element) || this.sameStyles(element);
 	},
-	
+
 	activate: function() {
 		if (this.options.mode === 'tag') {
 			this.editor.updateSelection(new Element(this.options.tag));
@@ -275,18 +227,18 @@ Flexo.Bold = new Class({
 			this.editor.updateSelection( new Element('span', {styles: this.options.styles}) );
 		}
 	},
-	
+
 	deactivate: function() {
-		
+
 	},
-	
+
 	sameStyles: function(element) {
-		var styles = element.getStyles( Object.keys(this.options.styles) );
+		var styles = element.getStyles(Object.keys(this.options.styles));
 		return Object.equals(this.options.styles, styles);
 	},
-	
+
 	isTag: function(element) {
 		return element.get('tag') === this.options.tag;
 	}
-	
+
 });
