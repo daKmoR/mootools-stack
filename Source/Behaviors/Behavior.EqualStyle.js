@@ -42,6 +42,8 @@ script: Behavior.EqualStyle.js
 Behavior.addGlobalFilter('EqualStyle', {
 
 	require: ['targets'],
+	
+	delay: 10,	
 
 	defaults: {
 		property: 'height',
