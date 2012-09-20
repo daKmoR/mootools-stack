@@ -28,47 +28,63 @@ script: Behavior.EqualStyle.js
  *   <div id="element2" style="height: 120px;"></div>
  * </output>
  *
- * <code title="Inline notation">
+ * <code title="Options">
  *   value: hard coded value to use
  *   property: to read the value from
  *   targets: elements to include in the calculation and later set the value on (executing element is always included)
  *   find: [min, max] search for the min or max value on all targets
+ *   duration: how long to check for changes
  * </code>
  * <output>
  * </output>
  *
  */
+ 
+(function(){
 
 Behavior.addGlobalFilter('EqualStyle', {
 
 	require: ['targets'],
 	
-	delay: 10,	
-
 	defaults: {
 		property: 'height',
-		find: 'max'
+		find: 'max',
+		duration: 1000
 	},
 
 	setup: function(element, api) {
 		var targets = element.getElements(api.getAs(String, 'targets'));
 		targets.include(element);
-
+		
 		var newValue = api.get('value');
 		if (!newValue) {
-			newValue = api.getAs(String, 'find') === 'max' ? -100000 : 100000;
-			var property = api.getAs(String, 'property'), dimensions;
-			targets.each(function(target) {
-				dimensions = target.getCoordinates();
-				if (api.getAs(String, 'find') === 'min') {
-					newValue = dimensions[property] < newValue ? dimensions[property] : newValue;
-				} else {
-					newValue = dimensions[property] > newValue ? dimensions[property] : newValue;
-				}
-			});
+			checkSize(targets, api.getAs(String, 'find'), api.getAs(String, 'property'), api.getAs(Number, 'duration'));
+		} else {
+			targets.invoke('setStyle', api.getAs(String, 'property'), newValue);
 		}
-
-		targets.invoke('setStyle', api.getAs(String, 'property'), newValue);
 	}
 
 });
+
+var checkSize = function(targets, find, property, duration, time) {
+	time = time ? time : 0;
+	newValue = find === 'max' ? -100000 : 100000;
+	var dimensions;
+	targets.each(function(target) {
+		target.setStyle(property, 'auto');
+		dimensions = target.getCoordinates();
+		if (find === 'min') {
+			newValue = dimensions[property] < newValue ? dimensions[property] : newValue;
+		} else {
+			newValue = dimensions[property] > newValue ? dimensions[property] : newValue;
+		}
+	});
+	
+	targets.invoke('setStyle', property, newValue);
+	if (time < duration) {
+		time += 10;
+		checkSize.delay(10, null, [targets, find, property, duration, time]);
+	}
+};
+
+})();
