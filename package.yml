@@ -31,3 +31,4 @@ sources:
   - "Source/Delegators/Delegator.Style.js"
   - "Source/Delegators/Delegator.Print.js"
   - "Source/Delegators/Delegator.Zoom.js"
+  - "Source/Delegators/Delegator.ResetCheckboxes.js"
