@@ -25,6 +25,7 @@ sources:
   - "Source/Behaviors/Behavior.Style.js"
   - "Source/Behaviors/Behavior.EqualStyle.js"
   - "Source/Behaviors/Behavior.DropMenu.js"
+  - "Source/Behaviors/Behavior.Position.js"
   - "Source/Behaviors/Behavior.Nudging.js"
   - "Source/Behaviors/Behavior.Zoom.js"
   - "Source/Behaviors/Behavior.SmoothScroll.js"
@@ -32,4 +33,3 @@ sources:
   - "Source/Delegators/Delegator.Style.js"
   - "Source/Delegators/Delegator.Print.js"
   - "Source/Delegators/Delegator.Zoom.js"
-  - "Source/Delegators/Delegator.ResetCheckboxes.js"
