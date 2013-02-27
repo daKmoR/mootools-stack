@@ -18,6 +18,7 @@ sources:
   - "Source/Form/Select/Select.js"
   - "Source/Form/Select/Selects.js"
   - "Source/Element/Element.OuterClick.js"
+  - "Source/Behaviors/Behavior.FormRequest.js"
   - "Source/Behaviors/Behavior.FlexBox.js"
   - "Source/Behaviors/Behavior.DatePicker.js"
   - "Source/Behaviors/Behavior.ImageFullDownload.js"
