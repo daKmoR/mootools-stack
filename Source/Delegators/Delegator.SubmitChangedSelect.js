@@ -19,7 +19,6 @@ name: Delegator.SubmitChangedSelect
 		handler: function(event, element, api) {
 			if (this.lastElement === undefined) {
 				this.lastElement = element.getElement(':selected');
-				console.log(this.lastElement);
 			}
 			currentElement = element.getElement(':selected');
 
