@@ -34,3 +34,5 @@ sources:
   - "Source/Delegators/Delegator.Style.js"
   - "Source/Delegators/Delegator.Print.js"
   - "Source/Delegators/Delegator.Zoom.js"
+  - "Source/Delegators/Delegator.SyncSelect.js"
+  - "Source/Delegators/Delegator.SubmitChangedSelect.js"
