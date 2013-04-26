@@ -37,3 +37,4 @@ sources:
   - "Source/Delegators/Delegator.Zoom.js"
   - "Source/Delegators/Delegator.SyncSelect.js"
   - "Source/Delegators/Delegator.SubmitChangedSelect.js"
+  - "Source/Delegators/Delegator.GoToChangedSelect.js"
