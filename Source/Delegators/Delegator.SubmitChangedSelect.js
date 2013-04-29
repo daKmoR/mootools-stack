@@ -10,19 +10,19 @@ name: Delegator.SubmitChangedSelect
 
 (function(){
 
-	Delegator.register('change', 'SubmitChangedSelect', {
+	/* we use click to support shitty browsers */
+
+	Delegator.register('click', 'SubmitChangedSelect', {
 
 		defaults: {
 			form: '!form'
 		},
 
 		handler: function(event, element, api) {
-			if (this.lastElement === undefined) {
-				this.lastElement = element.getElement(':selected');
-			}
+			lastElement = element.retrieve('GoToChangedSelect::lastElement', element.getElement(':selected'));
 			currentElement = element.getElement(':selected');
 
-			if (this.lastElement.get('value') !== currentElement.get('value')) {
+			if (lastElement.get('value') !== currentElement.get('value')) {
 				var formSelector = api.getAs(String, 'form');
 				var form = element.getElement(formSelector);
 				if (!form) {
@@ -35,7 +35,7 @@ name: Delegator.SubmitChangedSelect
 					form.submit();
 				}
 
-				this.lastElement = currentElement;
+				element.store('GoToChangedSelect::lastElement', currentElement);
 			}
 		}
 
