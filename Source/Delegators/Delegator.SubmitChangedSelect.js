@@ -10,9 +10,8 @@ name: Delegator.SubmitChangedSelect
 
 (function(){
 
-	/* we use click to support shitty browsers */
-
-	Delegator.register('click', 'SubmitChangedSelect', {
+	/* we use click and change to support shitty browsers */
+	Delegator.register(['click', 'change'], 'SubmitChangedSelect', {
 
 		defaults: {
 			form: '!form'

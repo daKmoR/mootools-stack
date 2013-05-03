@@ -10,7 +10,8 @@ name: Delegator.GoToChangedSelect
 
 (function(){
 
-	Delegator.register('click', 'GoToChangedSelect', {
+	/* we use click and change to support shitty browsers */
+	Delegator.register(['click', 'change'], 'GoToChangedSelect', {
 
 		handler: function(event, element, api) {
 			lastElement = element.retrieve('GoToChangedSelect::lastElement', element.getElement(':selected'));
