@@ -38,3 +38,4 @@ sources:
   - "Source/Delegators/Delegator.SyncSelect.js"
   - "Source/Delegators/Delegator.SubmitChangedSelect.js"
   - "Source/Delegators/Delegator.GoToChangedSelect.js"
+  - "Source/Delegators/Delegator.Stop.js"
