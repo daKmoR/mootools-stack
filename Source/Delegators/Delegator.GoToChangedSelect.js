@@ -24,7 +24,7 @@ name: Delegator.GoToChangedSelect
 					if (newWindow === 'true') {
 						window.open(url);
 					} else {
-						window.location = url;
+						location.pathname = url;
 					}
 				}
 				element.store('GoToChangedSelect::lastElement', currentElement);
