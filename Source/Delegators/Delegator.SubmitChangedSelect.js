@@ -10,31 +10,29 @@ name: Delegator.SubmitChangedSelect
 
 (function(){
 
-	/* we use click and change to support shitty browsers */
-	Delegator.register(['click', 'change'], 'SubmitChangedSelect', {
+	Delegator.register('change', 'SubmitChangedSelect', {
 
 		defaults: {
 			form: '!form'
 		},
 
 		handler: function(event, element, api) {
-			lastElement = element.retrieve('GoToChangedSelect::lastElement', element.getElement(':selected'));
+			// IE8 gets this event anyway? so exit
+			if (event.type == 'click') {
+				return;
+			}
+
 			currentElement = element.getElement(':selected');
-
-			if (lastElement.get('value') !== currentElement.get('value')) {
-				var formSelector = api.getAs(String, 'form');
-				var form = element.getElement(formSelector);
-				if (!form) {
-					api.fail('Cannot find target form: "' +formSelector+ '" for SubmitChangedSelect delegator.');
-				}
-				var request = form.retrieve('form.request');
-				if (request) {
-					request.send();
-				} else {
-					form.submit();
-				}
-
-				element.store('GoToChangedSelect::lastElement', currentElement);
+			var formSelector = api.getAs(String, 'form');
+			var form = element.getElement(formSelector);
+			if (!form) {
+				api.fail('Cannot find target form: "' +formSelector+ '" for SubmitChangedSelect delegator.');
+			}
+			var request = form.retrieve('form.request');
+			if (request) {
+				request.send();
+			} else {
+				form.submit();
 			}
 		}
 
