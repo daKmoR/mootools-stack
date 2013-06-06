@@ -20,12 +20,16 @@ name: Delegator.GoToChangedSelect
 
 			currentElement = element.getElement(':selected');
 			url = currentElement.get('value');
+			if (url.indexOf('http') === -1 || url.indexOf('http') > 0) {
+				url = location.protocol + '//' + location.host + '/' + url;
+			}
+
 			if (url) {
 				newWindow = currentElement.get('data-GoToChangedSelect-target');
 				if (newWindow === 'true') {
 					window.open(url);
 				} else {
-					location.pathname = url;
+					location = url;
 				}
 			}
 
