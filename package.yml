@@ -32,6 +32,7 @@ sources:
   - "Source/Behaviors/Behavior.Zoom.js"
   - "Source/Behaviors/Behavior.SmoothScroll.js"
   - "Source/Behaviors/Behavior.OnlyOnce.js"
+  - "Source/Behaviors/Behavior.date-picker.js"
   - "Source/Delegators/Delegator.tween.js"
   - "Source/Delegators/Delegator.class.js"
   - "Source/Delegators/Delegator.Style.js"
